@@ -5,7 +5,7 @@ BirdNET-system can be configured with the following optional services:
 - A recording script that will automate recording the two hours following sunrise and the two hours preceeding sunset for optimal bird listening.
 - An extraction service that extracts the audio selections idetified by BirdNET by date and species.
 - A Caddy instance that serves the extracted files via a configurable ${EXTRACTIONS_URL}.
-
+- A species list updating and notification script supporting mobile notifications via Pushed.co
 
 Currently, there are three types of configurations that I've tried and that have worked for me. They include the following:
 1. All-in-One
