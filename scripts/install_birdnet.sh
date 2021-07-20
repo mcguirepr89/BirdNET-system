@@ -3,6 +3,8 @@
 my_dir=$(realpath $(dirname $0))
 cd $my_dir || exit 1
 #Install/Configure /etc/birdnet/birdnet.conf
+
+sudo ln -sf ${my_dir}/* /usr/local/bin/
 sudo ./install_systemd.sh || exit 1
 source /etc/birdnet/birdnet.conf
 
@@ -70,9 +72,6 @@ sh model/fetch_model.sh
 pip3 install -r "$LAS"
 pip3 install "$THEON"
 
-cd $my_dir || exit 1
-
-sudo ln -sf ${my_dir}/* /usr/local/bin/
 echo "BirdNet is finished installing!!"
 echo
 echo

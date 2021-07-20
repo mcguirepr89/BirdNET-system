@@ -25,7 +25,7 @@ if ! diff "${IDFILE}" "${TMPFILE}"; then
       --form-string "app_key=${PUSHED_APP_KEY}" \
       --form-string "app_secret=${PUSHED_APP_SECRET}" \
       --form-string "target_type=app" \
-      --form-string "content=${NOTIFICATION}." \
+      --form-string "content=${NOTIFICATION}" \
       https://api.pushed.co/1/push
   fi
 fi
