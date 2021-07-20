@@ -10,7 +10,7 @@ source /etc/birdnet/birdnet.conf
 
 THEON="https://github.com/Lasagne/Lasagne/archive/master.zip"
 LAS="https://raw.githubusercontent.com/Lasagne/Lasagne/master/requirements.txt"
-APT_DEPS=(git ffmpeg sshfs)
+APT_DEPS=(git ffmpeg sshfs alsa-utils wget)
 LIBS_MODULES=(python3-pip python3-venv libblas-dev liblapack-dev)
 
 echo "This script will do the following:
