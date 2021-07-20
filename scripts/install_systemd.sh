@@ -185,7 +185,7 @@ ANALYZED=${RECS_DIR}/*/*Analyzed
 PROCESSED=${RECS_DIR}/Processed
 #  This is the directory where the extracted audio is moved.
 EXTRACTED=${RECS_DIR}/Extracted
-IDFILE=${HOME}/Birdnet-system/IdentifiedSoFar.txt
+IDFILE=${HOME}/BirdNET-system/IdentifiedSoFar.txt
 OVERLAP="0.0"
 CONFIDENCE="0.7"
 
