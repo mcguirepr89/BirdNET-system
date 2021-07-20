@@ -55,6 +55,7 @@ Just issues `sudo reconfigure_birdnet.sh` and that ought to do the trick.
 ## How to uninstall BirdNET-system
 To remove BirdNET and BirdNET-system, run the included '*uninstall.sh*' script as the ${BIRDNET_USER}.
 1. Change to the BirdNET-system installation directory and issue `./scripts/uninstall.sh`.
+1. Then `cd ~ && rm -drf BirdNET-system`
 
 ### TODO:
 1. Currently, one needs to set up the ssh-keys between the recorder and analyzer manually if configured to use the SSHFS systemd.mount. I will be adding the ssh-key exchange to the installation script soon.
