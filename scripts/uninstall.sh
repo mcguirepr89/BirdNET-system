@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Uninstall script to remove everything
-set -x
+# set -x # Uncomment to debug
 trap 'rm -f ${TMPFILE}' EXIT
 TMPFILE=$(mktemp)
 
