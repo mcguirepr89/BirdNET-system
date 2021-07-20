@@ -59,54 +59,7 @@ To remove BirdNET and BirdNET-system, run the included '*uninstall.sh*' script a
 ### TODO:
 1. Currently, one needs to set up the ssh-keys between the recorder and analyzer manually if configured to use the SSHFS systemd.mount. I will be adding the ssh-key exchange to the installation script soon.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# BirdNET Soundscape Analysis
+# BirdNET Soundscape Analysis _ (ORIGINAL ON WHICH BIRDNET-SYSTEM IS BUILT)
 By [Stefan Kahl](https://github.com/kahst), [Shyam Madhusudhana](https://www.birds.cornell.edu/brp/shyam-madhusudhana/), and [Holger Klinck](https://www.birds.cornell.edu/brp/holger-klinck/)
 
 For more information regarding the project visit: https://birdnet.cornell.edu/
