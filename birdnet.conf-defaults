@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Configuration settings for BirdNET as a service
+BIRDNET_USER=${BIRDNET_USER}
+RECS_DIR=${RECS_DIR}
+LONGITUDE="${LONGITUDE}"
+LATITUDE="${LATITUDE}"
+ZIP="${ZIP}"
+# Defaults
+REC_CARD=
+#  This is where BirdNet moves audio and selection files after they have been
+#  analyzed.
+ANALYZED=${RECS_DIR}/*/*Analyzed
+#  This is where the formerly 'Analyzed' files are moved after extractions have
+#  been made from them. This includes both WAVE and BirdNET.Selection.txt files
+PROCESSED=${RECS_DIR}/Processed
+#  This is the directory where the extracted audio is moved.
+EXTRACTED=${RECS_DIR}/Extracted
+IDFILE=${HOME}/Birdnet-system/IdentifiedSoFar.txt
+OVERLAP="0.0"
+CONFIDENCE="0.7"
+# Set these if the recordings will be mounted from a remote directory using SSHFS
+REMOTE_USER=${REMOTE_USER}
+REMOTE_HOST=${REMOTE_HOST}
+REMOTE_RECS_DIR=${REMOTE_RECS_DIR}
+# This is the URL where the extractions will be web-hosted. Use 'localhost' if
+# not making this public.
+EXTRACTIONS_URL=${EXTRACTIONS_URL}
+# Don't touch these
+SYSTEMD_MOUNT=$(echo ${RECS_DIR#/} | tr / -).mount
+VENV=${HOME}/BirdNET-system/birdnet
