@@ -53,6 +53,48 @@ Currently, there are three types of configurations that I've tried and that have
 1. If you would like to take advantage of Caddy's automatic handling of SSL certificates to be able to host a public website where your friends can hear your bird sounds, forward ports 80 and 443 to the host you want to serve the files. You may also want to purchase a domain name, though the project should be reachable via your public IP address at that point. (*Note: If you're just keeping this on your local network, be sure to set your extraction URL to something 'http://', [I recommend http://localhost] to disable Caddy's automatic HTTPS. Alternatively, you may edit the `/etc/caddy/Caddyfile` after installation and add the `tls internal` directive to the site block to have Caddy issue a self-signed certificate for an 'https://' site block.*)
 1. If you would like to take advantage of BirdNET-system's ability to send New Species mobile notifications, you can easily setup a Pushed.co notification app (see the #TODOs at the bottom for more info). After setting up your application, make note of your App Key and App Secret -- you will need these to enable mobile notifications for new species.
 
+## birdnet.conf defaults
+```bash
+#!/usr/bin/env bash
+# Configuration settings for BirdNET as a service
+BIRDNET_USER=${BIRDNET_USER}
+RECS_DIR=${RECS_DIR}
+LONGITUDE="${LONGITUDE}"
+LATITUDE="${LATITUDE}"
+ZIP="${ZIP}"
+
+# Set these if the recordings will be mounted from a remote directory using SSHFS
+REMOTE_USER=${REMOTE_USER}
+REMOTE_HOST=${REMOTE_HOST}
+REMOTE_RECS_DIR=${REMOTE_RECS_DIR}
+
+# Defaults
+REC_CARD=
+#  This is where BirdNet moves audio and selection files after they have been
+#  analyzed.
+ANALYZED=${RECS_DIR}/*/*Analyzed
+#  This is where the formerly 'Analyzed' files are moved after extractions have
+#  been made from them. This includes both WAVE and BirdNET.Selection.txt files
+PROCESSED=${RECS_DIR}/Processed
+#  This is the directory where the extracted audio is moved.
+EXTRACTED=${RECS_DIR}/Extracted
+IDFILE=${HOME}/BirdNET-system/IdentifiedSoFar.txt
+OVERLAP="0.0"
+CONFIDENCE="0.7"
+
+# This is the URL where the extractions will be web-hosted. Use 'localhost' if
+# not making this public.
+EXTRACTIONS_URL=${EXTRACTIONS_URL}
+
+# Pushed.co App Key and App Secret
+PUSHED_APP_KEY=${PUSHED_APP_KEY}
+PUSHED_APP_SECRET=${PUSHED_APP_SECRET}
+
+# Don't touch these
+SYSTEMD_MOUNT=$(echo ${RECS_DIR#/} | tr / -).mount
+VENV=${HOME}/BirdNET-system/birdnet
+```
+
 ## How to install
 1. In the terminal run `cd ~ && git clone https://github.com/mcguirepr89/BirdNET-system.git`
 1. Run `~/BirdNET-system/scripts/install_birdnet.sh`
