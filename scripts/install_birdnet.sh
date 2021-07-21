@@ -22,25 +22,23 @@ echo "This script will do the following:
 	- python3-pip
 	- libblas-dev
 	- liblapack-dev
+	- alsa-utils (for recording)
 	- sshfs (to mount remote sound file directories)
-#2: Clones the BirdNET GitHub repository into your home directory:
-	- "${HOME}"
-#3: Creates a python virtual environment to install BirdNET site-packages:
+#2: Creates a python virtual environment to install BirdNET site-packages:
 	- "${VENV}"
-#4: Builds BirdNET in the 'birdnet' virtual environment
-#5: Copies the systemd .service and .mount files, only enabling the .mount 
+#3: Builds BirdNET in the 'birdnet' virtual environment.
+#4: Copies the systemd .service and .mount files and enables those chosen:
 	- /etc/systemd/system/birdnet_analysis.service
 	- /etc/systemd/system/"${SYSTEMD_MOUNT}"
 	- /etc/systemd/system/extraction.service
-#6: Adds cron jobs:
-
-  \"XDG_RUNTIME_DIR=/run/user/1000
-    PATH=/usr/bin:/bin:/usr/local/bin
-    * * * * * /usr/local/bin/birdnet_recording.sh >> /var/log/recording.log 2>&1
-    */5 * * * * /usr/local/bin/species_notifier.sh &> /dev/null\""
+#6: Adds cron environments and jobs chosen
+        - XDG_RUNTIME_DIR=/run/user/1000
+        - PATH=/usr/bin:/bin:/usr/local/bin
+        - * * * * * /usr/local/bin/birdnet_recording.sh &> /dev/null
+        - */5 * * * * /usr/local/bin/species_notifier.sh &> /dev/null"
 
 echo
-read -sp "                 Press Enter to continue or Crtl-C to quit"
+read -sp "     Press Enter to continue or Crtl-C to quit"
 echo
 echo
 echo "Checking dependencies"
