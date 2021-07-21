@@ -10,8 +10,8 @@ source /etc/birdnet/birdnet.conf
 
 [ -d ${RECS_DIR} ] || mkdir -p ${RECS_DIR}
 
-THEON="https://github.com/Lasagne/Lasagne/archive/master.zip"
-LAS="https://raw.githubusercontent.com/Lasagne/Lasagne/master/requirements.txt"
+LASAG="https://github.com/Lasagne/Lasagne/archive/master.zip"
+THEON="https://raw.githubusercontent.com/Lasagne/Lasagne/master/requirements.txt"
 APT_DEPS=(git ffmpeg sshfs alsa-utils wget)
 LIBS_MODULES=(python3-pip python3-venv libblas-dev liblapack-dev)
 
@@ -64,11 +64,11 @@ done
 cd ~/BirdNET-system || exit 1
 python3 -m venv birdnet
 source ./birdnet/bin/activate
+sh model/fetch_model.sh
 pip3 install --upgrade pip wheel setuptools
 pip3 install -r requirements.txt
-sh model/fetch_model.sh
-pip3 install -r "$LAS"
-pip3 install "$THEON"
+pip3 install -r "$THEON"
+pip3 install "$LASAG"
 
 echo "BirdNet is finished installing!!"
 echo
