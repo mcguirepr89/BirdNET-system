@@ -128,7 +128,11 @@ EOF
 
     while true;do # Force Yes or No
       read -n1 -p "11. \
- Would you like this machine to provide the web hosting services?" YN
+ Would you like to access the extractions via a web browser?
+ *Note: It is recommended, (but not required), that you run the web server
+ on the same host that does the recording. If the extraction service and web server
+ are on different hosts, the \"By_Species\" and "Processed" symbolic links won't work.
+ The  \"By-Date\" extractions, however, will work as expected." YN
       echo
 
       case $YN in
