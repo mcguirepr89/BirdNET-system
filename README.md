@@ -43,6 +43,14 @@ Currently, there are three types of configurations that I've tried and that have
 1. Creates and copies the appropriate systemd *.service* and/or *.mount* files
 1. Installs any selected '*.cron*' jobs.
 
+## What you should know before beginning the installation
+1. Your username that you will work as your ${BIRDNET_USER}. To get this, go to your terminal and issue `whoami`.
+1. The directory where the recordings should be found on your local computer. BirdNET-system supports setting up a systemd.mount for automounting remote directories. So for instance, if the actual recordings live on RemoteHost's `/home/user/recordings` directory, but you would like them to be found on your device at `/home/me/BirdNET-recordings`, then `/home/me/BirdNET-recordings` will be your answer to installation question 2.
+1. The latitude and longitude where the bird recordings take place. Google maps is an easy way to find these (right-clicking the location).
+1. If you are using a special microphone or have multiple sound cards and would like to specify which to use for recording, you can edit the `/etc/birdnet/birdnet.conf` file when the installation is complete and set ${REC_CARD} to the sound card of your choice. Copy your desired sound card line from the output of ` aplay -L | grep -e '^hw:CARD' | cut -d',' -f1`.
+. 
+
+
 ## How to install
 1. In the terminal run `cd ~ && git clone https://github.com/mcguirepr89/BirdNET-system.git`
 1. Run `~/BirdNET-system/scripts/install_birdnet.sh`
@@ -60,3 +68,5 @@ To remove BirdNET and BirdNET-system, run the included '*uninstall.sh*' script a
 
 ### TODO:
 1. Currently, one needs to set up the ssh-keys between the recorder and analyzer manually if configured to use the SSHFS systemd.mount. I will be adding the ssh-key exchange to the installation script soon.
+1. I ought to add the steps to setup a Pushed.co application for the mobile notifications feature. Here is a link for now https://about.pushed.co/docs/productguides#developers-quick-start
+1. It's kind of cool to reverse-proxy a gotty web terminal of the birdnet_analysis.service log output (`journalctl -fu birdnet_analysis`), so I may add that.
