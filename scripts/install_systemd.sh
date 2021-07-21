@@ -328,4 +328,3 @@ ExecStart=/usr/local/bin/birdnet_analysis.sh
 WantedBy=multi-user.target
 EOF
 fi
-systemctl enable birdnet_analysis.service
