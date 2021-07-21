@@ -34,21 +34,20 @@ The next few questions will populate the required configuration settings:\n"
     read -p "4. \
  What is the latitude where the recordings were made? " LATITUDE
 
-    read -p "5. \
- What is the ZIP code where the recordings are made? " ZIP
-
     # Change to templates directory to install services and crontabs
     cd $my_dir || exit 1
     cd ../templates || exit 1
 
     while true;do # Force a Yes or No
-      read -n1 -p "6. \
+      read -n1 -p "5. \
  Is this device also doing the recording? " YN
       echo
 
       case $YN in
 	     
         [Yy] )
+	  read -p "6. \
+ What is the ZIP code where the recordings are made? " ZIP
           echo "Installing the birdnet_recording.sh crontab"
 	  if ! crontab -u ${BIRDNET_USER} -l;then
             crontab -u ${USER} ./birdnet_recording.cron
@@ -266,6 +265,7 @@ file_server browse
 }
 EOF
   systemctl restart caddy
+  systemctl enable caddy
 fi
 
 if [ ! -z "${REMOTE_RECS_DIR}" ];then
@@ -310,6 +310,7 @@ EOF
 systemctl enable "${SYSTEMD_MOUNT}"
 
 else
+
   echo "{REMOTE_RECS_DIR} doesn't exists"
   cat << EOF > /etc/systemd/system/birdnet_analysis.service
 [Unit]
@@ -327,3 +328,4 @@ ExecStart=/usr/local/bin/birdnet_analysis.sh
 WantedBy=multi-user.target
 EOF
 fi
+systemctl enable birdnet_analysis.service
