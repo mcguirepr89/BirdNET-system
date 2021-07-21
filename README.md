@@ -44,7 +44,7 @@ Currently, there are three types of configurations that I've tried and that have
 1. Installs any selected '*.cron*' jobs.
 
 ## What you should know before beginning the installation
-1. Your username that you will work as your ${BIRDNET_USER}. To get this, go to your terminal and issue `whoami`.
+1. Your username that will work as your ${BIRDNET_USER}. To get this, go to your terminal and issue `whoami`.
 1. The directory where the recordings should be found on your local computer. BirdNET-system supports setting up a systemd.mount for automounting remote directories. So for instance, if the actual recordings live on RemoteHost's `/home/user/recordings` directory, but you would like them to be found on your device at `/home/me/BirdNET-recordings`, then `/home/me/BirdNET-recordings` will be your answer to installation question 2.
 1. The latitude and longitude where the bird recordings take place. Google maps is an easy way to find these (right-clicking the location).
 1. If you are using a special microphone or have multiple sound cards and would like to specify which to use for recording, you can edit the `/etc/birdnet/birdnet.conf` file when the installation is complete and set ${REC_CARD} to the sound card of your choice. Copy your desired sound card line from the output of ` aplay -L | grep -e '^hw:CARD' | cut -d',' -f1`.
