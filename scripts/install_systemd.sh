@@ -5,6 +5,9 @@
 trap 'rm -f ${TMPFILE}' EXIT
 TMPFILE=$(mktemp)
 my_dir=$(realpath $(dirname $0))
+
+ln -sf ${my_dir}/* /usr/local/bin/
+
 read -n1 -p \
   "Would you like to fill out the configuration file interactively?" YN
 echo
