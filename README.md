@@ -27,6 +27,7 @@ Currently, there are three types of configurations that I've tried and that have
    - Just a BirdNET analysis service
 
 ## What the installation does
+1. Copies all scripts to */usr/local/bin*.
 1. Walks through settings in the *'birdnet.conf'* file.
 1. Installs the following system dependencies:
 	- ffmpeg
@@ -34,13 +35,13 @@ Currently, there are three types of configurations that I've tried and that have
 	- python3-pip
 	- libblas-dev
 	- liblapack-dev
+	- caddy (for web access to extractions)
+	- alsa-utils (for recording)
 	- sshfs (to mount remote sound file directories)
-1. Clones the BirdNET GitHub repository into your home directory.
 1. Creates a python virtual environment to install BirdNET site-packages.
 1. Builds BirdNET in the *'birdnet'* virtual environment.
-1. Creates and copies the systemd *.service* and *.mount* files, only enabling the *.mount.*
+1. Creates and copies the appropriate systemd *.service* and/or *.mount* files
 1. Installs any selected '*.cron*' jobs.
-1. Copies all scripts to */usr/local/bin*.
 
 ## How to install
 1. In the terminal run `cd ~ && git clone https://github.com/mcguirepr89/BirdNET-system.git`
@@ -50,7 +51,7 @@ Currently, there are three types of configurations that I've tried and that have
 
 ## How to reconfigure your setup
 At any time, you can reconfigure the settings you opted for during installation by running the '*reconfigure_birdnet.sh*' script with super user privileges.
-Just issues `sudo reconfigure_birdnet.sh` and that ought to do the trick.
+Just issue `sudo reconfigure_birdnet.sh` and that ought to do the trick.
 
 ## How to uninstall BirdNET-system
 To remove BirdNET and BirdNET-system, run the included '*uninstall.sh*' script as the ${BIRDNET_USER}.
