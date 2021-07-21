@@ -63,7 +63,9 @@ done
 cd ~/BirdNET-system || exit 1
 python3 -m venv birdnet
 source ./birdnet/bin/activate
-sh model/fetch_model.sh
+if [ ! -f "model/BirdNET_Soundscape_Model.pkl" ];then
+ sh model/fetch_model.sh
+fi
 pip3 install --upgrade pip wheel setuptools
 pip3 install -r requirements.txt
 pip3 install -r "$THEON"
