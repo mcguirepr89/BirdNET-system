@@ -72,13 +72,14 @@ To remove BirdNET and BirdNET-system, run the included '*uninstall.sh*' script a
 1. I ought to add the steps to setup a Pushed.co application for the mobile notifications feature. Here is a link for now https://about.pushed.co/docs/productguides#developers-quick-start
 1. It's kind of cool to reverse-proxy a gotty web terminal of the birdnet_analysis.service log output (`journalctl -fu birdnet_analysis`), so I may add that.
 1. Right now, nothing archives nor removes old recordings. I have tinkered with this, but in the meantime, this will work and can be easily tweaked to one's needs:
-`#!/usr/bin/env bash
-source /etc/birdnet/birdnet.conf
-
-REC_DATE=$(date --date="7 days ago" "+%F")
-FIND_DATE=*$(date --date="7 days ago" "+%F")*
-
-cd "${PROCESSED_DIR}" || exit 1
-
-find . -name "${FIND_DATE}" -exec rm -rfv {} +
-`
+ ```bash
+ #!/usr/bin/env bash
+ source /etc/birdnet/birdnet.conf
+ 
+ REC_DATE=$(date --date="7 days ago" "+%F")
+ FIND_DATE=*$(date --date="7 days ago" "+%F")*
+ 
+ cd "${PROCESSED_DIR}" || exit 1
+ 
+ find . -name "${FIND_DATE}" -exec rm -rfv {} +
+ ```
