@@ -163,6 +163,29 @@ publically available): " EXTRACTIONS_URL
       esac
     done
 
+    while true; do # Force Yes or No
+      read -n1 -p "12. \
+ Do you have a free App key to receive mobile notifications via Pushed.co?" YN
+      echo
+
+      case $YN in
+        
+        [Yy] ) # Get the Pushed.co app key and app key secret
+          read -p "Enter your Pushed.co App Key: " PUSHED_APP_KEY
+	  read -p "Enter your Pushed.co App Key Secret: " PUSHED_APP_SECRET
+	  break;;
+
+	[Nn] )
+	  PUSHED_APP_KEY=
+	  PUSHED_APP_SECRET=
+	  break;;
+
+	* )
+	 echo "A simple Yea or Nay will do";;
+
+      esac
+    done
+
     cd $my_dir || exit 1
     cd .. || exit 1
 
@@ -197,6 +220,10 @@ REMOTE_RECS_DIR=${REMOTE_RECS_DIR}
 # This is the URL where the extractions will be web-hosted. Use 'localhost' if
 # not making this public.
 EXTRACTIONS_URL=${EXTRACTIONS_URL}
+
+# Pushed.co App Key and App Secret
+PUSHED_APP_KEY=${PUSHED_APP_KEY}
+PUSHED_APP_SECRET=${PUSHED_APP_SECRET}
 
 # Don't touch these
 SYSTEMD_MOUNT=$(echo ${RECS_DIR#/} | tr / -).mount

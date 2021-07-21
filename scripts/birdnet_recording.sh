@@ -10,12 +10,6 @@ if [ -z ${REC_CARD} ];then
   REC_CARD=$(  aplay -L | grep -e '^hw:CARD' | cut -d',' -f1 | tail -n1)
 fi
 
-if [ -z ${REMOTE_RECS_DIR} ];then
-  DIR_TO_USE=${RECS_DIR}
-else
-  DIR_TO_USE=${REMOTE_RECS_DIR}
-fi
-
 # Obtain sunrise and sunset raw data from weather.com
 wget -q "https://weather.com/weather/today/l/$ZIP" -O "$tmpfile"
 

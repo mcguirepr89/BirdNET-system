@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Runs BirdNET in virtual environment
+set -x
 source /etc/birdnet/birdnet.conf
 DAYS=(
 "7 days ago"
