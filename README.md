@@ -56,7 +56,7 @@ Currently, there are three types of configurations that I've tried and that have
 ## How to install
 1. In the terminal run `cd ~ && git clone https://github.com/mcguirepr89/BirdNET-system.git`
 1. Run `~/BirdNET-system/scripts/install_birdnet.sh`
-1. Follow the installation prompt to configure your BirdNET-system to your needs.
+1. Follow the installation prompts to configure the BirdNET-system to your needs.
 - Note: The installation should be run as a regular user, but will require super user privileges, i.e., will ask you for your super user password.
 
 ## How to reconfigure your setup
@@ -65,8 +65,7 @@ Just issue `/usr/local/bin/uninstall.sh && sudo ~/BirdNET-system/scripts/reconfi
 
 ## How to uninstall BirdNET-system
 To remove BirdNET and BirdNET-system, run the included '*uninstall.sh*' script as the ${BIRDNET_USER}.
-1. Change to the BirdNET-system installation directory and issue `./scripts/uninstall.sh`.
-1. Then `cd ~ && rm -drf BirdNET-system`
+1. Issue `/usr/local/bin/uninstall.sh && cd ~ && rm -drf BirdNET-system`
 
 ### TODO:
 1. Currently, one needs to set up the ssh-keys between the recorder and analyzer manually if configured to use the SSHFS systemd.mount. I will be adding the ssh-key exchange to the installation script soon.
