@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -x
+# set -x
 source /etc/birdnet/birdnet.conf
 
 trap 'rm -f "$tmpfile"' EXIT

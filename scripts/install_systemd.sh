@@ -62,6 +62,9 @@ The next few questions will populate the required configuration settings:\n"
 	  REMOTE_HOST=
 	  REMOTE_RECS_DIR=
 	  REMOTE_USER=
+	  if ! which aplay &> /dev/null;then
+	    apt -qqqq update && apt -y -qqqqq install alsa-utils
+	  fi
 	  break;;
 
         [Nn] )
@@ -143,7 +146,7 @@ EOF
 publically available): " EXTRACTIONS_URL
           if ! which caddy;then
             sudo apt install -y \
-              debian-keyring debian-archive-keyring apt-transport-https
+              debian-keyring debian-archive-keyring apt-transport-https curl
             curl -1sLf \
               'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' \
 	        | sudo apt-key add -

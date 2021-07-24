@@ -12,7 +12,7 @@ source /etc/birdnet/birdnet.conf
 LASAG="https://github.com/Lasagne/Lasagne/archive/master.zip"
 THEON="https://raw.githubusercontent.com/Lasagne/Lasagne/master/requirements.txt"
 APT_DEPS=(git ffmpeg sshfs wget)
-LIBS_MODULES=(python3-pip python3-venv libblas-dev liblapack-dev alsa-utils)
+LIBS_MODULES=(python3-pip python3-venv libblas-dev liblapack-dev)
 
 echo "This script will do the following:
 #1: Install the following BirdNET system dependencies:

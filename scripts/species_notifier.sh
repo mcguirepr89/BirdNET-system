@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Sends a notification if a new species is detected
-set -x
+# set -x
 trap 'rm -f $TMPFILE' SIGINT SIGHUP EXIT
 
 source /etc/birdnet/birdnet.conf
