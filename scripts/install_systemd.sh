@@ -85,6 +85,7 @@ The next few questions will populate the required configuration settings:\n"
 	      [Yy] ) 
 		echo "Adding remote host key to ${HOME}/.ssh/known_hosts"
 		ssh-keyscan -H ${REMOTE_HOST} >> ${HOME}/.ssh/known_hosts
+		chown ${USER}:${USER} ${HOME}/.ssh/known_hosts
 	        if [ ! -f ${HOME}/.ssh/id_ed25519.pub ];then 
                   ssh-keygen -t ed25519 -f ${HOME}/.ssh/id_ed25519 <<EOF
 
