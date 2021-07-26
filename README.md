@@ -40,7 +40,8 @@ Currently, there are three types of configurations that I've tried and that have
 	- sshfs (to mount remote sound file directories)
 1. Creates a python virtual environment to install BirdNET site-packages.
 1. Builds BirdNET in the *'birdnet'* virtual environment.
-1. Creates and copies the appropriate systemd *.service* and/or *.mount* files
+1. Creates ssh-key pairings as necessary.
+1. Creates and copies the appropriate systemd *.service* and/or *.mount* files.
 1. Installs any selected '*.cron*' jobs.
 
 ## What you should know before beginning the installation
