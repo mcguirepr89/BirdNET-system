@@ -76,7 +76,7 @@ The next few questions will populate the required configuration settings:\n"
  What is the absolute path of the recordings directory on the remote host? " \
             REMOTE_RECS_DIR
 	  while true;do
-	    read -p "10. \
+	    read -n1 -p "10. \
  Would you like to set up the ssh-keys now?
  *Note: You will need to do this manually otherwise." YN
             echo
@@ -112,7 +112,7 @@ EOF
     done
 
     while true;do # Force Yes or No
-      read -n1 -p "10. \
+      read -n1 -p "11. \
  Do you want this device to perform the extractions? " YN
       echo
       
@@ -158,7 +158,7 @@ EOF
     done
 
     while true;do # Force Yes or No
-      read -n1 -p "11. \
+      read -n1 -p "12. \
  Would you like to access the extractions via a web browser?
  *Note: It is recommended, (but not required), that you run the web server
  on the same host that does the recording. If the extraction service and web server
@@ -201,7 +201,7 @@ publically available): " EXTRACTIONS_URL
     done
 
     while true; do # Force Yes or No
-      read -n1 -p "12. \
+      read -n1 -p "13. \
  Do you have a free App key to receive mobile notifications via Pushed.co?" YN
       echo
 
