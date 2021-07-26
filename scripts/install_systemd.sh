@@ -187,7 +187,7 @@ publically available): " EXTRACTIONS_URL
           else
 	    echo "Caddy is installed"
 	  fi
-
+  
           break;;
         
         [Nn] ) 
@@ -294,18 +294,6 @@ HOME=$(grep $USER /etc/passwd | cut -d':' -f6)
 ln -fs ~/BirdNET-system/birdnet.conf /etc/birdnet/birdnet.conf
 source /etc/birdnet/birdnet.conf
 
-if [ ! -z "${EXTRACTIONS_URL}" ];then
-  [ -d /etc/caddy ] || sudo mkdir /etc/caddy
-    cat << EOF > /etc/caddy/Caddyfile
-${EXTRACTIONS_URL} {
-root * ${EXTRACTED}
-file_server browse
-}
-EOF
-  systemctl restart caddy
-  systemctl enable caddy
-fi
-
 if [ ! -z "${REMOTE_RECS_DIR}" ];then
   echo "{REMOTE_RECS_DIR} exists, so creating the systemd.mount"
   cat << EOF > /etc/systemd/system/${SYSTEMD_MOUNT}
@@ -365,4 +353,26 @@ ExecStart=/usr/local/bin/birdnet_analysis.sh
 [Install]
 WantedBy=multi-user.target
 EOF
+fi
+
+if [ ! -z "${EXTRACTIONS_URL}" ];then
+  [ -d /etc/caddy ] || sudo mkdir /etc/caddy
+    cat << EOF > /etc/caddy/Caddyfile
+${EXTRACTIONS_URL} {
+root * ${EXTRACTED}
+file_server browse
+}
+EOF
+
+  if [ ! -z ${REMOTE_USER} ];then
+    mkdir -p /etc/systemd/system/caddy.service.d
+    cat << EOF > /etc/systemd/system/caddy.service.d/overrides.conf
+[Unit]
+After=network.target network-online.target ${SYSTEMD_MOUNT}
+Requires=network-online.target ${SYSTEMD_MOUNT}
+EOF
+  systemctl daemon-reload
+  systemctl restart caddy
+  systemctl enable caddy
+  fi
 fi

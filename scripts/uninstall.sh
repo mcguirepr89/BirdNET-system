@@ -10,6 +10,9 @@ crontab -l | sed -e '/birdnet/,+1d' > "${TMPFILE}"
 crontab "${TMPFILE}"
 
 sudo systemctl disable --now caddy
+if [ -d /etc/systemd/system/caddy.service.d ];then
+  sudo rm -drf /etc/systemd/system/caddy.service.d
+fi
 sudo rm -drf /etc/caddy
 if [ ! -z "${SYSTEMD_MOUNT}" ];then
   sudo systemctl disable --now ${SYSTEMD_MOUNT}
