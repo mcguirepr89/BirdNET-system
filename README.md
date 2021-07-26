@@ -67,19 +67,8 @@ Just issue `/usr/local/bin/uninstall.sh && sudo ~/BirdNET-system/scripts/reconfi
 To remove BirdNET and BirdNET-system, run the included '*uninstall.sh*' script as the ${BIRDNET_USER}.
 1. Issue `/usr/local/bin/uninstall.sh && cd ~ && rm -drf BirdNET-system`
 
-### TODO:
+### TODO & Notes:
 1. Currently, one needs to set up the ssh-keys between the recorder and analyzer manually if configured to use the SSHFS systemd.mount. I will be adding the ssh-key exchange to the installation script soon.
 1. I ought to add the steps to setup a Pushed.co application for the mobile notifications feature. Here is a link for now https://about.pushed.co/docs/productguides#developers-quick-start
 1. It's kind of cool to reverse-proxy a gotty web terminal of the birdnet_analysis.service log output (`journalctl -fu birdnet_analysis`), so I may add that.
-1. Right now, nothing archives nor removes old recordings. I have tinkered with this, but in the meantime, this will work and can be easily tweaked to one's needs:
- ```bash
- #!/usr/bin/env bash
- source /etc/birdnet/birdnet.conf
- 
- REC_DATE=$(date --date="7 days ago" "+%F")
- FIND_DATE=*$(date --date="7 days ago" "+%F")*
- 
- cd "${PROCESSED_DIR}" || exit 1
- 
- find . -name "${FIND_DATE}" -exec rm -rfv {} +
- ```
+1. Right now, nothing archives nor removes old recordings automatically, but there is a script included that will remove processed audio that is over 7 days old ( and can obviously be easily tweaked).
