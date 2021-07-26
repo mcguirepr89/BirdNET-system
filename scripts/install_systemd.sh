@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Creates and installs the systemd scripts and birdnet configuration file 
 # my_dir = ${BIRDNET_USER_HOME}/BirdNET-system/scripts
-# set -x # Uncomment to enable debugging
+set -x # Uncomment to enable debugging
 trap 'rm -f ${TMPFILE}' EXIT
 TMPFILE=$(mktemp)
 my_dir=$(realpath $(dirname $0))
@@ -75,6 +75,34 @@ The next few questions will populate the required configuration settings:\n"
     	  read -p "9. \
  What is the absolute path of the recordings directory on the remote host? " \
             REMOTE_RECS_DIR
+	  while true;do
+	    read -p "10. \
+ Would you like to set up the ssh-keys now?
+ *Note: You will need to do this manually otherwise." YN
+            echo
+            case $YN in
+
+	      [Yy] ) 
+	        if [ ! -f ${HOME}/.ssh/id_ed25519.pub ];then 
+                  ssh-keygen -t ed25519 -f ${HOME}/.ssh/id_ed25519 <<EOF
+
+
+
+EOF
+                fi
+		echo "Adding remote host key to ${HOME}/.ssh/known_hosts"
+		ssh-keyscan -H ${REMOTE_HOST} >> ${HOME}/.ssh/known_hosts
+		echo "Copying public key to ${REMOTE_HOST}"
+                ssh-copy-id ${REMOTE_USER}@${REMOTE_HOST}
+                break;;
+	      [Nn] )
+		echo "Be sure to set that up before running birdnet_analysis"
+		break;;
+	
+	         * )
+	        echo "Sorry! You have to say yes or no!";;
+	    esac
+	  done
           break;;
 
         * )
