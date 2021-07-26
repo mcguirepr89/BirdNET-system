@@ -93,6 +93,7 @@ The next few questions will populate the required configuration settings:\n"
 
 EOF
                 fi
+		chown -R ${USER}:${USER} ${HOME}/.ssh/
 		echo "Copying public key to ${REMOTE_HOST}"
                 ssh-copy-id ${REMOTE_USER}@${REMOTE_HOST}
                 break;;
