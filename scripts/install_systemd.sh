@@ -83,6 +83,8 @@ The next few questions will populate the required configuration settings:\n"
             case $YN in
 
 	      [Yy] ) 
+		echo "Adding remote host key to ${HOME}/.ssh/known_hosts"
+		ssh-keyscan -H ${REMOTE_HOST} >> ${HOME}/.ssh/known_hosts
 	        if [ ! -f ${HOME}/.ssh/id_ed25519.pub ];then 
                   ssh-keygen -t ed25519 -f ${HOME}/.ssh/id_ed25519 <<EOF
 
@@ -90,8 +92,6 @@ The next few questions will populate the required configuration settings:\n"
 
 EOF
                 fi
-		echo "Adding remote host key to ${HOME}/.ssh/known_hosts"
-		ssh-keyscan -H ${REMOTE_HOST} >> ${HOME}/.ssh/known_hosts
 		echo "Copying public key to ${REMOTE_HOST}"
                 ssh-copy-id ${REMOTE_USER}@${REMOTE_HOST}
                 break;;

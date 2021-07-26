@@ -15,10 +15,10 @@ if [ ! -z "${SYSTEMD_MOUNT}" ];then
   sudo systemctl disable --now ${SYSTEMD_MOUNT}
 fi
 sudo rm /etc/systemd/system/birdnet_analysis.service
-if [ -f /etc/systemd/system/extraction.service];then
+if [ -f /etc/systemd/system/extraction.service ];then
   sudo rm /etc/systemd/system/extraction.service
 fi
-if [ -f /etc/systemd/system/${SYSTEMD_MOUNT}];then
+if [ -f /etc/systemd/system/${SYSTEMD_MOUNT} ];then
   sudo rm /etc/systemd/system/${SYSTEMD_MOUNT}
 fi
 sudo rm /usr/local/bin/birdnet_analysis.sh
