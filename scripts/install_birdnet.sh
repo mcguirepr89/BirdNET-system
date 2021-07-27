@@ -12,7 +12,7 @@ source /etc/birdnet/birdnet.conf
 LASAG="https://github.com/Lasagne/Lasagne/archive/master.zip"
 THEON="https://raw.githubusercontent.com/Lasagne/Lasagne/master/requirements.txt"
 APT_DEPS=(git ffmpeg sshfs wget)
-LIBS_MODULES=(python3-pip python3-venv libblas-dev liblapack-dev)
+LIBS_MODULES=(python3-pip python3-venv libblas-dev liblapack-dev llvm-9)
 
 echo "This script will do the following:
 #1: Install the following BirdNET system dependencies:
@@ -60,16 +60,22 @@ for i in "${APT_DEPS[@]}";do
   fi
 done
 
+if [ -f /bin/llvm-config-9 ];then
+  sudo ln -sf /bin/llvm-config-9 /bin/llvm-config
+fi
+
 cd ~/BirdNET-system || exit 1
-python3 -m venv birdnet
-source ./birdnet/bin/activate
+bash ".scripts/c4aarch64_installer-1.0.0-Linux-aarch64.sh"
 if [ ! -f "model/BirdNET_Soundscape_Model.pkl" ];then
  sh model/fetch_model.sh
 fi
-pip3 install --upgrade pip wheel setuptools
-pip3 install -r requirements.txt
-pip3 install -r "$THEON"
-pip3 install "$LASAG"
+source ~/.bashrc
+conda config --name birdnet numpy scipy future
+conda activate birdnet
+pip install --upgrade pip wheel setuptools
+pip install -r requirements.txt
+pip install -r "$THEON"
+pip install "$LASAG"
 
 echo "BirdNet is finished installing!!"
 echo

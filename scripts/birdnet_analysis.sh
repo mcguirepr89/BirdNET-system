@@ -51,7 +51,7 @@ run_analysis() {
   echo "Starting run_analysis() for ${1}"
   WEEK=$(date --date="${2}" +"%U")
   cd ${HOME}/BirdNET-system || exit 1
-  "${VENV}"/bin/python3 analyze.py \
+  "${VENV}"/bin/python analyze.py \
     --i "${1}" \
     --lat "${LATITUDE}" \
     --lon "${LONGITUDE}" \
