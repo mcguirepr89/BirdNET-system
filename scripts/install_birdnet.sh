@@ -11,6 +11,7 @@ source /etc/birdnet/birdnet.conf
 
 LASAG="https://github.com/Lasagne/Lasagne/archive/master.zip"
 THEON="https://raw.githubusercontent.com/Lasagne/Lasagne/master/requirements.txt"
+CONDA="https://github.com/jjhelmus/conda4aarch64/releases/download/1.0.0/c4aarch64_installer-1.0.0-Linux-aarch64.sh"
 APT_DEPS=(git ffmpeg sshfs wget)
 LIBS_MODULES=(python3-pip python3-venv libblas-dev liblapack-dev llvm-9)
 
@@ -65,10 +66,11 @@ if [ -f /bin/llvm-config-9 ];then
 fi
 
 cd ~/BirdNET-system || exit 1
-bash ".scripts/c4aarch64_installer-1.0.0-Linux-aarch64.sh"
 if [ ! -f "model/BirdNET_Soundscape_Model.pkl" ];then
  sh model/fetch_model.sh
 fi
+wget -O ./scripts/install_conda.sh "${CONDA}"
+bash ./scripts/install_conda.sh
 source ~/.bashrc
 conda config --name birdnet numpy scipy future
 conda activate birdnet
