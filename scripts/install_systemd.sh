@@ -284,7 +284,7 @@ running the script. Have fun!";;
         echo "Sorry, the configuration file has to be filled out for
 things to work properly. Exiting now"; exit 1;;
 
-    esac;;
+    esac;break;;
 
 esac
 

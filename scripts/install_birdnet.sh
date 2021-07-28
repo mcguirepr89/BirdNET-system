@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Install BirdNET script
+set -x # debuggings
 my_dir=$(realpath $(dirname $0))
 cd $my_dir || exit 1
 #Install/Configure /etc/birdnet/birdnet.conf
@@ -13,13 +14,11 @@ LASAG="https://github.com/Lasagne/Lasagne/archive/master.zip"
 THEON="https://raw.githubusercontent.com/Lasagne/Lasagne/master/requirements.txt"
 CONDA="https://github.com/jjhelmus/conda4aarch64/releases/download/1.0.0/c4aarch64_installer-1.0.0-Linux-aarch64.sh"
 APT_DEPS=(git ffmpeg sshfs wget)
-LIBS_MODULES=(python3-pip python3-venv libblas-dev liblapack-dev llvm-9)
+LIBS_MODULES=(libblas-dev liblapack-dev llvm-9)
 
 echo "This script will do the following:
 #1: Install the following BirdNET system dependencies:
 	- ffmpeg
-	- python3-venv
-	- python3-pip
 	- libblas-dev
 	- liblapack-dev
 	- alsa-utils (for recording)
@@ -70,7 +69,7 @@ if [ ! -f "model/BirdNET_Soundscape_Model.pkl" ];then
  sh model/fetch_model.sh
 fi
 wget -O ./scripts/install_conda.sh "${CONDA}"
-bash ./scripts/install_conda.sh
+bash ./scripts/install_conda.sh 
 source ~/.bashrc
 conda config --name birdnet numpy scipy future
 conda activate birdnet
