@@ -15,10 +15,9 @@ echo
 case $YN in
   [Yy] )
     echo -e \
-"Great! FYI, these settings can be changed anytime by rerunning
+"\nGreat! FYI, these settings can be changed anytime by rerunning
 the configuration setup via 'sudo reconfigure_birdnet.sh'\n\n\n
-**If you're only installing the recording or extraction services, you can leave
-questions 3 & 4 blank.\n\n\n
+
 The next few questions will populate the required configuration settings:\n"
 
     read -p "1. \
