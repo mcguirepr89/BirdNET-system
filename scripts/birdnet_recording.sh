@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# set -x
+set -x
 source /etc/birdnet/birdnet.conf
 XDG_RUNTIME_DIR=/run/user/1000
 HOUR=$(date +%k)
