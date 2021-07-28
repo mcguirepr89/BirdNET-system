@@ -15,10 +15,9 @@ echo
 case $YN in
   [Yy] )
     echo -e \
-"Great! FYI, these settings can be changed anytime by rerunning
+"\nGreat! FYI, these settings can be changed anytime by rerunning
 the configuration setup via 'sudo reconfigure_birdnet.sh'\n\n\n
-**If you're only installing the recording or extraction services, you can leave
-questions 3 & 4 blank.\n\n\n
+
 The next few questions will populate the required configuration settings:\n"
 
     read -p "1. \
@@ -26,7 +25,7 @@ The next few questions will populate the required configuration settings:\n"
     #This is called with sudo, so the {USER} has to be set from {BIRDNET_USER}
     USER=${BIRDNET_USER}
     #Likewise with the {HOME} directory
-    HOME=$(grep $USER /etc/passwd | cut -d':' -f6)
+    HOME=$(grep ^$USER /etc/passwd | cut -d':' -f6)
 
     read -p "2. \
  What is the full path to your recordings directory (locally)? " RECS_DIR
@@ -51,6 +50,11 @@ The next few questions will populate the required configuration settings:\n"
         [Yy] )
 	  read -p "6. \
  What is the ZIP code where the recordings are made? " ZIP
+	  if which arecord &> /dev/null ;then
+	    echo "ALSA-Utils installed"
+	  else
+            apt -qqq update && apt install -y alsa-utils
+	  fi
           echo "Installing the birdnet_recording.sh crontab"
 	  if ! crontab -u ${BIRDNET_USER} -l;then
             crontab -u ${USER} ./birdnet_recording.cron
@@ -62,12 +66,17 @@ The next few questions will populate the required configuration settings:\n"
 	  REMOTE_HOST=
 	  REMOTE_RECS_DIR=
 	  REMOTE_USER=
-	  if ! which aplay &> /dev/null;then
+	  if ! which aplay &> /dev/null ;then
 	    apt -qqqq update && apt -y -qqqqq install alsa-utils
 	  fi
 	  break;;
 
         [Nn] )
+          echo "Checking for SSHFS to mount remote filesystem"
+	  if ! which sshfs &> /dev/null ;then
+            echo "Installing SSHFS"
+	    apt -qqq update && apt install -qqqy sshfs
+	  fi
 	  read -p "7. \
  What is the remote hostname or IP address for the recorder? " REMOTE_HOST
        	  read -p "8. \
@@ -290,7 +299,7 @@ esac
 
 
 USER=${BIRDNET_USER}
-HOME=$(grep $USER /etc/passwd | cut -d':' -f6)
+HOME=$(grep ^$USER /etc/passwd | cut -d':' -f6)
 
 [ -d /etc/birdnet ] || mkdir /etc/birdnet
 ln -fs ~/BirdNET-system/birdnet.conf /etc/birdnet/birdnet.conf
