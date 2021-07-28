@@ -26,7 +26,7 @@ The next few questions will populate the required configuration settings:\n"
     #This is called with sudo, so the {USER} has to be set from {BIRDNET_USER}
     USER=${BIRDNET_USER}
     #Likewise with the {HOME} directory
-    HOME=$(grep $USER /etc/passwd | cut -d':' -f6)
+    HOME=$(grep -e ^$USER /etc/passwd | cut -d':' -f6)
 
     read -p "2. \
  What is the full path to your recordings directory (locally)? " RECS_DIR
@@ -49,8 +49,12 @@ The next few questions will populate the required configuration settings:\n"
       case $YN in
 	     
         [Yy] )
-	  read -p "6. \
- What is the ZIP code where the recordings are made? " ZIP
+	  echo "Checking for alsa-utils"
+	  if which arecord &> /dev/null ;then
+	    echo "ALSA-Utils installed"
+	  else
+            apt -qqq update && apt install -y alsa-utils
+	  fi
           echo "Installing the birdnet_recording.sh crontab"
 	  if ! crontab -u ${BIRDNET_USER} -l;then
             crontab -u ${USER} ./birdnet_recording.cron
@@ -290,7 +294,7 @@ esac
 
 
 USER=${BIRDNET_USER}
-HOME=$(grep $USER /etc/passwd | cut -d':' -f6)
+HOME=$(grep -e ^$USER /etc/passwd | cut -d':' -f6)
 
 [ -d /etc/birdnet ] || mkdir /etc/birdnet
 ln -fs ~/BirdNET-system/birdnet.conf /etc/birdnet/birdnet.conf
