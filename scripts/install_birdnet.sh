@@ -13,7 +13,7 @@ source /etc/birdnet/birdnet.conf
 LASAG="https://github.com/Lasagne/Lasagne/archive/master.zip"
 THEON="https://raw.githubusercontent.com/Lasagne/Lasagne/master/requirements.txt"
 CONDA="https://github.com/jjhelmus/conda4aarch64/releases/download/1.0.0/c4aarch64_installer-1.0.0-Linux-aarch64.sh"
-APT_DEPS=(git ffmpeg sshfs wget)
+APT_DEPS=(git ffmpeg wget)
 LIBS_MODULES=(libblas-dev liblapack-dev llvm-9)
 
 echo "This script will do the following:

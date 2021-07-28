@@ -66,12 +66,17 @@ The next few questions will populate the required configuration settings:\n"
 	  REMOTE_HOST=
 	  REMOTE_RECS_DIR=
 	  REMOTE_USER=
-	  if ! which aplay &> /dev/null;then
+	  if ! which aplay &> /dev/null ;then
 	    apt -qqqq update && apt -y -qqqqq install alsa-utils
 	  fi
 	  break;;
 
         [Nn] )
+          echo "Checking for SSHFS to mount remote filesystem"
+	  if ! which sshfs &> /dev/null ;then
+            echo "Installing SSHFS"
+	    apt -qqq update && apt install -qqqy sshfs
+	  fi
 	  read -p "7. \
  What is the remote hostname or IP address for the recorder? " REMOTE_HOST
        	  read -p "8. \
