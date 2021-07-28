@@ -1,4 +1,1 @@
-numpy
-scipy
 librosa
-future

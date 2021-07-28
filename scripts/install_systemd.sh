@@ -266,7 +266,7 @@ PUSHED_APP_SECRET=${PUSHED_APP_SECRET}
 
 # Don't touch these
 SYSTEMD_MOUNT=$(echo ${RECS_DIR#/} | tr / -).mount
-VENV=${HOME}/c4aarch64_installer/envs/birdnet/BirdNET-system/birdnet
+VENV=${HOME}/c4aarch64_installer/envs/birdnet/
 EOF
       ;;
 
