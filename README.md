@@ -3,7 +3,7 @@
 This project offers an installation script for BirdNET as a systemd service on RaspiOS-Buster-arm64-lite architecture. The installation script offers to walk the user through setting up the '*birdnet.conf*' main configuration file interactively. A variety of configurations can be attained through this installation script.
 
 BirdNET-system can be configured with the following optional services:
-- A recording script that will automate recording the two hours following sunrise and the two hours preceeding sunset for optimal bird listening.
+- A 24/7 recording script that can be easily configured to use any available sound card.
 - An extraction service that extracts the audio selections idetified by BirdNET by date and species.
 - A Caddy instance that serves the extracted files via a configurable ${EXTRACTIONS_URL}.
 - A species list updating and notification script supporting mobile notifications via Pushed.co
