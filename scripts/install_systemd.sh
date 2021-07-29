@@ -76,15 +76,15 @@ The next few questions will populate the required configuration settings:\n"
             echo "Installing SSHFS"
 	    apt -qqq update && apt install -qqqy sshfs
 	  fi
-	  read -p "7. \
+	  read -p "6. \
  What is the remote hostname or IP address for the recorder? " REMOTE_HOST
-       	  read -p "8. \
+       	  read -p "7. \
  Who is the remote user? " REMOTE_USER
-    	  read -p "9. \
+    	  read -p "8. \
  What is the absolute path of the recordings directory on the remote host? " \
             REMOTE_RECS_DIR
 	  while true;do
-	    read -n1 -p "10. \
+	    read -n1 -p "9. \
  Would you like to set up the ssh-keys now?
  *Note: You will need to do this manually otherwise." YN
             echo
@@ -122,7 +122,7 @@ EOF
     done
 
     while true;do # Force Yes or No
-      read -n1 -p "11. \
+      read -n1 -p "10. \
  Do you want this device to perform the extractions? " YN
       echo
       
@@ -168,7 +168,7 @@ EOF
     done
 
     while true;do # Force Yes or No
-      read -n1 -p "12. \
+      read -n1 -p "11. \
  Would you like to access the extractions via a web browser?
  *Note: It is recommended, (but not required), that you run the web server
  on the same host that does the extractions. If the extraction service and web server
@@ -183,17 +183,17 @@ EOF
 (*Hint: Set this to http://localhost if you do not want to make the extractions
 publically available): " EXTRACTIONS_URL
           if ! which caddy;then
-            sudo apt install -y \
+            apt install -y \
               debian-keyring debian-archive-keyring apt-transport-https curl
             curl -1sLf \
               'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' \
-	        | sudo apt-key add -
+	        | apt-key add -
             curl -1sLf \
               'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \
-                | sudo tee /etc/apt/sources.list.d/caddy-stable.list
-            sudo apt -qqq update
+                | tee /etc/apt/sources.list.d/caddy-stable.list
+            apt -qqq update
 	    echo "Installing Caddy"
-            sudo apt -qqqy install caddy
+            apt -qqqy install caddy && systemctl enable caddy
           else
 	    echo "Caddy is installed"
 	  fi
@@ -211,7 +211,7 @@ publically available): " EXTRACTIONS_URL
     done
 
     while true; do # Force Yes or No
-      read -n1 -p "13. \
+      read -n1 -p "12. \
  Do you have a free App key to receive mobile notifications via Pushed.co?" YN
       echo
 
@@ -286,7 +286,7 @@ EOF
 
       [Yy] )
         echo "Then take a look at what the installation will do before
-running the script. Have fun!";;
+running the script. Have fun!";exit 0;;
 
       * ) # Exits without answering Yes to this
         echo "Sorry, the configuration file has to be filled out for
@@ -366,7 +366,7 @@ EOF
 fi
 
 if [ ! -z "${EXTRACTIONS_URL}" ];then
-  [ -d /etc/caddy ] || sudo mkdir /etc/caddy
+  [ -d /etc/caddy ] || mkdir /etc/caddy
     cat << EOF > /etc/caddy/Caddyfile
 ${EXTRACTIONS_URL} {
 root * ${EXTRACTED}
