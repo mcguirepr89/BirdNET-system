@@ -184,17 +184,17 @@ EOF
 (*Hint: Set this to http://localhost if you do not want to make the extractions
 publically available): " EXTRACTIONS_URL
           if ! which caddy;then
-            sudo apt install -y \
+            apt install -y \
               debian-keyring debian-archive-keyring apt-transport-https curl
             curl -1sLf \
               'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' \
-	        | sudo apt-key add -
+	        | apt-key add -
             curl -1sLf \
               'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \
-                | sudo tee /etc/apt/sources.list.d/caddy-stable.list
-            sudo apt -qqq update
+                | tee /etc/apt/sources.list.d/caddy-stable.list
+            apt -qqq update
 	    echo "Installing Caddy"
-            sudo apt -qqqy install caddy
+            apt -qqqy install caddy
           else
 	    echo "Caddy is installed"
 	  fi
@@ -367,7 +367,7 @@ EOF
 fi
 
 if [ ! -z "${EXTRACTIONS_URL}" ];then
-  [ -d /etc/caddy ] || sudo mkdir /etc/caddy
+  [ -d /etc/caddy ] || mkdir /etc/caddy
     cat << EOF > /etc/caddy/Caddyfile
 ${EXTRACTIONS_URL} {
 root * ${EXTRACTED}
