@@ -1,6 +1,8 @@
 # BirdNET-system - built on https://github.com/kahst/BirdNET
 This project offers a Debian installation script for BirdNET as a systemd service. The installation script offers to walk the user through setting up the '*birdnet.conf*' main configuration file interactively. A variety of configurations can be attained through this installation script.
 
+### Checkout the 'BirdNET-system-for-raspi4' branch for installation on a Raspberry Pi 4 (using an arm64 OS).
+
 BirdNET-system can be configured with the following optional services:
 - A recording script that will automate recording the two hours following sunrise and the two hours preceeding sunset for optimal bird listening.
 - An extraction service that extracts the audio selections idetified by BirdNET by date and species.
