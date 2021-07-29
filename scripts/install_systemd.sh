@@ -25,7 +25,7 @@ The next few questions will populate the required configuration settings:\n"
     #This is called with sudo, so the {USER} has to be set from {BIRDNET_USER}
     USER=${BIRDNET_USER}
     #Likewise with the {HOME} directory
-    HOME=$(grep -e ^$USER /etc/passwd | cut -d':' -f6)
+    HOME=$(grep ^$USER /etc/passwd | cut -d':' -f6)
 
     read -p "2. \
  What is the full path to your recordings directory (locally)? " RECS_DIR
@@ -298,7 +298,7 @@ esac
 
 
 USER=${BIRDNET_USER}
-HOME=$(grep -e ^$USER /etc/passwd | cut -d':' -f6)
+HOME=$(grep ^$USER /etc/passwd | cut -d':' -f6)
 
 [ -d /etc/birdnet ] || mkdir /etc/birdnet
 ln -fs ~/BirdNET-system/birdnet.conf /etc/birdnet/birdnet.conf
