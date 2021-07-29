@@ -287,7 +287,7 @@ EOF
 
       [Yy] )
         echo "Then take a look at what the installation will do before
-running the script. Have fun!";;
+running the script. Have fun!";exit 0;;
 
       * ) # Exits without answering Yes to this
         echo "Sorry, the configuration file has to be filled out for
