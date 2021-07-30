@@ -3,10 +3,6 @@
 # set -x
 source /etc/birdnet/birdnet.conf
 DAYS=(
-"7 days ago"
-"6 days ago"
-"5 days ago"
-"4 days ago"
 "3 days ago"
 "2 days ago"
 "yesterday"
