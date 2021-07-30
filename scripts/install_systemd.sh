@@ -18,14 +18,63 @@ case $YN in
 "\nGreat! FYI, these settings can be changed anytime by rerunning
 the configuration setup via 'sudo reconfigure_birdnet.sh'\n\n\n
 
-The next few questions will populate the required configuration settings:\n"
+Before continuing the installation, please read and accept the license
+agreement for installing and using conda4aarch64.
+
+Copyright (c) 2019 Jonathan J. Helmus
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+a. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+b. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the
+   distribution.
+
+c. Neither the name of the author nor the names of contributors may
+   be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n"
+
+while true;do
+  read -n1 -p \
+    "Do you agree? ["yes" to continue or "no" to exit installation]:" YN
+  echo
+  case $YN in
+	  
+    [Yy] ) break;;
+    [Nn] ) exit 1;;
+       * ) echo "I'm sorry, you can't install BirdNET-system without
+ conda4aarch64.";;
+
+  esac
+done
+
+echo "The next few questions will populate the required configuration settings:
+"
 
     read -p "1. \
  Who will be the BirdNET user? (use 'whoami' if unsure) " BIRDNET_USER
     #This is called with sudo, so the {USER} has to be set from {BIRDNET_USER}
     USER=${BIRDNET_USER}
     #Likewise with the {HOME} directory
-    HOME=$(grep -e ^$USER /etc/passwd | cut -d':' -f6)
+    HOME=$(grep ^$USER /etc/passwd | cut -d':' -f6)
 
     read -p "2. \
  What is the full path to your recordings directory (locally)? " RECS_DIR
@@ -76,15 +125,15 @@ The next few questions will populate the required configuration settings:\n"
             echo "Installing SSHFS"
 	    apt -qqq update && apt install -qqqy sshfs
 	  fi
-	  read -p "7. \
+	  read -p "6. \
  What is the remote hostname or IP address for the recorder? " REMOTE_HOST
-       	  read -p "8. \
+       	  read -p "7. \
  Who is the remote user? " REMOTE_USER
-    	  read -p "9. \
+    	  read -p "8. \
  What is the absolute path of the recordings directory on the remote host? " \
             REMOTE_RECS_DIR
 	  while true;do
-	    read -n1 -p "10. \
+	    read -n1 -p "9. \
  Would you like to set up the ssh-keys now?
  *Note: You will need to do this manually otherwise." YN
             echo
@@ -122,7 +171,7 @@ EOF
     done
 
     while true;do # Force Yes or No
-      read -n1 -p "11. \
+      read -n1 -p "10. \
  Do you want this device to perform the extractions? " YN
       echo
       
@@ -168,7 +217,7 @@ EOF
     done
 
     while true;do # Force Yes or No
-      read -n1 -p "12. \
+      read -n1 -p "11. \
  Would you like to access the extractions via a web browser?
  *Note: It is recommended, (but not required), that you run the web server
  on the same host that does the extractions. If the extraction service and web server
@@ -183,17 +232,17 @@ EOF
 (*Hint: Set this to http://localhost if you do not want to make the extractions
 publically available): " EXTRACTIONS_URL
           if ! which caddy;then
-            sudo apt install -y \
+            apt install -y \
               debian-keyring debian-archive-keyring apt-transport-https curl
             curl -1sLf \
               'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' \
-	        | sudo apt-key add -
+	        | apt-key add -
             curl -1sLf \
               'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \
-                | sudo tee /etc/apt/sources.list.d/caddy-stable.list
-            sudo apt -qqq update
+                | tee /etc/apt/sources.list.d/caddy-stable.list
+            apt -qqq update
 	    echo "Installing Caddy"
-            sudo apt -qqqy install caddy
+            apt -qqqy install caddy && systemctl enable caddy
           else
 	    echo "Caddy is installed"
 	  fi
@@ -211,7 +260,7 @@ publically available): " EXTRACTIONS_URL
     done
 
     while true; do # Force Yes or No
-      read -n1 -p "13. \
+      read -n1 -p "12. \
  Do you have a free App key to receive mobile notifications via Pushed.co?" YN
       echo
 
@@ -286,19 +335,19 @@ EOF
 
       [Yy] )
         echo "Then take a look at what the installation will do before
-running the script. Have fun!";;
+running the script. Have fun!";exit 0;;
 
       * ) # Exits without answering Yes to this
         echo "Sorry, the configuration file has to be filled out for
 things to work properly. Exiting now"; exit 1;;
 
-    esac;break;;
+    esac;;
 
 esac
 
 
 USER=${BIRDNET_USER}
-HOME=$(grep -e ^$USER /etc/passwd | cut -d':' -f6)
+HOME=$(grep ^$USER /etc/passwd | cut -d':' -f6)
 
 [ -d /etc/birdnet ] || mkdir /etc/birdnet
 ln -fs ~/BirdNET-system/birdnet.conf /etc/birdnet/birdnet.conf
@@ -366,7 +415,7 @@ EOF
 fi
 
 if [ ! -z "${EXTRACTIONS_URL}" ];then
-  [ -d /etc/caddy ] || sudo mkdir /etc/caddy
+  [ -d /etc/caddy ] || mkdir /etc/caddy
     cat << EOF > /etc/caddy/Caddyfile
 ${EXTRACTIONS_URL} {
 root * ${EXTRACTED}

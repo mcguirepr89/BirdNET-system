@@ -64,13 +64,20 @@ cd ~/BirdNET-system || exit 1
 if [ ! -f "model/BirdNET_Soundscape_Model.pkl" ];then
  sh model/fetch_model.sh
 fi
+if [ ! -f ".scripts/install_conda.sh" ];then
 wget -O ./scripts/install_conda.sh "${CONDA}"
-bash ./scripts/install_conda.sh 
+fi
+bash ./scripts/install_conda.sh << EOF
+
+yes
+
+yes
+EOF
 source ${HOME}/c4aarch64_installer/etc/profile.d/conda.sh
 conda config --add channels conda-forge
 conda update -y conda
 conda config --set channel_priority strict
-conda create -y --name birdnet numpy scipy future
+conda create -y --name birdnet numba numpy scipy future
 conda activate birdnet
 pip install --upgrade pip wheel setuptools
 pip install librosa
