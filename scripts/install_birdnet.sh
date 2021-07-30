@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Install BirdNET script
+trap 'echo -e "\n\nExiting the installation. Goodbye!" && exit' SIGINT
 my_dir=$(realpath $(dirname $0))
 cd $my_dir || exit 1
 #Install/Configure /etc/birdnet/birdnet.conf
@@ -24,20 +25,15 @@ echo "This script will do the following:
 	- alsa-utils (for recording)
 	- sshfs (to mount remote sound file directories)
 #2: Creates a python virtual environment to install BirdNET site-packages:
-	- "${VENV}"
 #3: Builds BirdNET in the 'birdnet' virtual environment.
-#4: Copies the systemd .service and .mount files and enables those chosen:
-	- /etc/systemd/system/birdnet_analysis.service
-	- /etc/systemd/system/"${SYSTEMD_MOUNT}"
-	- /etc/systemd/system/extraction.service
-#6: Adds cron environments and jobs chosen
-        - XDG_RUNTIME_DIR=/run/user/1000
-        - PATH=/usr/bin:/bin:/usr/local/bin
-        - * * * * * /usr/local/bin/birdnet_recording.sh &> /dev/null
-        - */5 * * * * /usr/local/bin/species_notifier.sh &> /dev/null"
+#4: Copies the systemd .service and .mount files and enables those chosen.
+#6: Adds cron environments and jobs chosen."
 
 echo
-read -sp "     Press Enter to continue or Crtl-C to quit"
+read -sp \
+  "If you DO NOT want to install BirdNET and the birdnet_analysis.service, 
+press Ctrl+C to cancel. If you DO wish to install BirdNET and the 
+birdnet_analysis.service, press ENTER to continue with the installation."
 echo
 echo
 echo "Checking dependencies"
