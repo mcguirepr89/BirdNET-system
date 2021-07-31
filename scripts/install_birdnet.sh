@@ -5,11 +5,8 @@ trap 'echo -e "\n\nExiting the installation. Goodbye!" && exit' SIGINT
 my_dir=$(realpath $(dirname $0))
 cd $my_dir || exit 1
 #Install/Configure /etc/birdnet/birdnet.conf
-
 sudo ./install_systemd.sh || exit 1
 source /etc/birdnet/birdnet.conf
-
-[ -d ${RECS_DIR} ] || mkdir -p ${RECS_DIR}
 
 LASAG="https://github.com/Lasagne/Lasagne/archive/master.zip"
 THEON="https://raw.githubusercontent.com/Lasagne/Lasagne/master/requirements.txt"
@@ -17,27 +14,24 @@ CONDA="https://github.com/jjhelmus/conda4aarch64/releases/download/1.0.0/c4aarch
 APT_DEPS=(git ffmpeg wget)
 LIBS_MODULES=(libblas-dev liblapack-dev llvm-9)
 
-echo "This script will do the following:
-#1: Present the licensing agreement for conda4aarch64
-#2: Install the following BirdNET system dependencies:
-	- ffmpeg
-	- libblas-dev
-	- liblapack-dev
-	- alsa-utils (for recording)
-	- sshfs (to mount remote sound file directories)
-#3: Creates a conda virtual environment for BirdNET
-#4: Builds BirdNET in the 'birdnet' conda virtual environment
-#5: Copies the systemd .service and .mount files and enables those chosen
-#6: Adds cron environments and jobs chosen"
+spinner() {
+  pid=$! # Process Id of the previous running command
+  
+  spin='-\|/'
+  
+  i=0
+  while kill -0 $pid 2>/dev/null
+  do
+  	  i=$(( (i+1) %4 ))
+  	    printf "\r${spin:$i:1}"
+  	      sleep .1
+  done
+}
 
-echo
-read -sp \
-  "If you DO NOT want to install BirdNET and the birdnet_analysis.service, 
-press Ctrl+C to cancel. If you DO wish to install BirdNET and the 
-birdnet_analysis.service, press ENTER to continue with the installation."
-
+license_agreement() {
 echo " Before installation, please read and accept the license agreement to
 install and use conda4aarch64."
+
 less -SFX <<EOF
 Copyright (c) 2019 Jonathan J. Helmus
 All rights reserved.
@@ -81,7 +75,11 @@ read -p "Do you accept the license agreement for conda4aarch64? " YN
 If you really want to quit, use Ctrl+C.";;
   esac
 done
+}
 
+
+
+install_deps() {
 echo "Checking dependencies"
 sudo apt -qqq update
 for i in "${LIBS_MODULES[@]}";do
@@ -105,7 +103,9 @@ done
 if [ -f /bin/llvm-config-9 ];then
   sudo ln -sf /bin/llvm-config-9 /bin/llvm-config
 fi
+}
 
+install_birdnet() {
 cd ~/BirdNET-system || exit 1
 if [ ! -f "model/BirdNET_Soundscape_Model.pkl" ];then
  sh model/fetch_model.sh
@@ -129,6 +129,32 @@ pip install --upgrade pip wheel setuptools
 pip install librosa
 pip install -r "$THEON"
 pip install "$LASAG"
+}
+
+echo "This script will do the following:
+#1: Present the licensing agreement for conda4aarch64
+#2: Install the following BirdNET system dependencies:
+	- ffmpeg
+	- libblas-dev
+	- liblapack-dev
+	- alsa-utils (for recording)
+	- sshfs (to mount remote sound file directories)
+#3: Creates a conda virtual environment for BirdNET
+#4: Builds BirdNET in the 'birdnet' conda virtual environment
+#5: Copies the systemd .service and .mount files and enables those chosen
+#6: Adds cron environments and jobs chosen"
+
+echo
+read -sp \
+  "If you DO NOT want to install BirdNET and the birdnet_analysis.service, 
+press Ctrl+C to cancel. If you DO wish to install BirdNET and the 
+birdnet_analysis.service, press ENTER to continue with the installation."
+
+
+[ -d ${RECS_DIR} ] || mkdir -p ${RECS_DIR}
+
+install_deps
+install_birdnet
 
 echo "BirdNet is finished installing!!"
 echo
