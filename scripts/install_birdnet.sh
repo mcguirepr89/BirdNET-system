@@ -108,13 +108,14 @@ install_birdnet() {
 cd ~/BirdNET-system || exit 1
 if [ ! -f "model/BirdNET_Soundscape_Model.pkl" ];then
   echo "Fetching the model"
-  sh model/fetch_model.sh &> /dev/null & spinner
+  sh model/fetch_model.sh > /dev/null 
 fi
-if [ ! -f ".scripts/install_conda.sh" ];then
+if [ ! -f "./scripts/install_conda.sh" ];then
   echo "Fetching the conda4aarch64 installation script"
-  wget -O ./scripts/install_conda.sh "${CONDA}" &> /dev/null & spinner
+  wget -O ./scripts/install_conda.sh "${CONDA}" > /dev/null 
 fi
-bash ./scripts/install_conda.sh &> /dev/null & spinner<< EOF
+echo "Installing conda4aarch64"
+bash ./scripts/install_conda.sh > /dev/null<< EOF
 
 yes
 
@@ -123,27 +124,27 @@ EOF
 echo "Initializing conda"
 source ${HOME}/c4aarch64_installer/etc/profile.d/conda.sh
 echo "Adding the conda-forge channel"
-conda config --add channels conda-forge &> /dev/null & spinner
+conda config --add channels conda-forge
 echo "Updating conda"
-conda update -y conda &> /dev/null & spinner
+conda update -y conda
 echo "Setting strict channel_priority"
-conda config --set channel_priority strict &> /dev/null & spinner
+conda config --set channel_priority strict
 echo "Initializing the birdnet virtual environment with
 	- numba
 	- numpy
 	- scipy
 	- future"
-conda create -y --name birdnet numba numpy scipy future &> /dev/null & spinner
-echo "Activating new environment""
-conda activate birdnet &> /dev/null & spinner
+conda create -y --name birdnet numba numpy scipy future > /dev/null
+echo "Activating new environment"
+conda activate birdnet > /dev/null 
 echo "Upgrading pip, wheel, and setuptools"
-pip install --upgrade pip wheel setuptools &> /dev/null & spinner
+pip install --upgrade pip wheel setuptools > /dev/null 
 echo "Installing Librosa"
-pip install librosa &> /dev/null & spinner
+pip install librosa > /dev/null 
 echo "Installing Theano"
-pip install -r "$THEON" &> /dev/null & spinner
+pip install -r "$THEON" > /dev/null 
 echo "Installing Lasagne"
-pip install "$LASAG" &> /dev/null & spinner
+pip install "$LASAG" > /dev/null 
 }
 
 echo "This script will do the following:
@@ -168,8 +169,9 @@ birdnet_analysis.service, press ENTER to continue with the installation."
 
 [ -d ${RECS_DIR} ] || mkdir -p ${RECS_DIR} &> /dev/null
 
+license_agreement
 install_deps
-install_birdnet
+install_birdnet & spinner
 
 echo "BirdNet is finished installing!!"
 echo
