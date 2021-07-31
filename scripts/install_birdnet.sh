@@ -77,15 +77,13 @@ If you really want to quit, use Ctrl+C.";;
 done
 }
 
-
-
 install_deps() {
 echo "Checking dependencies"
-sudo apt -qqq update
+sudo apt update &> /dev/null & spinner
 for i in "${LIBS_MODULES[@]}";do
   if [ $(apt list --installed 2>/dev/null | grep "$i" | wc -l) -le 0 ];then
     echo "Installing $i"
-    sudo apt -qqqy install $i
+    sudo apt -y install $i &> /dev/null & spinner
   else
     echo "$i is installed!"
   fi
@@ -94,41 +92,58 @@ done
 for i in "${APT_DEPS[@]}";do
   if ! which $i &>/dev/null ;then
     echo "Installing $i"
-    sudo apt -y install $i
+    sudo apt -y install $i &> /dev/null & spinner
   else
     echo "$i is installed!"
   fi
 done
 
 if [ -f /bin/llvm-config-9 ];then
-  sudo ln -sf /bin/llvm-config-9 /bin/llvm-config
+  echo "Making symbolic link for llvm-config binary"
+  sudo ln -sf /bin/llvm-config-9 /bin/llvm-config &> /dev/null & spinner
 fi
 }
 
 install_birdnet() {
 cd ~/BirdNET-system || exit 1
 if [ ! -f "model/BirdNET_Soundscape_Model.pkl" ];then
- sh model/fetch_model.sh
+  echo "Fetching the model"
+  sh model/fetch_model.sh &> /dev/null & spinner
 fi
 if [ ! -f ".scripts/install_conda.sh" ];then
-wget -O ./scripts/install_conda.sh "${CONDA}"
+  echo "Fetching the conda4aarch64 installation script"
+  wget -O ./scripts/install_conda.sh "${CONDA}" &> /dev/null & spinner
 fi
-bash ./scripts/install_conda.sh << EOF
+bash ./scripts/install_conda.sh &> /dev/null & spinner<< EOF
 
 yes
 
 yes
 EOF
+echo "Initializing conda"
 source ${HOME}/c4aarch64_installer/etc/profile.d/conda.sh
-conda config --add channels conda-forge
-conda update -y conda
-conda config --set channel_priority strict
-conda create -y --name birdnet numba numpy scipy future
-conda activate birdnet
-pip install --upgrade pip wheel setuptools
-pip install librosa
-pip install -r "$THEON"
-pip install "$LASAG"
+echo "Adding the conda-forge channel"
+conda config --add channels conda-forge &> /dev/null & spinner
+echo "Updating conda"
+conda update -y conda &> /dev/null & spinner
+echo "Setting strict channel_priority"
+conda config --set channel_priority strict &> /dev/null & spinner
+echo "Initializing the birdnet virtual environment with
+	- numba
+	- numpy
+	- scipy
+	- future"
+conda create -y --name birdnet numba numpy scipy future &> /dev/null & spinner
+echo "Activating new environment""
+conda activate birdnet &> /dev/null & spinner
+echo "Upgrading pip, wheel, and setuptools"
+pip install --upgrade pip wheel setuptools &> /dev/null & spinner
+echo "Installing Librosa"
+pip install librosa &> /dev/null & spinner
+echo "Installing Theano"
+pip install -r "$THEON" &> /dev/null & spinner
+echo "Installing Lasagne"
+pip install "$LASAG" &> /dev/null & spinner
 }
 
 echo "This script will do the following:
@@ -151,7 +166,7 @@ press Ctrl+C to cancel. If you DO wish to install BirdNET and the
 birdnet_analysis.service, press ENTER to continue with the installation."
 
 
-[ -d ${RECS_DIR} ] || mkdir -p ${RECS_DIR}
+[ -d ${RECS_DIR} ] || mkdir -p ${RECS_DIR} &> /dev/null
 
 install_deps
 install_birdnet
