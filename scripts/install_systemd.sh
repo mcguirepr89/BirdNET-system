@@ -194,7 +194,7 @@ publically available): " EXTRACTIONS_URL
                 | tee /etc/apt/sources.list.d/caddy-stable.list
             apt -qqq update
 	    echo "Installing Caddy"
-            apt -qqqy install caddy
+            apt -qqqy install caddy && systemctl enable caddy
           else
 	    echo "Caddy is installed"
 	  fi
