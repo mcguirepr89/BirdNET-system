@@ -9,17 +9,16 @@ my_dir=$(realpath $(dirname $0))
 ln -sf ${my_dir}/* /usr/local/bin/
 
 read -n1 -p \
-  "Would you like to fill out the configuration file interactively?" YN
-echo
+  "	Would you like to fill out the configuration file interactively?" YN
 echo
 case $YN in
   [Yy] )
-    echo -e \
-"\nGreat! FYI, these settings can be changed anytime by rerunning
-the configuration setup via 'sudo reconfigure_birdnet.sh'\n\n\n
+    echo "
+	Great! FYI, these settings can be changed anytime by rerunning
+	the configuration setup via 'sudo reconfigure_birdnet.sh'
 
-The next few questions will populate the required configuration settings:\n\n"
-
+	The next few questions will populate the required configuration file."
+    echo
     read -p "1. \
  Who will be the BirdNET user? (use 'whoami' if unsure) " BIRDNET_USER
     #This is called with sudo, so the {USER} has to be set from {BIRDNET_USER}
@@ -48,14 +47,15 @@ The next few questions will populate the required configuration settings:\n\n"
       case $YN in
 	     
         [Yy] )
-	  echo "Checking for alsa-utils"
+	  echo "	Checking for alsa-utils"
 	  if which arecord &> /dev/null ;then
-	    echo "ALSA-Utils installed"
+	    echo "	ALSA-Utils installed"
 	  else
-            apt -qqq update && apt install -y alsa-utils
+            echo "	Installing alsa-utils"
+            apt -qqq update && apt install -y alsa-utils &> /dev/null
 	  fi
-          echo "Installing the birdnet_recording.sh crontab"
-	  if ! crontab -u ${BIRDNET_USER} -l;then
+          echo "	Installing the birdnet_recording.sh crontab"
+	  if ! crontab -u ${BIRDNET_USER} -l &> /dev/null ;then
             crontab -u ${USER} ./birdnet_recording.cron
           else
 	    crontab -u ${USER} -l > ${TMPFILE}
@@ -65,16 +65,13 @@ The next few questions will populate the required configuration settings:\n\n"
 	  REMOTE_HOST=
 	  REMOTE_RECS_DIR=
 	  REMOTE_USER=
-	  if ! which aplay &> /dev/null ;then
-	    apt -qqqq update && apt -y -qqqqq install alsa-utils
-	  fi
 	  break;;
 
         [Nn] )
-          echo "Checking for SSHFS to mount remote filesystem"
+          echo "	Checking for SSHFS to mount remote filesystem"
 	  if ! which sshfs &> /dev/null ;then
-            echo "Installing SSHFS"
-	    apt -qqq update && apt install -qqqy sshfs
+            echo "	Installing SSHFS"
+	    apt -qqq update && apt install -qqqy sshfs &> /dev/null
 	  fi
 	  read -p "6. \
  What is the remote hostname or IP address for the recorder? " REMOTE_HOST
@@ -86,12 +83,12 @@ The next few questions will populate the required configuration settings:\n\n"
 	  while true;do
 	    read -n1 -p "9. \
  Would you like to set up the ssh-keys now?
- *Note: You will need to do this manually otherwise." YN
+	*Note: You will need to do this manually otherwise." YN
             echo
             case $YN in
 
 	      [Yy] ) 
-		echo "Adding remote host key to ${HOME}/.ssh/known_hosts"
+		echo "	Adding remote host key to ${HOME}/.ssh/known_hosts"
 		ssh-keyscan -H ${REMOTE_HOST} >> ${HOME}/.ssh/known_hosts
 		chown ${USER}:${USER} ${HOME}/.ssh/known_hosts
 	        if [ ! -f ${HOME}/.ssh/id_ed25519.pub ];then 
@@ -102,21 +99,21 @@ The next few questions will populate the required configuration settings:\n\n"
 EOF
                 fi
 		chown -R ${USER}:${USER} ${HOME}/.ssh/
-		echo "Copying public key to ${REMOTE_HOST}"
+		echo "	Copying public key to ${REMOTE_HOST}"
                 ssh-copy-id ${REMOTE_USER}@${REMOTE_HOST}
                 break;;
 	      [Nn] )
-		echo "Be sure to set that up before running birdnet_analysis"
+		echo "		Be sure to set that up before running birdnet_analysis"
 		break;;
 	
 	         * )
-	        echo "Sorry! You have to say yes or no!";;
+	        echo "		Sorry! You have to say yes or no!";;
 	    esac
 	  done
           break;;
 
         * )
-          echo "Sorry! You have to say yes or no!";;
+          echo "	Sorry! You have to say yes or no!";;
 
       esac
     done
@@ -129,7 +126,7 @@ EOF
       case $YN in
 
         [Yy] ) #Install extraction.service and species_updater.cron
-	  echo "Installing the extraction.service"
+	  echo "	Installing the extraction.service"
 	  cat << EOF > /etc/systemd/system/extraction.service
 [Unit]
 Description=BirdNET BirdSound Extraction
@@ -144,8 +141,8 @@ ExecStart=/usr/local/bin/extract_new_birdsounds.sh
 [Install]
 WantedBy=multi-user.target
 EOF
-          echo "Adding the species_updater.cron"
-          if ! crontab -u ${BIRDNET_USER} -l;then
+          echo "	Adding the species_updater.cron"
+          if ! crontab -u ${BIRDNET_USER} -l &> /dev/null ;then
             cd $my_dir || exit 1
             cd ../templates || exit 1
             crontab -u ${BIRDNET_USER} ./species_updater.cron
@@ -162,7 +159,7 @@ EOF
 	  break;;
 
           *  )
-          echo "You have to answer one way or the other!";;
+          echo "	You have to answer one way or the other!";;
 
       esac
     done
@@ -170,32 +167,34 @@ EOF
     while true;do # Force Yes or No
       read -n1 -p "11. \
  Would you like to access the extractions via a web browser?
- *Note: It is recommended, (but not required), that you run the web server
- on the same host that does the extractions. If the extraction service and web server
- are on different hosts, the \"By_Species\" and \"Processed\" symbolic links won't work.
- The  \"By-Date\" extractions, however, will work as expected." YN
+	*Note: It is recommended, (but not required), that you run the web 
+	server on the same host that does the extractions. If the extraction 
+	service and web server are on different hosts, the \"By_Species\" 
+	and \"Processed\" symbolic links won't work. The  \"By-Date\" 
+	extractions, however, will work as expected." YN
       echo
 
       case $YN in
 
 	[Yy] ) # Gets EXTRACTIONS_URL and caddy (if needed). Makes Caddyfile
-          read -p "What URL would you like to publish the extractions to?
-(*Hint: Set this to http://localhost if you do not want to make the extractions
-publically available): " EXTRACTIONS_URL
-          if ! which caddy;then
+          read -p "12. What URL would you like to publish the extractions to?
+	(*Hint: Set this to http://localhost if you do not want to make the 
+	extractions publically available): " EXTRACTIONS_URL
+          if ! which caddy &> /dev/null;then
             apt install -y \
-              debian-keyring debian-archive-keyring apt-transport-https curl
+              debian-keyring debian-archive-keyring apt-transport-https curl \
+	      &> /dev/null
             curl -1sLf \
               'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' \
-	        | apt-key add -
+	        | apt-key add - &> /dev/null
             curl -1sLf \
               'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \
-                | tee /etc/apt/sources.list.d/caddy-stable.list
-            apt -qqq update
-	    echo "Installing Caddy"
-            apt -qqqy install caddy && systemctl enable caddy
+                | tee /etc/apt/sources.list.d/caddy-stable.list &> /dev/null
+            apt -qqq update &> /dev/null
+	    echo "	Installing Caddy"
+            apt -qqqy install caddy && systemctl enable --now caddy &> /dev/null
           else
-	    echo "Caddy is installed"
+	    echo "	Caddy is installed" && systemctl enable --now caddy
 	  fi
   
           break;;
@@ -205,21 +204,21 @@ publically available): " EXTRACTIONS_URL
 	  break;;
 
 	* ) 
-	  echo "Please answer Yes or No";;
+	  echo "	Please answer Yes or No";;
 
       esac
     done
 
     while true; do # Force Yes or No
-      read -n1 -p "12. \
+      read -n1 -p "13. \
  Do you have a free App key to receive mobile notifications via Pushed.co?" YN
       echo
 
       case $YN in
-        
+        		
         [Yy] ) # Get the Pushed.co app key and app key secret
-          read -p "Enter your Pushed.co App Key: " PUSHED_APP_KEY
-	  read -p "Enter your Pushed.co App Key Secret: " PUSHED_APP_SECRET
+          read -p "	Enter your Pushed.co App Key: " PUSHED_APP_KEY
+	  read -p "	Enter your Pushed.co App Key Secret: " PUSHED_APP_SECRET
 	  break;;
 
 	[Nn] )
@@ -228,7 +227,7 @@ publically available): " EXTRACTIONS_URL
 	  break;;
 
 	* )
-	 echo "A simple Yea or Nay will do";;
+	 echo "		A simple Yea or Nay will do";;
 
       esac
     done
@@ -279,18 +278,18 @@ EOF
       ;;
 
   * ) # This will ask if you have a birdnet.conf yet
-    read -n1 -p "Have you already filled out birdnet.conf??" YN
+    read -n1 -p "	Have you already filled out birdnet.conf??" YN
     echo
 
     case $YN in
 
       [Yy] )
-        echo "Then take a look at what the installation will do before
-running the script. Have fun!";exit 0;;
+        echo "		Then take a look at what the installation will do before
+	running the script. Have fun!";exit 0;;
 
       * ) # Exits without answering Yes to this
-        echo "Sorry, the configuration file has to be filled out for
-things to work properly. Exiting now"; exit 1;;
+        echo "	Sorry, the configuration file has to be filled out for
+	things to work properly. Exiting now"; exit 1;;
 
     esac;;
 
@@ -305,7 +304,7 @@ ln -fs ~/BirdNET-system/birdnet.conf /etc/birdnet/birdnet.conf
 source /etc/birdnet/birdnet.conf
 
 if [ ! -z "${REMOTE_RECS_DIR}" ];then
-  echo "{REMOTE_RECS_DIR} exists, so creating the systemd.mount"
+  echo "	{REMOTE_RECS_DIR} exists, so creating the systemd.mount"
   cat << EOF > /etc/systemd/system/${SYSTEMD_MOUNT}
 [Unit]
 Description=Mount remote fs with sshfs
@@ -347,7 +346,7 @@ systemctl enable "${SYSTEMD_MOUNT}"
 
 else
 
-  echo "{REMOTE_RECS_DIR} doesn't exists"
+  echo "	{REMOTE_RECS_DIR} doesn't exists"
   cat << EOF > /etc/systemd/system/birdnet_analysis.service
 [Unit]
 Description=BirdNET Analysis
