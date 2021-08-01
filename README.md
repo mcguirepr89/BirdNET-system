@@ -1,3 +1,5 @@
+Not working currently -- issues with conda upstream -- working on fixing this
+
 # BirdNET-system - built on https://github.com/kahst/BirdNET
 This project offers a Debian installation script for BirdNET as a systemd service. The installation script offers to walk the user through setting up the '*birdnet.conf*' main configuration file interactively. A variety of configurations can be attained through this installation script.
 
