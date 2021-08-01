@@ -14,15 +14,13 @@ if [ -d /etc/systemd/system/caddy.service.d ];then
   sudo rm -drf /etc/systemd/system/caddy.service.d
 fi
 sudo rm -drf /etc/caddy
-if [ ! -z "${SYSTEMD_MOUNT}" ];then
+if [ -f /etc/systemd/system/"${SYSTEMD_MOUNT}" ];then
   sudo systemctl disable --now ${SYSTEMD_MOUNT}
+  sudo rm /etc/systemd/system/${SYSTEMD_MOUNT}
 fi
 sudo rm /etc/systemd/system/birdnet_analysis.service
 if [ -f /etc/systemd/system/extraction.service ];then
   sudo rm /etc/systemd/system/extraction.service
-fi
-if [ -f /etc/systemd/system/${SYSTEMD_MOUNT} ];then
-  sudo rm /etc/systemd/system/${SYSTEMD_MOUNT}
 fi
 sudo rm /usr/local/bin/birdnet_analysis.sh
 sudo rm /usr/local/bin/birdnet_recording.sh
