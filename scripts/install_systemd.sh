@@ -197,7 +197,8 @@ EOF
                 | tee /etc/apt/sources.list.d/caddy-stable.list &> /dev/null
             apt -qqq update &> /dev/null
 	    echo "	Installing Caddy"
-            apt -qqqy install caddy && systemctl enable --now caddy &> /dev/null
+            apt -qqqy install caddy &> /dev/null && \
+              systemctl enable --now caddy &> /dev/null
           else
 	    echo "	Caddy is installed" && systemctl enable --now caddy \
 	      &> /dev/null
@@ -307,7 +308,8 @@ HOME=$(grep ^$USER /etc/passwd | cut -d':' -f6)
 
 [ -d /etc/birdnet ] || mkdir /etc/birdnet
 #ln -fs ~/BirdNET-system/birdnet.conf /etc/birdnet/birdnet.conf
-ln -fs ../birdnet.conf /etc/birdnet/birdnet.conf
+cd ${my_dir} || exit 1
+ln -fs $(realpath ..)/birdnet.conf /etc/birdnet/birdnet.conf
 source /etc/birdnet/birdnet.conf
 
 if [ ! -z "${REMOTE_RECS_DIR}" ];then
