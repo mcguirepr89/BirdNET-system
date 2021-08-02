@@ -48,7 +48,8 @@ install_deps() {
 
 installation() {
   echo "	Installing BirdNET "
-  cd ~/BirdNET-system || exit 1
+  cd $my_dir || exit 1
+  cd .. || exit 1
   echo "	Setting up the birdnet  virtual environment "
   python3 -m venv birdnet 
   source ./birdnet/bin/activate
