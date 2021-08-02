@@ -47,7 +47,7 @@ case $YN in
       case $YN in
 	     
         [Yy] )
-	  echo "Checking for ALSA-Utils"
+	  echo "	Checking for ALSA-Utils"
 	  if which arecord &> /dev/null ;then
 	    echo "	ALSA-Utils installed"
 	  else
