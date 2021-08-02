@@ -5,8 +5,7 @@ yrunner
 /home/runner/BirdSongs
 -80.754
 35.678
-y28277
-yyhttp://localhost
+yyyhttp://localhost
 n
 n
 EOF
