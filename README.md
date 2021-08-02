@@ -4,7 +4,7 @@ This project offers a Debian-based-OS (Debian, Ubuntu, Mint) installation script
 ### Checkout the 'BirdNET-system-for-raspi4' branch for installation on a Raspberry Pi 4 (using an arm64 OS).
 
 BirdNET-system can be configured with the following optional services:
-- A recording script that will automate recording the two hours following sunrise and the two hours preceeding sunset for optimal bird listening.
+- A 24/7 recording script that can be easily configured to use any available sound card.
 - An extraction service that extracts the audio selections idetified by BirdNET by date and species.
 - A Caddy instance that serves the extracted files via a configurable ${EXTRACTIONS_URL}.
 - A species list updating and notification script supporting mobile notifications via Pushed.co
