@@ -1,6 +1,6 @@
 # BirdNET-system-for-raspi4 - built on https://github.com/kahst/BirdNET
-### This is still in development, but seems to work
-This project offers an installation script for BirdNET as a systemd service on RaspiOS-Buster-arm64-lite architecture. The installation script offers to walk the user through setting up the '*birdnet.conf*' main configuration file interactively. A variety of configurations can be attained through this installation script.
+
+This project offers an installation script for BirdNET as a systemd service on arm64 (aarch64) Debian-based operating systems. The installation script offers to walk the user through setting up the '*birdnet.conf*' main configuration file interactively. A variety of configurations can be attained through this installation script.
 
 BirdNET-system can be configured with the following optional services:
 - A 24/7 recording script that can be easily configured to use any available sound card.
@@ -67,7 +67,7 @@ Just issue `/usr/local/bin/uninstall.sh && sudo ~/BirdNET-system/scripts/reconfi
 ## How to uninstall BirdNET-system
 To remove BirdNET-system, run the included '*uninstall.sh*' script as the ${BIRDNET_USER}.
 1. Issue `/usr/local/bin/uninstall.sh && cd ~ && rm -drf BirdNET-system`
-If you would also like to remove conda, run `rm -drf ~/c4aarch64_installer`
+If you would also like to remove conda, run `rm -drf ~/c4aarch64_installer` and `rm -drf ~/.conda*`
 
 ### TODO & Notes:
 1. I ought to add the steps to setup a Pushed.co application for the mobile notifications feature. Here is a link for now https://about.pushed.co/docs/productguides#developers-quick-start
