@@ -4,6 +4,7 @@
 trap 'echo -e "\n\nExiting the installation. Goodbye!" && exit' SIGINT
 my_dir=$(realpath $(dirname $0))
 cd $my_dir || exit 1
+
 #Install/Configure /etc/birdnet/birdnet.conf
 sudo ./install_systemd.sh || exit 1
 source /etc/birdnet/birdnet.conf
@@ -16,15 +17,13 @@ LIBS_MODULES=(libblas-dev liblapack-dev llvm-9)
 
 spinner() {
   pid=$! # Process Id of the previous running command
-  
   spin='-\|/'
-  
   i=0
-  while kill -0 $pid 2>/dev/null
-  do
-  	  i=$(( (i+1) %4 ))
-  	    printf "\r${spin:$i:1}"
-  	      sleep .1
+
+  while kill -0 $pid 2>/dev/null;do
+    i=$(( (i+1) %4 ))
+    printf "\r${spin:$i:1}"
+    sleep .1
   done
 }
 
