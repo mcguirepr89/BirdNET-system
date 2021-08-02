@@ -83,7 +83,7 @@ echo "		This script will do the following:
 	#2: Creates a python virtual environment for BirdNET
 	#3: Builds BirdNET in the 'birdnet' virtual environment
 	#4: Copies the systemd .service and .mount files and enables those chosen
-	#6: Adds cron environments and jobs chosen"
+	#5: Adds cron environments and jobs chosen"
 
 echo
 read -sp \
