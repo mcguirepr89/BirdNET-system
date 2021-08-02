@@ -309,7 +309,6 @@ ln -fs $(realpath ..)/birdnet.conf /etc/birdnet/birdnet.conf
 source /etc/birdnet/birdnet.conf
 
 if [ ! -z "${REMOTE_RECS_DIR}" ];then
-  echo "	{REMOTE_RECS_DIR} exists, so creating the systemd.mount"
   cat << EOF > /etc/systemd/system/${SYSTEMD_MOUNT}
 [Unit]
 Description=Mount remote fs with sshfs
@@ -351,7 +350,6 @@ systemctl enable "${SYSTEMD_MOUNT}"
 
 else
 
-  echo "	{REMOTE_RECS_DIR} doesn't exists"
   cat << EOF > /etc/systemd/system/birdnet_analysis.service
 [Unit]
 Description=BirdNET Analysis
