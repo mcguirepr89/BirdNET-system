@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 # Install BirdNET script
 trap 'echo -e "\n\nExiting the installation. Goodbye!" && exit' SIGINT
-#Install/Configure /etc/birdnet/birdnet.conf
 my_dir=$(realpath $(dirname $0))
 cd $my_dir || exit 1
+
+#Install/Configure /etc/birdnet/birdnet.conf
 sudo ./install_systemd.sh || exit 1
 source /etc/birdnet/birdnet.conf
+
 LASAG="https://github.com/Lasagne/Lasagne/archive/master.zip"
 THEON="https://raw.githubusercontent.com/Lasagne/Lasagne/master/requirements.txt"
 APT_DEPS=(ffmpeg wget)
@@ -85,9 +87,10 @@ echo "		This script will do the following:
 
 echo
 read -sp \
-  "If you DO NOT want to install BirdNET and the birdnet_analysis.service, 
-press Ctrl+C to cancel. If you DO wish to install BirdNET and the 
-birdnet_analysis.service, press ENTER to continue with the installation."
+	"If you DO NOT want to install BirdNET and the birdnet_analysis.service,
+	press Ctrl+C to cancel. If you DO wish to install BirdNET and the 
+	birdnet_analysis.service, press ENTER to continue with the 
+	installation."
 echo
 echo
 
