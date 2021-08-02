@@ -47,14 +47,16 @@ case $YN in
       case $YN in
 	     
         [Yy] )
-	  read -p "6. \
- What is the ZIP code where the recordings are made? " ZIP
+	  echo "Checking for ALSA-Utils"
 	  if which arecord &> /dev/null ;then
 	    echo "	ALSA-Utils installed"
 	  else
+            echo "	Installing alsa-utils"
             apt -qqq update &> /dev/null && apt install -y alsa-utils \
 	      &> /dev/null
 	  fi
+	  read -p "6. \
+ What is the ZIP code where the recordings are made? " ZIP
           echo "	Installing the birdnet_recording.sh crontab"
 	  if ! crontab -u ${BIRDNET_USER} -l &> /dev/null;then
             crontab -u ${USER} ./birdnet_recording.cron &> /dev/null
@@ -66,10 +68,6 @@ case $YN in
 	  REMOTE_HOST=
 	  REMOTE_RECS_DIR=
 	  REMOTE_USER=
-	  if ! which aplay &> /dev/null ;then
-	    apt -qqqq update &> /dev/null && apt -y -qqqqq install alsa-utils \
-	      &> /dev/null
-	  fi
 	  break;;
 
         [Nn] )
@@ -87,7 +85,7 @@ case $YN in
             REMOTE_RECS_DIR
 	  while true;do
 	    read -n1 -p "10. \
- Would you like to set up the ssh-keys now?
+Would you like to set up the ssh-keys now?
 	*Note: You will need to do this manually otherwise." YN
             echo
             case $YN in
@@ -125,7 +123,7 @@ EOF
 
     while true;do # Force Yes or No
       read -n1 -p "11. \
- Do you want this device to perform the extractions? " YN
+Do you want this device to perform the extractions? " YN
       echo
       
       case $YN in
@@ -171,18 +169,18 @@ EOF
 
     while true;do # Force Yes or No
       read -n1 -p "12. \
- Would you like to access the extractions via a web browser
-	*Note: It is recommended, (but not required), that you run the web server
-	on the same host that does the extractions. If the extraction service and web server
-	are on different hosts, the \"By_Species\" and \"Processed\" symbolic links won't work.
-	The  \"By-Date\" extractions, however, will work as expected." YN
+Would you like to access the extractions via a web browser
+	*Note: It is recommended, (but not required), that you run the web 
+	server on the same host that does the extractions. If the extraction 
+	service and web server are on different hosts, the \"By_Species\" and 
+	\"Processed\" symbolic links won't work. The \"By-Date\" extractions, 
+	however, will work as expected." YN
       echo
 
       case $YN in
 
 	[Yy] ) # Gets EXTRACTIONS_URL and caddy (if needed). Makes Caddyfile
-          read -p "13. \
-	What URL would you like to publish the extractions to?
+          read -p "13. What URL would you like to publish the extractions to?
 	(*Hint: Set this to http://localhost if you do not want to make the 
 	extractions publically available): " EXTRACTIONS_URL
           if ! which caddy &> /dev/null ;then
@@ -218,7 +216,7 @@ EOF
 
     while true; do # Force Yes or No
       read -n1 -p "14. \
- Do you have a free App key to receive mobile notifications via Pushed.co?" YN
+Do you have a free App key to receive mobile notifications via Pushed.co?" YN
       echo
 
       case $YN in
