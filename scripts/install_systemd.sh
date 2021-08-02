@@ -56,7 +56,7 @@ case $YN in
 	      &> /dev/null
 	  fi
           echo "	Installing the birdnet_recording.sh crontab"
-	  if ! crontab -u ${BIRDNET_USER} -l &> /dev/null ;then
+	  if ! crontab -u ${BIRDNET_USER} -l &> /dev/null;then
             crontab -u ${USER} ./birdnet_recording.cron &> /dev/null
           else
 	    crontab -u ${USER} -l > ${TMPFILE}
@@ -143,7 +143,7 @@ ExecStart=/usr/local/bin/extract_new_birdsounds.sh
 WantedBy=multi-user.target
 EOF
           echo "	Adding the species_updater.cron"
-          if ! crontab -u ${BIRDNET_USER} -l &> /dev/null ;then
+          if ! crontab -u ${BIRDNET_USER} -l &> /dev/null;then
             cd $my_dir || exit 1
             cd ../templates || exit 1
             crontab -u ${BIRDNET_USER} ./species_updater.cron &> /dev/null
@@ -167,12 +167,12 @@ EOF
 
     while true;do # Force Yes or No
       read -n1 -p "11. \
-Would you like to access the extractions via a web browser?
+Would you like to access the extractions via a web browser
 	*Note: It is recommended, (but not required), that you run the web 
 	server on the same host that does the extractions. If the extraction 
-	service and web server are on different hosts, the \"By_Species\" 
-	and \"Processed\" symbolic links won't work. The  \"By-Date\" 
-	extractions, however, will work as expected." YN
+	service and web server are on different hosts, the \"By_Species\" and 
+	\"Processed\" symbolic links won't work. The \"By-Date\" extractions, 
+	however, will work as expected." YN
       echo
 
       case $YN in
@@ -181,7 +181,7 @@ Would you like to access the extractions via a web browser?
           read -p "12. What URL would you like to publish the extractions to?
 	(*Hint: Set this to http://localhost if you do not want to make the 
 	extractions publically available): " EXTRACTIONS_URL
-          if ! which caddy &> /dev/null;then
+          if ! which caddy &> /dev/null ;then
             apt install -y \
               debian-keyring debian-archive-keyring apt-transport-https curl \
 	      &> /dev/null
@@ -194,10 +194,10 @@ Would you like to access the extractions via a web browser?
             apt -qqq update &> /dev/null
 	    echo "	Installing Caddy"
             apt -qqqy install caddy &> /dev/null && \
-	      systemctl enable --now caddy &> /dev/null
+              systemctl enable --now caddy &> /dev/null
           else
 	    echo "	Caddy is installed" && systemctl enable --now caddy \
-              &> /dev/null
+	      &> /dev/null
 	  fi
   
           break;;
@@ -218,7 +218,7 @@ Do you have a free App key to receive mobile notifications via Pushed.co?" YN
       echo
 
       case $YN in
-        		
+        
         [Yy] ) # Get the Pushed.co app key and app key secret
           read -p "	Enter your Pushed.co App Key: " PUSHED_APP_KEY
 	  read -p "	Enter your Pushed.co App Key Secret: " PUSHED_APP_SECRET
@@ -287,8 +287,8 @@ EOF
     case $YN in
 
       [Yy] )
-        echo "		Then take a look at what the installation will do before
-	running the script. Have fun!";exit 0;;
+        echo "		Then take a look at what the installation will do 
+	before running the script. Have fun!";exit 0;;
 
       * ) # Exits without answering Yes to this
         echo "	Sorry, the configuration file has to be filled out for
