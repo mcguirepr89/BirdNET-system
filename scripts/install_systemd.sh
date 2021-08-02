@@ -52,21 +52,23 @@ case $YN in
 	  if which arecord &> /dev/null ;then
 	    echo "	ALSA-Utils installed"
 	  else
-            apt -qqq update && apt install -y alsa-utils &> /dev/null
+            apt -qqq update &> /dev/null && apt install -y alsa-utils \
+	      &> /dev/null
 	  fi
           echo "	Installing the birdnet_recording.sh crontab"
 	  if ! crontab -u ${BIRDNET_USER} -l &> /dev/null;then
-            crontab -u ${USER} ./birdnet_recording.cron
+            crontab -u ${USER} ./birdnet_recording.cron &> /dev/null
           else
 	    crontab -u ${USER} -l > ${TMPFILE}
 	    cat ./birdnet_recording.cron >> "${TMPFILE}"
-	    crontab -u ${USER} "${TMPFILE}"
+	    crontab -u ${USER} "${TMPFILE}" &> /dev/null
 	  fi
 	  REMOTE_HOST=
 	  REMOTE_RECS_DIR=
 	  REMOTE_USER=
 	  if ! which aplay &> /dev/null ;then
-	    apt -qqqq update && apt -y -qqqqq install alsa-utils &> /dev/null
+	    apt -qqqq update &> /dev/null && apt -y -qqqqq install alsa-utils \
+	      &> /dev/null
 	  fi
 	  break;;
 
@@ -74,7 +76,7 @@ case $YN in
           echo "	Checking for SSHFS to mount remote filesystem"
 	  if ! which sshfs &> /dev/null ;then
             echo "	Installing SSHFS"
-	    apt -qqq update && apt install -qqqy sshfs &> /dev/null
+	    apt -qqq update &> /dev/null && apt install -qqqy sshfs &> /dev/null
 	  fi
 	  read -p "7. \
  What is the remote hostname or IP address for the recorder? " REMOTE_HOST
@@ -93,7 +95,7 @@ case $YN in
 	      [Yy] ) 
 		echo "	Adding remote host key to ${HOME}/.ssh/known_hosts"
 		ssh-keyscan -H ${REMOTE_HOST} >> ${HOME}/.ssh/known_hosts
-		chown ${USER}:${USER} ${HOME}/.ssh/known_hosts
+		chown ${USER}:${USER} ${HOME}/.ssh/known_hosts &> /dev/null
 	        if [ ! -f ${HOME}/.ssh/id_ed25519.pub ];then 
                   ssh-keygen -t ed25519 -f ${HOME}/.ssh/id_ed25519 <<EOF
 
@@ -101,7 +103,7 @@ case $YN in
 
 EOF
                 fi
-		chown -R ${USER}:${USER} ${HOME}/.ssh/
+		chown -R ${USER}:${USER} ${HOME}/.ssh/ &> /dev/null
 		echo "	Copying public key to ${REMOTE_HOST}"
                 ssh-copy-id ${REMOTE_USER}@${REMOTE_HOST}
                 break;;
@@ -145,16 +147,16 @@ ExecStart=/usr/local/bin/extract_new_birdsounds.sh
 WantedBy=multi-user.target
 EOF
           echo "	Adding the species_updater.cron"
-          if ! crontab -u ${BIRDNET_USER} -l;then
+          if ! crontab -u ${BIRDNET_USER} -l &> /dev/null;then
             cd $my_dir || exit 1
             cd ../templates || exit 1
-            crontab -u ${BIRDNET_USER} ./species_updater.cron
+            crontab -u ${BIRDNET_USER} ./species_updater.cron &> /dev/null
           else
             crontab -u ${BIRDNET_USER} -l > ${TMPFILE}
             cd $my_dir || exit 1
             cd ../templates || exit 1
             cat ./species_updater.cron >> ${TMPFILE}
-            crontab -u ${BIRDNET_USER} "${TMPFILE}"
+            crontab -u ${BIRDNET_USER} "${TMPFILE}" &> /dev/null
           fi
           break;;
 
@@ -183,7 +185,7 @@ EOF
 	What URL would you like to publish the extractions to?
 	(*Hint: Set this to http://localhost if you do not want to make the 
 	extractions publically available): " EXTRACTIONS_URL
-          if ! which caddy;then
+          if ! which caddy &> /dev/null ;then
             apt install -y \
               debian-keyring debian-archive-keyring apt-transport-https curl \
 	      &> /dev/null
@@ -293,7 +295,7 @@ running the script. Have fun!";exit 0;;
 
       * ) # Exits without answering Yes to this
         echo "	Sorry, the configuration file has to be filled out for
-things to work properly. Exiting now"; exit 1;;
+	things to work properly. Exiting now"; exit 1;;
 
     esac;;
 

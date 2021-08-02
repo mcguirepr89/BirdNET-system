@@ -96,22 +96,22 @@ installation & spinner
 
 echo "	BirdNet is finished installing!!"
 echo
-echo "	To start the service manually, issue: \
-'sudo systemctl start birdnet_analysis'
-To monitor the service logs, issue: \
-'journalctl -fu birdnet_analysis'
-To stop the service manually, issue: \
-'sudo systemctl stop birdnet_analysis'
-To stop and disable the service, issue: \
-'sudo systemctl disable --now birdnet_analysis.service'"
+echo "	To start the service manually, issue:
+		'sudo systemctl start birdnet_analysis'
+	To monitor the service logs, issue:
+		'journalctl -fu birdnet_analysis'
+	To stop the service manually, issue:
+		'sudo systemctl stop birdnet_analysis'
+	To stop and disable the service, issue:
+		'sudo systemctl disable --now birdnet_analysis.service'"
 echo
 echo "	Enabling birdnet_analysis.service now"
 sudo systemctl enable birdnet_analysis.service
 echo "	BirdNET is enabled."
-read -n1 -p "Would you like to run the BirdNET service now?" YN
+read -n1 -p "	Would you like to run the BirdNET service now?" YN
 case $YN in
   [Yy] ) sudo systemctl start birdnet_analysis.service \
 	   && journalctl -fu birdnet_analysis;;
      * ) echo "	Thanks for installing BirdNET-system!!
- I hope it was helpful!"; exit;;
+	I hope it was helpful!"; exit;;
 esac
