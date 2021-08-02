@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Testing the installation script via GitHub Actions
-./scripts/install_birdnet.sh <<EOF
+./scripts/install_birdnet.sh <<"EOF"
 y
 runner
 /home/runner/BirdSongs
