@@ -306,7 +306,8 @@ USER=${BIRDNET_USER}
 HOME=$(grep ^$USER /etc/passwd | cut -d':' -f6)
 
 [ -d /etc/birdnet ] || mkdir /etc/birdnet
-ln -fs ~/BirdNET-system/birdnet.conf /etc/birdnet/birdnet.conf
+#ln -fs ~/BirdNET-system/birdnet.conf /etc/birdnet/birdnet.conf
+ln -fs ../birdnet.conf /etc/birdnet/birdnet.conf
 source /etc/birdnet/birdnet.conf
 
 if [ ! -z "${REMOTE_RECS_DIR}" ];then
