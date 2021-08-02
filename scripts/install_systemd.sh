@@ -52,15 +52,16 @@ case $YN in
 	    echo "	ALSA-Utils installed"
 	  else
             echo "	Installing alsa-utils"
-            apt -qqq update && apt install -y alsa-utils &> /dev/null
+            apt -qqq update &> /dev/null && apt install -y alsa-utils \
+	      &> /dev/null
 	  fi
           echo "	Installing the birdnet_recording.sh crontab"
 	  if ! crontab -u ${BIRDNET_USER} -l &> /dev/null ;then
-            crontab -u ${USER} ./birdnet_recording.cron
+            crontab -u ${USER} ./birdnet_recording.cron &> /dev/null
           else
 	    crontab -u ${USER} -l > ${TMPFILE}
 	    cat ./birdnet_recording.cron >> "${TMPFILE}"
-	    crontab -u ${USER} "${TMPFILE}"
+	    crontab -u ${USER} "${TMPFILE}" &> /dev/null
 	  fi
 	  REMOTE_HOST=
 	  REMOTE_RECS_DIR=
@@ -71,7 +72,7 @@ case $YN in
           echo "	Checking for SSHFS to mount remote filesystem"
 	  if ! which sshfs &> /dev/null ;then
             echo "	Installing SSHFS"
-	    apt -qqq update && apt install -qqqy sshfs &> /dev/null
+	    apt -qqq update &> /dev/null && apt install -qqqy sshfs &> /dev/null
 	  fi
 	  read -p "6. \
  What is the remote hostname or IP address for the recorder? " REMOTE_HOST
@@ -90,7 +91,7 @@ case $YN in
 	      [Yy] ) 
 		echo "	Adding remote host key to ${HOME}/.ssh/known_hosts"
 		ssh-keyscan -H ${REMOTE_HOST} >> ${HOME}/.ssh/known_hosts
-		chown ${USER}:${USER} ${HOME}/.ssh/known_hosts
+		chown ${USER}:${USER} ${HOME}/.ssh/known_hosts &> /dev/null
 	        if [ ! -f ${HOME}/.ssh/id_ed25519.pub ];then 
                   ssh-keygen -t ed25519 -f ${HOME}/.ssh/id_ed25519 <<EOF
 
@@ -98,16 +99,16 @@ case $YN in
 
 EOF
                 fi
-		chown -R ${USER}:${USER} ${HOME}/.ssh/
+		chown -R ${USER}:${USER} ${HOME}/.ssh/ &> /dev/null
 		echo "	Copying public key to ${REMOTE_HOST}"
                 ssh-copy-id ${REMOTE_USER}@${REMOTE_HOST}
                 break;;
 	      [Nn] )
-		echo "		Be sure to set that up before running birdnet_analysis"
+		echo "	Be sure to set that up before running birdnet_analysis"
 		break;;
 	
 	         * )
-	        echo "		Sorry! You have to say yes or no!";;
+	        echo "	Sorry! You have to say yes or no!";;
 	    esac
 	  done
           break;;
@@ -120,7 +121,7 @@ EOF
 
     while true;do # Force Yes or No
       read -n1 -p "10. \
- Do you want this device to perform the extractions? " YN
+Do you want this device to perform the extractions? " YN
       echo
       
       case $YN in
@@ -145,13 +146,13 @@ EOF
           if ! crontab -u ${BIRDNET_USER} -l &> /dev/null ;then
             cd $my_dir || exit 1
             cd ../templates || exit 1
-            crontab -u ${BIRDNET_USER} ./species_updater.cron
+            crontab -u ${BIRDNET_USER} ./species_updater.cron &> /dev/null
           else
             crontab -u ${BIRDNET_USER} -l > ${TMPFILE}
             cd $my_dir || exit 1
             cd ../templates || exit 1
             cat ./species_updater.cron >> ${TMPFILE}
-            crontab -u ${BIRDNET_USER} "${TMPFILE}"
+            crontab -u ${BIRDNET_USER} "${TMPFILE}" &> /dev/null
           fi
           break;;
 
@@ -166,7 +167,7 @@ EOF
 
     while true;do # Force Yes or No
       read -n1 -p "11. \
- Would you like to access the extractions via a web browser?
+Would you like to access the extractions via a web browser?
 	*Note: It is recommended, (but not required), that you run the web 
 	server on the same host that does the extractions. If the extraction 
 	service and web server are on different hosts, the \"By_Species\" 
@@ -192,9 +193,11 @@ EOF
                 | tee /etc/apt/sources.list.d/caddy-stable.list &> /dev/null
             apt -qqq update &> /dev/null
 	    echo "	Installing Caddy"
-            apt -qqqy install caddy && systemctl enable --now caddy &> /dev/null
+            apt -qqqy install caddy &> /dev/null && \
+	      systemctl enable --now caddy &> /dev/null
           else
-	    echo "	Caddy is installed" && systemctl enable --now caddy
+	    echo "	Caddy is installed" && systemctl enable --now caddy \
+              &> /dev/null
 	  fi
   
           break;;
@@ -211,7 +214,7 @@ EOF
 
     while true; do # Force Yes or No
       read -n1 -p "13. \
- Do you have a free App key to receive mobile notifications via Pushed.co?" YN
+Do you have a free App key to receive mobile notifications via Pushed.co?" YN
       echo
 
       case $YN in
@@ -300,7 +303,9 @@ USER=${BIRDNET_USER}
 HOME=$(grep ^$USER /etc/passwd | cut -d':' -f6)
 
 [ -d /etc/birdnet ] || mkdir /etc/birdnet
-ln -fs ~/BirdNET-system/birdnet.conf /etc/birdnet/birdnet.conf
+#ln -fs ~/BirdNET-system/birdnet.conf /etc/birdnet/birdnet.conf
+cd ${my_dir} || exit 1
+ln -fs $(realpath ..)/birdnet.conf /etc/birdnet/birdnet.conf
 source /etc/birdnet/birdnet.conf
 
 if [ ! -z "${REMOTE_RECS_DIR}" ];then
