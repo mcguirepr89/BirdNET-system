@@ -47,7 +47,7 @@ case $YN in
       case $YN in
 	     
         [Yy] )
-	  echo "	Checking for ALSA-Utils"
+	  echo "	Checking for alsa-utils"
 	  if which arecord &> /dev/null ;then
 	    echo "	ALSA-Utils installed"
 	  else
@@ -55,8 +55,6 @@ case $YN in
             apt -qqq update &> /dev/null && apt install -y alsa-utils \
 	      &> /dev/null
 	  fi
-	  read -p "6. \
- What is the ZIP code where the recordings are made? " ZIP
           echo "	Installing the birdnet_recording.sh crontab"
 	  if ! crontab -u ${BIRDNET_USER} -l &> /dev/null;then
             crontab -u ${USER} ./birdnet_recording.cron &> /dev/null
@@ -76,16 +74,16 @@ case $YN in
             echo "	Installing SSHFS"
 	    apt -qqq update &> /dev/null && apt install -qqqy sshfs &> /dev/null
 	  fi
-	  read -p "7. \
+	  read -p "6. \
  What is the remote hostname or IP address for the recorder? " REMOTE_HOST
-       	  read -p "8. \
+       	  read -p "7. \
  Who is the remote user? " REMOTE_USER
-    	  read -p "9. \
+    	  read -p "8. \
  What is the absolute path of the recordings directory on the remote host? " \
             REMOTE_RECS_DIR
 	  while true;do
-	    read -n1 -p "10. \
-Would you like to set up the ssh-keys now?
+	    read -n1 -p "9. \
+ Would you like to set up the ssh-keys now?
 	*Note: You will need to do this manually otherwise." YN
             echo
             case $YN in
@@ -122,7 +120,7 @@ EOF
     done
 
     while true;do # Force Yes or No
-      read -n1 -p "11. \
+      read -n1 -p "10. \
 Do you want this device to perform the extractions? " YN
       echo
       
@@ -168,7 +166,7 @@ EOF
     done
 
     while true;do # Force Yes or No
-      read -n1 -p "12. \
+      read -n1 -p "11. \
 Would you like to access the extractions via a web browser
 	*Note: It is recommended, (but not required), that you run the web 
 	server on the same host that does the extractions. If the extraction 
@@ -180,7 +178,7 @@ Would you like to access the extractions via a web browser
       case $YN in
 
 	[Yy] ) # Gets EXTRACTIONS_URL and caddy (if needed). Makes Caddyfile
-          read -p "13. What URL would you like to publish the extractions to?
+          read -p "12. What URL would you like to publish the extractions to?
 	(*Hint: Set this to http://localhost if you do not want to make the 
 	extractions publically available): " EXTRACTIONS_URL
           if ! which caddy &> /dev/null ;then
@@ -215,7 +213,7 @@ Would you like to access the extractions via a web browser
     done
 
     while true; do # Force Yes or No
-      read -n1 -p "14. \
+      read -n1 -p "13. \
 Do you have a free App key to receive mobile notifications via Pushed.co?" YN
       echo
 
@@ -232,7 +230,7 @@ Do you have a free App key to receive mobile notifications via Pushed.co?" YN
 	  break;;
 
 	* )
-	 echo "	A simple Yea or Nay will do";;
+	 echo "		A simple Yea or Nay will do";;
 
       esac
     done
@@ -289,8 +287,8 @@ EOF
     case $YN in
 
       [Yy] )
-        echo "	Then take a look at what the installation will do before
-running the script. Have fun!";exit 0;;
+        echo "		Then take a look at what the installation will do 
+	before running the script. Have fun!";exit 0;;
 
       * ) # Exits without answering Yes to this
         echo "	Sorry, the configuration file has to be filled out for
