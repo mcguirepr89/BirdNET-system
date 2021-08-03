@@ -32,4 +32,4 @@ jobs:
         run: |
           ./git_action_tests/installation_test.sh
           source /etc/birdnet/birdnet.conf
-          ${VENV}/bin/python analyze.py --i example/Soundscape_1.wav --lat 42.479 --lon -76.451
+          ${VENV}/bin/python3 analyze.py --i example/Soundscape_1.wav --lat 42.479 --lon -76.451
