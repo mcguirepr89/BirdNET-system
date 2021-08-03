@@ -1,4 +1,5 @@
-# BirdNET-system - built on https://github.com/kahst/BirdNET
+# BirdNET-system
+## Built on https://github.com/kahst/BirdNET
 This project offers a Debian-based-OS (Debian, Ubuntu, Mint) installation script for BirdNET as a systemd service. The installation script offers to walk the user through setting up the '*birdnet.conf*' main configuration file interactively. A variety of configurations can be attained through this installation script.
 
 ### Checkout the 'BirdNET-system-for-raspi4' branch for installation on a Raspberry Pi 4 (using an arm64 OS).
