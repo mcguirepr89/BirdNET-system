@@ -71,7 +71,7 @@ installation() {
 
 # START
 
-echo "		This script will do the following:
+echo "	This script will do the following:
 	#1: Install the following BirdNET system dependencies:
 		- ffmpeg
 		- python3-venv
