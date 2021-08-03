@@ -46,22 +46,27 @@ for h in "${SCAN_DIRS[@]}";do
     # Iterates over each '.txt' file found in each "Analyzed" directory
     # to create the TMPFILE
     sort -k 6n "$i" \
-    | awk '/Spect/ {print $5" "$6" "$7" "$11"_"$12"_"$5" "$11"_"$12}' \
+    | awk '/Spect/ {print}' \
     >> $TMPFILE
   done
-  
+
   # The extraction reads each line of the TMPFILE and sets the variables ffmpeg
   # will use.
   while read -r line;do
     a=$a
-    DATE="$(echo "${line}" | awk -F- '{print $1"-"$2"-"$3}')"
-    OLDFILE="$(echo "${line}" | awk '{print $1}')" 
-    START="$(echo "${line}" | awk '{print $2}')" 
-    END="$(echo "${line}" | awk '{print $3}')" 
-    NEWFILE="$(echo "${line}" | awk '{print $4}')" 
-    SPECIES="$(echo "${line}" | awk '{print $5}')" 
-    NEWSPECIES_BYDATE="${EXTRACTED}/By_Date/${DATE}/${SPECIES}"
-    NEWSPECIES_BYSPEC="${EXTRACTED}/By_Species/${SPECIES}"
+    DATE="$(echo "${line}" \
+	   | awk '{print $5}' \
+	   | awk -F- '{print $1"-"$2"-"$3}')"
+    OLDFILE="$(echo "${line}" | awk '{print $5}')" 
+    START="$(echo "${line}" | awk '{print $6}')" 
+    END="$(echo "${line}" | awk '{print $7}')" 
+    SPECIES="$(echo "${line}" \
+	      | awk '{for(i=11;i<=NF;++i)printf $i""FS ; print ""}' \
+	      | cut -d'0' -f1 \
+	      | xargs)"
+    NEWFILE="${SPECIES// /_}-${OLDFILE}" 
+    NEWSPECIES_BYDATE="${EXTRACTED}/By_Date/${DATE}/${SPECIES// /_}"
+    NEWSPECIES_BYSPEC="${EXTRACTED}/By_Species/${SPECIES// /_}"
 
     # If the extracted file already exists, increment the 'a' variable once
     # but move onto the next line of the TMPFILE for extraction.
