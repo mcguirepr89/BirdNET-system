@@ -5,7 +5,6 @@ After=network-online.target ${SYSTEMD_MOUNT}
 
 [Service]
 Restart=always
-RuntimeMaxSec=10800
 Type=simple
 RestartSec=3
 User=${BIRDNET_USER}

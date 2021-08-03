@@ -1,6 +1,7 @@
-# BirdNET-system-for-raspi4 - built on https://github.com/kahst/BirdNET
-### This is still in development, but seems to work
-This project offers an installation script for BirdNET as a systemd service on RaspiOS-Buster-arm64-lite architecture. The installation script offers to walk the user through setting up the '*birdnet.conf*' main configuration file interactively. A variety of configurations can be attained through this installation script.
+# BirdNET-system for arm64/aarch64 (Raspberry Pi 4)
+## Built on https://github.com/kahst/BirdNET
+
+This project offers an installation script for BirdNET as a systemd service on arm64 (aarch64) Debian-based operating systems. The installation script offers to walk the user through setting up the '*birdnet.conf*' main configuration file interactively. A variety of configurations can be attained through this installation script.
 
 BirdNET-system can be configured with the following optional services:
 - A 24/7 recording script that can be easily configured to use any available sound card.
@@ -49,7 +50,7 @@ Currently, there are three types of configurations that I've tried and that have
 1. The directory where the recordings should be found on your local computer. BirdNET-system supports setting up a systemd.mount for automounting remote directories. So for instance, if the actual recordings live on RemoteHost's `/home/user/recordings` directory, but you would like them to be found on your device at `/home/me/BirdNET-recordings`, then `/home/me/BirdNET-recordings` will be your answer to installation question 2.
 1. If mounting the recordings directory from a remote host, you need to know the *remote* username to connect to via SSH. (See #TODOs at the bottom regarding ssh-keys)
 1. The latitude and longitude where the bird recordings take place. Google maps is an easy way to find these (right-clicking the location).
-1. If you are using a special microphone or have multiple sound cards and would like to specify which to use for recording, you can edit the `/etc/birdnet/birdnet.conf` file when the installation is complete and set ${REC_CARD} to the sound card of your choice. Copy your desired sound card line from the output of ` aplay -L | grep -e '^hw:CARD' | cut -d',' -f1`.
+1. If you are using a special microphone or have multiple sound cards and would like to specify which to use for recording, you can edit the `/etc/birdnet/birdnet.conf` file when the installation is complete and set ${REC_CARD} to the sound card of your choice. Copy your desired sound card line from the output of ` aplay -L | awk -F, '/^hw:/ { print $1 }'`.
 1. If you would like to take advantage of Caddy's automatic handling of SSL certificates to be able to host a public website where your friends can hear your bird sounds, forward ports 80 and 443 to the host you want to serve the files. You may also want to purchase a domain name, though the project should be reachable via your public IP address at that point. (*Note: If you're just keeping this on your local network, be sure to set your extraction URL to something 'http://', [I recommend http://localhost] to disable Caddy's automatic HTTPS. Alternatively, you may edit the `/etc/caddy/Caddyfile` after installation and add the `tls internal` directive to the site block to have Caddy issue a self-signed certificate for an 'https://' site block.*)
 1. If you would like to take advantage of BirdNET-system's ability to send New Species mobile notifications, you can easily setup a Pushed.co notification app (see the #TODOs at the bottom for more info). After setting up your application, make note of your App Key and App Secret -- you will need these to enable mobile notifications for new species.
 
@@ -67,7 +68,7 @@ Just issue `/usr/local/bin/uninstall.sh && sudo ~/BirdNET-system/scripts/reconfi
 ## How to uninstall BirdNET-system
 To remove BirdNET-system, run the included '*uninstall.sh*' script as the ${BIRDNET_USER}.
 1. Issue `/usr/local/bin/uninstall.sh && cd ~ && rm -drf BirdNET-system`
-If you would also like to remove conda, run `rm -drf ~/c4aarch64_installer`
+If you would also like to remove conda, run `rm -drf ~/c4aarch64_installer` and `rm -drf ~/.conda*`
 
 ### TODO & Notes:
 1. I ought to add the steps to setup a Pushed.co application for the mobile notifications feature. Here is a link for now https://about.pushed.co/docs/productguides#developers-quick-start
