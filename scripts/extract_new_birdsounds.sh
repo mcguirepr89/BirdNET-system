@@ -92,7 +92,8 @@ for h in "${SCAN_DIRS[@]}";do
 
     # If there are already 20 extracted entries for a given species,
     # do not create any more exctractions for that species.
-    if [[ "$(find ${NEWSPECIES_BYSPEC} | wc -l)" -ge 20 ]];then
+    #if [[ "$(find ${NEWSPECIES_BYSPEC} | wc -l)" -ge 20 ]];then
+    if [[ "$(find ${NEWSPECIES_BYDATE} | wc -l)" -ge 20 ]];then
       echo "Enough ${SPECIES}s, already!" && continue
     fi   
 
