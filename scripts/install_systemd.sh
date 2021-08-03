@@ -257,7 +257,8 @@ ANALYZED=${RECS_DIR}/*/*Analyzed
 PROCESSED=${RECS_DIR}/Processed
 #  This is the directory where the extracted audio is moved.
 EXTRACTED=${RECS_DIR}/Extracted
-IDFILE=${HOME}/BirdNET-system/IdentifiedSoFar.txt
+#IDFILE=${HOME}/BirdNET-system/IdentifiedSoFar.txt
+IDFILE=$(realpath ..)/IdentifiedSoFar.txt
 OVERLAP="0.0"
 CONFIDENCE="0.7"
 
@@ -276,7 +277,8 @@ PUSHED_APP_SECRET=${PUSHED_APP_SECRET}
 
 # Don't touch these
 SYSTEMD_MOUNT=$(echo ${RECS_DIR#/} | tr / -).mount
-VENV=${HOME}/BirdNET-system/birdnet
+#VENV=${HOME}/BirdNET-system/birdnet
+VENV=$(realpath ..)/birdnet
 EOF
       ;;
 
