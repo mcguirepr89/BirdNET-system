@@ -31,5 +31,4 @@ jobs:
       - name: Run a multi-line script
         run: |
           ./git_action_tests/installation_test.sh
-          source /etc/birdnet/birdnet.conf
-          ${VENV}/bin/python3 analyze.py --i example/Soundscape_1.wav --lat 42.479 --lon -76.451
+          /home/runner/work/BirdNET-system/BirdNET-system/birdnet/bin/python3 analyze.py --i example/Soundscape_1.wav --lat 42.479 --lon -76.451
