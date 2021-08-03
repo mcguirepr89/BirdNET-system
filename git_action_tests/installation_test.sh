@@ -9,4 +9,4 @@ yyyhttp://localhost
 n
 n
 EOF
-${VENV}/bin/python3 analyze.py --i example/Soundscape_1.wav --lat 42.479 --lon -76.451
+./birdnet/bin/python3 analyze.py --i example/Soundscape_1.wav --lat 42.479 --lon -76.451
