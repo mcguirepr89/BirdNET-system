@@ -13,7 +13,7 @@ IDFILEBAKUP="${IDFILE}.bak"
 
 if [ $(find ${ANALYZED} -name '*txt' | wc -l) -ge 1 ];then
   sort $(find ${ANALYZED} -name '*txt') \
-    | awk '{for(i=11;i<=NF;++i)printf $i""FS ; print ""}' \
+    | awk '/Spect/ {for(i=11;i<=NF;++i)printf $i""FS ; print ""}' \
     | cut -d'0' -f1 \
     | sort -u > "$TMPFILE"
   cat "$IDFILE" >> "$TMPFILE"
