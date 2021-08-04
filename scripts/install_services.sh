@@ -349,3 +349,4 @@ EOF
 }
 
 interactive_config_question
+finish_installing_services
