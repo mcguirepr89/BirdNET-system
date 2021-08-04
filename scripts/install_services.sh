@@ -347,3 +347,5 @@ EOF
     fi
   fi
 }
+
+interactive_config_question
