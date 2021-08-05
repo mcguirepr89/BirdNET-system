@@ -1,1 +1,1 @@
-./install_systemd.sh
+./install_services.sh
