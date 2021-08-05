@@ -206,8 +206,7 @@ EOF
              fi
              break;;
         [Nn] ) break;;
-          *  )
-          echo "You have to answer one way or the other!";;
+          *  ) echo "You have to answer one way or the other!";;
       esac
   done
 }
