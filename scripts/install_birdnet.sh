@@ -5,7 +5,6 @@ my_dir=$(realpath $(dirname $0))
 cd $my_dir || exit 1
 
 #Install/Configure /etc/birdnet/birdnet.conf
-#sudo ./install_systemd.sh || exit 1
 sudo ./install_services.sh || exit 1
 source /etc/birdnet/birdnet.conf
 
