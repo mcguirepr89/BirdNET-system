@@ -32,7 +32,7 @@ sudo rm /usr/local/bin/birdnet_recording.sh
 sudo rm /usr/local/bin/clean_up.sh
 sudo rm /usr/local/bin/extract_new_birdsounds.sh
 sudo rm /usr/local/bin/install_birdnet.sh
-sudo rm /usr/local/bin/install_systemd.sh
+sudo rm /usr/local/bin/install_services.sh
 sudo rm /usr/local/bin/install_conda.sh
 sudo rm /usr/local/bin/reconfigure_birdnet.sh
 sudo rm /usr/local/bin/species_notifier.sh
