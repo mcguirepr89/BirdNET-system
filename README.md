@@ -1,5 +1,5 @@
 # BirdNET-system for arm64/aarch64 (Raspberry Pi 4)
-### Built on https://github.com/kahst/BirdNET
+### Built on https://github.com/kahst/BirdNET -- checkout the Wiki at [BirdNETWiki.pmcgui.xyz](https://birdnetwiki.pmcgui.xyz)
 
 This project offers an installation script for BirdNET as a systemd service on arm64 (aarch64) Debian-based operating systems. The installation script offers to walk the user through setting up the '*birdnet.conf*' main configuration file interactively. A variety of configurations can be attained through this installation script.
 
