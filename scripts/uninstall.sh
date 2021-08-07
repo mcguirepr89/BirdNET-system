@@ -20,6 +20,10 @@ if [ -f /etc/systemd/system/"${SYSTEMD_MOUNT}" ];then
 fi
 sudo systemctl disable --now birdnet_analysis.service
 sudo rm /etc/systemd/system/birdnet_analysis.service
+if [ -f /etc/systemd/system/birdnet_recording.service ];then
+  sudo systemctl disable --now birdnet_recording.service
+  sudo rm /etc/systemd/system/birdnet_recording.service
+fi
 if [ -f /etc/systemd/system/extraction.service ];then
   sudo rm /etc/systemd/system/extraction.service
 fi
