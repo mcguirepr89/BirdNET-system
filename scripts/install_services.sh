@@ -277,7 +277,7 @@ finish_installing_services() {
 
   [ -d /etc/birdnet ] || mkdir /etc/birdnet
   cd ${my_dir} || exit 1
-  ln -fs $(realpath ..)/birdnet.conf /etc/birdnet/birdnet.conf
+  ln -fs $(dirname ${my_dir})/birdnet.conf /etc/birdnet/birdnet.conf
   source /etc/birdnet/birdnet.conf
 
   if [ ! -z "${REMOTE_RECS_DIR}" ];then
