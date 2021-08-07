@@ -141,6 +141,7 @@ ExecStart=/usr/local/bin/birdnet_recording.sh
 [Install]
 WantedBy=multi-user.target
 EOF
+  systemctl enable --now birdnet_recording.service
 }
 
 
