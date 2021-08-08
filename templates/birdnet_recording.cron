@@ -1,4 +1,0 @@
-#birdnet
-XDG_RUNTIME_DIR=/run/user/1000
-#birdnet
-* * * * * /usr/local/bin/birdnet_recording.sh &> /dev/null
