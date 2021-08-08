@@ -3,11 +3,6 @@
 # set -x
 source /etc/birdnet/birdnet.conf
 DAYS=(
-"7 days ago"
-"6 days ago"
-"5 days ago"
-"4 days ago"
-"3 days ago"
 "2 days ago"
 "yesterday"
 "today"
@@ -51,7 +46,7 @@ run_analysis() {
   echo "Starting run_analysis() for ${1}"
   WEEK=$(date --date="${2}" +"%U")
   cd ${HOME}/BirdNET-system || exit 1
-  "${VENV}"/bin/python3 analyze.py \
+  "${VENV}"/bin/python analyze.py \
     --i "${1}" \
     --lat "${LATITUDE}" \
     --lon "${LONGITUDE}" \
