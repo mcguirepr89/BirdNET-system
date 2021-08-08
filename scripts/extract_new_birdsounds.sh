@@ -111,10 +111,15 @@ for h in "${SCAN_DIRS[@]}";do
 
     ffmpeg -hide_banner -loglevel error -nostdin -i "${h}/${OLDFILE}" \
       -acodec copy -ss "${START}" -to "${END}"\
-        "${NEWSPECIES_BYDATE}/${a}-${NEWFILE}" \
-        && ln -fs "${NEWSPECIES_BYDATE}/${a}-${NEWFILE}"\
-        "${NEWSPECIES_BYSPEC}/${a}-${NEWFILE}" \
-        && echo Success! New extraction for ${SPECIES} \
+        "${NEWSPECIES_BYDATE}/${a}-${NEWFILE}"
+    if [[ "$(find ${NEWSPECIES_BYSPECIES} | wc -l)" -ge 21 ]];then
+      echo "20 ${SPECIES}s, already! Removing the oldest and making a new one"
+      cd ${NEWSPECIES_BYSPECIES} || exit 1
+      ls -1t . | tail -n +21 | xargs rm
+      ln -fs "${NEWSPECIES_BYDATE}/${a}-${NEWFILE}"\
+        "${NEWSPECIES_BYSPEC}/${a}-${NEWFILE}"
+      echo "Success! New extraction for ${SPECIES}"
+    fi   
 
 
     # Finally, 'a' is incremented by one to allow multiple extractions per
