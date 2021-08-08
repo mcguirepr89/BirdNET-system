@@ -18,6 +18,7 @@ if [ -f /etc/systemd/system/"${SYSTEMD_MOUNT}" ];then
   sudo systemctl disable --now ${SYSTEMD_MOUNT}
   sudo rm /etc/systemd/system/${SYSTEMD_MOUNT}
 fi
+sudo systemctl disable --now birdnet_analysis.service
 sudo rm /etc/systemd/system/birdnet_analysis.service
 if [ -f /etc/systemd/system/birdnet_recording.service ];then
   sudo systemctl disable --now birdnet_recording.service
