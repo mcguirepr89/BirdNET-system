@@ -6,7 +6,7 @@ This project offers a Debian-based-OS (Debian, Ubuntu, Mint) installation script
 
 BirdNET-system can be configured with the following optional services:
 - A 24/7 recording script that can be easily configured to use any available sound card.
-- An extraction service that extracts the audio selections idetified by BirdNET by date and species.
+- An extraction service that extracts the audio selections identified by BirdNET by date and species.
 - A Caddy instance that serves the extracted files via a configurable ${EXTRACTIONS_URL}.
 - A species list updating and notification script supporting mobile notifications via Pushed.co
 
