@@ -115,7 +115,7 @@ for h in "${SCAN_DIRS[@]}";do
     if [[ "$(find ${NEWSPECIES_BYSPECIES} | wc -l)" -ge 21 ]];then
       echo "20 ${SPECIES}s, already! Removing the oldest and making a new one"
       cd ${NEWSPECIES_BYSPECIES} || exit 1
-      ls -1t . | tail -n +21 | xargs rm
+      ls -1t . | tail -n +21 | xargs -r rm
       ln -fs "${NEWSPECIES_BYDATE}/${a}-${NEWFILE}" \
         "${NEWSPECIES_BYSPEC}/${a}-${NEWFILE}" 
       echo "Success! New extraction for ${SPECIES}"
