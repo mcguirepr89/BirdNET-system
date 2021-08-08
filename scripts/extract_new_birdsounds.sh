@@ -99,7 +99,8 @@ for h in "${SCAN_DIRS[@]}";do
     # for today, remove the oldest file and create the new one.
     if [[ "$(find ${NEWSPECIES_BYDATE} | wc -l)" -ge 21 ]];then
       echo "20 ${SPECIES}s, already! Removing the oldest and making a new one"
-      ls -1t ${NEWSPECIES_BYDATE} | tail -n +21 | xargs rm
+      cd ${NEWSPECIES_BYDATE} || exit 1
+      ls -1t . | tail -n +21 | xargs rm
     fi   
 
     echo "Extracting audio . . . "
