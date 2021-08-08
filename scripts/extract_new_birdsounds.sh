@@ -95,11 +95,11 @@ for h in "${SCAN_DIRS[@]}";do
     [[ -d "${NEWSPECIES_BYSPEC}" ]] || mkdir -p "${NEWSPECIES_BYSPEC}"
 
 
-    # If there are already 20 extracted entries for a given species,
-    # do not create any more exctractions for that species.
-    #if [[ "$(find ${NEWSPECIES_BYSPEC} | wc -l)" -ge 20 ]];then
-    if [[ "$(find ${NEWSPECIES_BYDATE} | wc -l)" -ge 20 ]];then
-      echo "Enough ${SPECIES}s, already!" && continue
+    # If there are already 20 extracted entries for a given species
+    # for today, remove the oldest file and create the new one.
+    if [[ "$(find ${NEWSPECIES_BYDATE} | wc -l)" -ge 21 ]];then
+      echo "20 ${SPECIES}s, already! Removing the oldest and making a new one"
+      ls -1t ${NEWSPECIES_BYDATE} | tail -n +21 | xargs rm
     fi   
 
     echo "Extracting audio . . . "
