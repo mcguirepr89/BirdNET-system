@@ -112,7 +112,7 @@ for h in "${SCAN_DIRS[@]}";do
     ffmpeg -hide_banner -loglevel error -nostdin -i "${h}/${OLDFILE}" \
       -acodec copy -ss "${START}" -to "${END}"\
         "${NEWSPECIES_BYDATE}/${a}-${NEWFILE}"
-    if [[ "$(find ${NEWSPECIES_BYSPECIES} | wc -l)" -ge 21 ]];then
+    if [[ "$(find ${NEWSPECIES_BYSPEC} | wc -l)" -ge 21 ]];then
       echo "20 ${SPECIES}s, already! Removing the oldest by-species and making a new one"
       cd ${NEWSPECIES_BYSPEC} || exit 1
       ls -1t . | tail -n +21 | xargs -r rm -vv
