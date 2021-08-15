@@ -98,9 +98,9 @@ for h in "${SCAN_DIRS[@]}";do
     # If there are already 20 extracted entries for a given species
     # for today, remove the oldest file and create the new one.
     if [[ "$(find ${NEWSPECIES_BYDATE} | wc -l)" -ge 21 ]];then
-      echo "20 ${SPECIES}s, already! Removing the oldest and making a new one"
+      echo "20 ${SPECIES}s, already! Removing the oldest by-date and making a new one"
       cd ${NEWSPECIES_BYDATE} || exit 1
-      ls -1t . | tail -n +21 | xargs rm
+      ls -1t . | tail -n +21 | xargs -r rm -vv
     fi   
 
     echo "Extracting audio . . . "
@@ -113,9 +113,9 @@ for h in "${SCAN_DIRS[@]}";do
       -acodec copy -ss "${START}" -to "${END}"\
         "${NEWSPECIES_BYDATE}/${a}-${NEWFILE}"
     if [[ "$(find ${NEWSPECIES_BYSPECIES} | wc -l)" -ge 21 ]];then
-      echo "20 ${SPECIES}s, already! Removing the oldest and making a new one"
-      cd ${NEWSPECIES_BYSPECIES} || exit 1
-      ls -1t . | tail -n +21 | xargs -r rm
+      echo "20 ${SPECIES}s, already! Removing the oldest by-species and making a new one"
+      cd ${NEWSPECIES_BYSPEC} || exit 1
+      ls -1t . | tail -n +21 | xargs -r rm -vv
       ln -fs "${NEWSPECIES_BYDATE}/${a}-${NEWFILE}"\
         "${NEWSPECIES_BYSPEC}/${a}-${NEWFILE}"
       echo "Success! New extraction for ${SPECIES}"
