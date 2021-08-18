@@ -23,8 +23,9 @@ else
 fi
 
 if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE}] ;then
-  echo "It looks like you haven't filled out the Birders_Guide_Installer_Configuration.txt file"
-  echo "Open that file (you can click this file://home/pi/BirdNET-system/Birders_Guide_Installer_Configuration.txt)
+  echo "It looks like you haven't filled out the Birders_Guide_Installer_Configuration.txt file
+
+Open that file (you can click this file://home/pi/BirdNET-system/Birders_Guide_Installer_Configuration.txt)
 and enter the latitude and longitude where the BirdNET-system will be. You can find this at
 https://maps.google.com -- find your location on the map and right click to find your coordinates.
 After you have filled out the configuration file, you can re-run this script. Just do the exact
@@ -33,3 +34,13 @@ same things you did to start this (copying and pasting from the Wiki) to try aga
 Good luck!"
   exit 1
 fi
+
+./scripts/install_birdnet.sh << EOF
+ypi
+/home/pi/BirdSongs
+${LONGITUDE}
+${LATITUDE}
+yyyhttp://localhost
+yes
+n
+EOF
