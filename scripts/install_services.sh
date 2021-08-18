@@ -237,15 +237,13 @@ get_EXTRACTIONS_URL() {
     echo
     case $YN in
       [Yy] ) read -p "What URL would you like to publish the extractions to?
-    *Hint: Set this to http://localhost if you do not want to make the 
+    *Note: Set this to http://localhost if you do not want to make the 
     extractions publically available: " EXTRACTIONS_URL
         if ! which caddy &> /dev/null ;then
-          apt install -y debian-keyring debian-archive-keyring apt-transport-https curl &> /dev/null
-          curl -1sLf '${CADDY_GPG}' | apt-key add - &> /dev/null
-          curl -1sLf '${CADDY_LIST}' | tee /etc/apt/sources.list.d/caddy-stable.list &> /dev/null
-          apt -qqq update &> /dev/null
           echo "Installing Caddy"
-          apt -qqqy install caddy &> /dev/null && systemctl enable --now caddy &> /dev/null
+          curl -1sLf \
+            'https://dl.cloudsmith.io/public/caddy/stable/setup.deb.sh' \
+              | sudo -E bash
         else
           echo "Caddy is installed" && systemctl enable --now caddy &> /dev/null
         fi
