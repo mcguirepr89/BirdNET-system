@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x
 my_dir=${HOME}/BirdNET-system
 
 
@@ -7,7 +8,7 @@ if ! which git &> /dev/null ;then
   sudo apt update &> /dev/null && sudo apt install -y git &> /dev/null
 fi
 
-if [ -d ${HOME}/BirdNET-system ];then
+if [ ! -d ${my_dir} ];then
   cd ~ || exit 1
   echo "Cloning the BirdNET-system repository in your home directory"
   git clone https://github.com/mcguirepr89/BirdNET-system.git 
@@ -16,10 +17,10 @@ if [ -d ${HOME}/BirdNET-system ];then
 fi
 
 if [ -f ${my_dir}/Birders_Guide_Installer_Configuration.txt ];then
+  source ${my_dir}/Birders_Guide_Installer_Configuration.txt
+else
   echo "Something went wrong. I can't find the configuration file."
   exit 1
-else
-  source ${my_dir}/Birders_Guide_Installer_Configuration.txt
 fi
 
 if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE}] ;then
