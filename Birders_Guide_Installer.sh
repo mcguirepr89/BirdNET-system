@@ -26,7 +26,7 @@ if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE}] ;then
   echo "It looks like you haven't filled out the Birders_Guide_Installer_Configuration.txt file
 
 Open that file to edit it.
-You can right-click this link ---> file://home/pi/BirdNET-system/Birders_Guide_Installer_Configuration.txt
+You can right-click this link ---> file:/BirdNET-system/Birders_Guide_Installer_Configuration.txt
 and select \"Open\". Enter the latitude and longitude of where the BirdNET-system will be. 
 You can find this at information at https://maps.google.com
 
