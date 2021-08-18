@@ -44,6 +44,7 @@ ypi
 ${LONGITUDE}
 ${LATITUDE}
 yyyhttp://localhost
+n
 yes
 n
 EOF
