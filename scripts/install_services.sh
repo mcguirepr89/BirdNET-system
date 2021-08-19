@@ -50,8 +50,8 @@ The next few questions will populate the required configuration file."
 # Configuration settings for BirdNET as a service
 BIRDNET_USER=${BIRDNET_USER}
 RECS_DIR=${RECS_DIR}
-LONGITUDE="${LONGITUDE}"
 LATITUDE="${LATITUDE}"
+LONGITUDE="${LONGITUDE}"
 ZIP="${ZIP}"
 # Defaults
 REC_CARD=
@@ -95,8 +95,8 @@ get_RECS_DIR() {
 }
 
 get_GEO() {
-  read -p "What is the longitude where the recordings were made? " LONGITUDE
   read -p "What is the latitude where the recordings were made? " LATITUDE
+  read -p "What is the longitude where the recordings were made? " LONGITUDE
 }
 
 get_REMOTE() {
