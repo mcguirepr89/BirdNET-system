@@ -414,6 +414,7 @@ ${EXTRACTIONS_URL} {
 root * ${EXTRACTED}
 file_server browse
 }
+
 EOF
     if [ ! -z ${REMOTE_USER} ];then
       mkdir -p /etc/systemd/system/caddy.service.d
