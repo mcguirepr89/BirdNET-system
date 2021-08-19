@@ -244,9 +244,9 @@ get_EXTRACTIONS_URL() {
           curl -1sLf \
             'https://dl.cloudsmith.io/public/caddy/stable/setup.deb.sh' \
               | sudo -E bash
-	  systemctl enable --now caddy &> /dev/null
 	  apt update &> /dev/null && apt install -y caddy &> /dev/null
-        else
+          systemctl enable --now caddy &> /dev/null
+	else
           echo "Caddy is installed" && systemctl enable --now caddy &> /dev/null
         fi
         break;;
