@@ -4,15 +4,15 @@ my_dir=${HOME}/BirdNET-system
 
 if ! which git &> /dev/null ;then
   echo "Installing git"
-  sudo apt update &> /dev/null && sudo apt install -y git &> /dev/null
+  sudo apt update > /dev/null && sudo apt install -y git > /dev/null
 fi
 
 if [ ! -d ${my_dir} ];then
   cd ~ || exit 1
   echo "Cloning the BirdNET-system repository in your home directory"
-  git clone https://github.com/mcguirepr89/BirdNET-system.git 
+  git clone https://github.com/mcguirepr89/BirdNET-system.git > /dev/null
   echo "Switching to the BirdNET-system-for-raspi4 branch"
-  cd BirdNET-system && git checkout BirdNET-system-for-raspi4
+  cd BirdNET-system && git checkout BirdNET-system-for-raspi4 > /dev/null
 fi
 
 if [ -f ${my_dir}/Birders_Guide_Installer_Configuration.txt ];then
@@ -21,6 +21,12 @@ else
   echo "Something went wrong. I can't find the configuration file."
   exit 1
 fi
+
+xdg-open ${my_dir}/Birders_Guide_Installer_Configuration.txt
+sleep 3
+while pgrep mouse &> /dev/null;do
+  sleep 1
+done
 
 if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE} ] ;then
   echo "It looks like you haven't filled out the Birders_Guide_Installer_Configuration.txt file
