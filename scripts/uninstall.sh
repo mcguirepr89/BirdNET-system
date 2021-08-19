@@ -29,7 +29,7 @@ if [ -f /etc/systemd/system/extraction.service ];then
 fi
 sudo rm /usr/local/bin/birdnet_analysis.sh
 sudo rm /usr/local/bin/birdnet_recording.sh
-sudo rm /usr/local/bin/clean_up.sh
+sudo rm /usr/local/bin/cleanup.sh
 sudo rm /usr/local/bin/extract_new_birdsounds.sh
 sudo rm /usr/local/bin/install_birdnet.sh
 sudo rm /usr/local/bin/install_services.sh
