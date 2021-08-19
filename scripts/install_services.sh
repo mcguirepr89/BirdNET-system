@@ -296,6 +296,8 @@ finish_installing_services() {
   ln -fs $(dirname ${my_dir})/birdnet.conf /etc/birdnet/birdnet.conf
   source /etc/birdnet/birdnet.conf
   
+  [ -d ${EXTRACTED} ] || mkdir -p ${EXTRACTED}
+  
   install_cleanup_cron
   
   if [ ! -z "${REMOTE_RECS_DIR}" ];then
