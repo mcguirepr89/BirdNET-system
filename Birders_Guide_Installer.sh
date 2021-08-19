@@ -50,7 +50,7 @@ ypi
 /home/pi/BirdSongs
 ${LONGITUDE}
 ${LATITUDE}
-yyyhttp://localhost
+yyyhttp://raspberrypi.local
 n
 yes
 n
@@ -61,7 +61,7 @@ ypi
 /home/pi/BirdSongs
 ${LONGITUDE}
 ${LATITUDE}
-yyyhttp://localhost
+yyyhttp://raspberrypi.local
 y${PUSHED_APP_SECRET}
 ${PUSHED_APP_KEY}
 yes
