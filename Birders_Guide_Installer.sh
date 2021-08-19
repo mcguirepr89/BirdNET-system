@@ -16,17 +16,17 @@ if [ ! -d ${my_dir} ];then
 fi
 
 if [ -f ${my_dir}/Birders_Guide_Installer_Configuration.txt ];then
+  xdg-open ${my_dir}/Birders_Guide_Installer_Configuration.txt
+  sleep 3
+  while pgrep mouse &> /dev/null;do
+    sleep 1
+  done
   source ${my_dir}/Birders_Guide_Installer_Configuration.txt
 else
   echo "Something went wrong. I can't find the configuration file."
   exit 1
 fi
 
-xdg-open ${my_dir}/Birders_Guide_Installer_Configuration.txt
-sleep 3
-while pgrep mouse &> /dev/null;do
-  sleep 1
-done
 
 if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE} ] ;then
   echo "It looks like you haven't filled out the Birders_Guide_Installer_Configuration.txt file
