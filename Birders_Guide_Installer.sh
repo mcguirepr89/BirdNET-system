@@ -45,7 +45,7 @@ Good luck!"
 fi
 
 if [ -z ${PUSHED_APP_SECRET} ] || [ -z ${PUSHED_APP_KEY} ];then
-  ./scripts/install_birdnet.sh << EOF
+  ${my_dir}/scripts/install_birdnet.sh << EOF
 ypi
 /home/pi/BirdSongs
 ${LONGITUDE}
@@ -56,7 +56,7 @@ yes
 n
 EOF
 else
-  ./scripts/install_birdnet.sh << EOF
+  ${my_dir}/scripts/install_birdnet.sh << EOF
 ypi
 /home/pi/BirdSongs
 ${LONGITUDE}
