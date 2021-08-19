@@ -6,6 +6,7 @@ my_dir=$(realpath $(dirname $0))
 TMPFILE=$(mktemp)
 CADDY_GPG="https://dl.cloudsmith.io/public/caddy/stable/gpg.key"
 CADDY_LIST="https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt"
+gotty_url="https://github.com/yudai/gotty/releases/download/v1.0.1/gotty_linux_arm.tar.gz"
 
 ln -sf ${my_dir}/* /usr/local/bin/
 
@@ -287,6 +288,60 @@ install_cleanup_cron() {
   fi
 }
 
+install_gotty_logs() {
+  if ! which gotty &> /dev/null;then
+  wget -c ${gotty_url} -O - |  tar -xz -C /usr/local/bin/
+  fi
+  cat << EOF > /etc/systemd/system/birdnet_log.service
+[Unit]
+Description=BirdNET Analysis Log
+
+[Service]
+Restart=on-failure
+RestartSec=3
+Type=simple
+User=${BIRDNET_USER}
+Environment=TERM=xterm-256color
+ExecStart=/usr/local/bin/gotty -p 8080 --title-format "BirdNET-system Log" journalctl -fu birdnet_analysis.service
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl enable --now birdnet_log.service
+  cat << EOF > /etc/systemd/system/extraction_log.service
+[Unit]
+Description=BirdNET Extraction Log
+
+[Service]
+Restart=on-failure
+RestartSec=3
+Type=simple
+User=${BIRDNET_USER}
+Environment=TERM=xterm-256color
+ExecStart=/usr/local/bin/gotty -p 8888 --title-format "Extractions Log" journalctl -fu extraction.service
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl enable --now extraction_log.service
+  cat << EOF > /etc/systemd/system/birdstats.service
+[Unit]
+Description=BirdNET Statistics Log
+
+[Service]
+Restart=on-failure
+RestartSec=3
+Type=simple
+User=${BIRDNET_USER}
+Environment=TERM=xterm-256color
+ExecStart=/usr/local/bin/gotty -p 9090 --title-format "BirdNET-system Statistics" /usr/local/bin/birdnet_stats.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl enable --now birdstats.service
+}
+
 finish_installing_services() {
   USER=${BIRDNET_USER}
   HOME=$(grep ^$USER /etc/passwd | cut -d':' -f6)
@@ -297,6 +352,8 @@ finish_installing_services() {
   source /etc/birdnet/birdnet.conf
   
   [ -d ${EXTRACTED} ] || mkdir -p ${EXTRACTED}
+  
+  install_gotty_logs
   
   install_cleanup_cron
   
