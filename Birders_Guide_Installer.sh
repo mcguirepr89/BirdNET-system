@@ -34,7 +34,7 @@ if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE} ] ;then
 Open that file to edit it. (Go to the folder icon in the top left and look for the \"BirdNET-system\"
 folder and double-click the file called \"Birders_Guide_Installer_Configuration.txt\"
 Enter the latitude and longitude of where the BirdNET-system will be. 
-You can find this at information at https://maps.google.com
+You can find this information at https://maps.google.com
 
 Find your location on the map and right click to find your coordinates.
 After you have filled out the configuration file, you can re-run this script. Just do the exact
