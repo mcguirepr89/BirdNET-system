@@ -272,6 +272,21 @@ get_PUSHED() {
   done
 }
 
+install_cleanup_cron() {
+  echo "Adding the cleanup.cron"
+  if ! crontab -u ${BIRDNET_USER} -l &> /dev/null;then
+    cd $my_dir || exit 1
+    cd ../templates || exit 1
+    crontab -u ${BIRDNET_USER} ./cleanup.cron &> /dev/null
+  else
+    crontab -u ${BIRDNET_USER} -l > ${TMPFILE}
+    cd $my_dir || exit 1
+    cd ../templates || exit 1
+    cat ./cleanup.cron >> ${TMPFILE}
+    crontab -u ${BIRDNET_USER} "${TMPFILE}" &> /dev/null
+  fi
+}
+
 finish_installing_services() {
   USER=${BIRDNET_USER}
   HOME=$(grep ^$USER /etc/passwd | cut -d':' -f6)
@@ -280,7 +295,9 @@ finish_installing_services() {
   cd ${my_dir} || exit 1
   ln -fs $(dirname ${my_dir})/birdnet.conf /etc/birdnet/birdnet.conf
   source /etc/birdnet/birdnet.conf
-
+  
+  install_cleanup_cron
+  
   if [ ! -z "${REMOTE_RECS_DIR}" ];then
     cat << EOF > /etc/systemd/system/${SYSTEMD_MOUNT}
 [Unit]
