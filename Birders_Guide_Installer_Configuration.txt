@@ -5,14 +5,15 @@
 ###########################################################################
 #          Fill this out in order to install BirdNET-system
 #
-# To find this information, you can go to https://maps.google.com
-# 1. Find the location on the map where you will be putting the BirdNET-system
-# 2. Right-click the location to view the latitude and longitude and click them to
-#    copy them to your clip-board.
-# 3. Enter the latitude and longitude here. Be certain not to mix them up and
+# 1. To find this information, you can go to https://maps.google.com
+# 1a. Find the location on the map where you will be putting the BirdNET-system
+# 1b. Right-click the location to view the latitude and longitude and click them to
+#     copy them to your clip-board.
+# 2. Enter the latitude and longitude here. Be certain not to mix them up and
 #    only go to the thousandth's decimal place. The first number is the latitude,
 #    and the second is longitude. See the example below.
-# 4. FILE SAVE!!! Don't forget to save this file after editing.
+# 3. FILE SAVE!!! Don't forget to save this file after editing.
+# 4. Close this window to continue the installation.
 # Example: these coordinates would indicate the Eiffel Tower in Paris, France.
 #LATITUDE=48.858
 #LONGITUDE=2.294
