@@ -1,0 +1,28 @@
+# Birders Guide Installer Configuration File
+#####NOTE: the '#' sign needs to precede the lines where they are currently
+#####      NO NOT DELETE ANY OF THEM!!!
+
+###########################################################################
+#          Fill this out in order to install BirdNET-system
+#
+# 1. To find this information, you can go to https://maps.google.com
+# 1a. Find the location on the map where you will be putting the BirdNET-system
+# 1b. Right-click the location to view the latitude and longitude and click them to
+#     copy them to your clip-board.
+# 2. Enter the latitude and longitude here. Be certain not to mix them up and
+#    only go to the thousandth's decimal place. The first number is the latitude,
+#    and the second is longitude. See the example below.
+# 3. FILE SAVE!!! Don't forget to save this file after editing.
+# 4. Close this window to continue the installation.
+# Example: these coordinates would indicate the Eiffel Tower in Paris, France.
+#LATITUDE=48.858
+#LONGITUDE=2.294
+LATITUDE=
+LONGITUDE=
+
+# This section can be left alone. If you setup a Pushed.co
+# mobile application, you can enter the App secret and secret
+# key in order to enable phone notifications for new species
+# detections.
+PUSHED_APP_SECRET=
+PUSHED_APP_KEY=

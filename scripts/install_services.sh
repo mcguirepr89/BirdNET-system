@@ -6,6 +6,7 @@ my_dir=$(realpath $(dirname $0))
 TMPFILE=$(mktemp)
 CADDY_GPG="https://dl.cloudsmith.io/public/caddy/stable/gpg.key"
 CADDY_LIST="https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt"
+gotty_url="https://github.com/yudai/gotty/releases/download/v1.0.1/gotty_linux_arm.tar.gz"
 
 ln -sf ${my_dir}/* /usr/local/bin/
 
@@ -50,8 +51,8 @@ The next few questions will populate the required configuration file."
 # Configuration settings for BirdNET as a service
 BIRDNET_USER=${BIRDNET_USER}
 RECS_DIR=${RECS_DIR}
-LONGITUDE="${LONGITUDE}"
 LATITUDE="${LATITUDE}"
+LONGITUDE="${LONGITUDE}"
 ZIP="${ZIP}"
 # Defaults
 REC_CARD=
@@ -95,8 +96,8 @@ get_RECS_DIR() {
 }
 
 get_GEO() {
-  read -p "What is the longitude where the recordings were made? " LONGITUDE
   read -p "What is the latitude where the recordings were made? " LATITUDE
+  read -p "What is the longitude where the recordings were made? " LONGITUDE
 }
 
 get_REMOTE() {
@@ -141,7 +142,7 @@ ExecStart=/usr/local/bin/birdnet_recording.sh
 [Install]
 WantedBy=multi-user.target
 EOF
-  systemctl enable --now birdnet_recording.service
+  systemctl enable birdnet_recording.service
 }
 
 
@@ -237,16 +238,16 @@ get_EXTRACTIONS_URL() {
     echo
     case $YN in
       [Yy] ) read -p "What URL would you like to publish the extractions to?
-    *Hint: Set this to http://localhost if you do not want to make the 
+    *Note: Set this to http://localhost if you do not want to make the 
     extractions publically available: " EXTRACTIONS_URL
         if ! which caddy &> /dev/null ;then
-          apt install -y debian-keyring debian-archive-keyring apt-transport-https curl &> /dev/null
-          curl -1sLf '${CADDY_GPG}' | apt-key add - &> /dev/null
-          curl -1sLf '${CADDY_LIST}' | tee /etc/apt/sources.list.d/caddy-stable.list &> /dev/null
-          apt -qqq update &> /dev/null
           echo "Installing Caddy"
-          apt -qqqy install caddy &> /dev/null && systemctl enable --now caddy &> /dev/null
-        else
+          curl -1sLf \
+            'https://dl.cloudsmith.io/public/caddy/stable/setup.deb.sh' \
+              | sudo -E bash
+	  apt update &> /dev/null && apt install -y caddy &> /dev/null
+          systemctl enable --now caddy &> /dev/null
+	else
           echo "Caddy is installed" && systemctl enable --now caddy &> /dev/null
         fi
         break;;
@@ -272,6 +273,75 @@ get_PUSHED() {
   done
 }
 
+install_cleanup_cron() {
+  echo "Adding the cleanup.cron"
+  if ! crontab -u ${BIRDNET_USER} -l &> /dev/null;then
+    cd $my_dir || exit 1
+    cd ../templates || exit 1
+    crontab -u ${BIRDNET_USER} ./cleanup.cron &> /dev/null
+  else
+    crontab -u ${BIRDNET_USER} -l > ${TMPFILE}
+    cd $my_dir || exit 1
+    cd ../templates || exit 1
+    cat ./cleanup.cron >> ${TMPFILE}
+    crontab -u ${BIRDNET_USER} "${TMPFILE}" &> /dev/null
+  fi
+}
+
+install_gotty_logs() {
+  if ! which gotty &> /dev/null;then
+  wget -c ${gotty_url} -O - |  tar -xz -C /usr/local/bin/
+  fi
+  cat << EOF > /etc/systemd/system/birdnet_log.service
+[Unit]
+Description=BirdNET Analysis Log
+
+[Service]
+Restart=on-failure
+RestartSec=3
+Type=simple
+User=${BIRDNET_USER}
+Environment=TERM=xterm-256color
+ExecStart=/usr/local/bin/gotty -p 8080 --title-format "BirdNET-system Log" journalctl -fu birdnet_analysis.service
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl enable --now birdnet_log.service
+  cat << EOF > /etc/systemd/system/extraction_log.service
+[Unit]
+Description=BirdNET Extraction Log
+
+[Service]
+Restart=on-failure
+RestartSec=3
+Type=simple
+User=${BIRDNET_USER}
+Environment=TERM=xterm-256color
+ExecStart=/usr/local/bin/gotty -p 8888 --title-format "Extractions Log" journalctl -fu extraction.service
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl enable --now extraction_log.service
+  cat << EOF > /etc/systemd/system/birdstats.service
+[Unit]
+Description=BirdNET Statistics Log
+
+[Service]
+Restart=on-failure
+RestartSec=3
+Type=simple
+User=${BIRDNET_USER}
+Environment=TERM=xterm-256color
+ExecStart=/usr/local/bin/gotty -p 9090 --title-format "BirdNET-system Statistics" /usr/local/bin/birdnet_stats.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl enable --now birdstats.service
+}
+
 finish_installing_services() {
   USER=${BIRDNET_USER}
   HOME=$(grep ^$USER /etc/passwd | cut -d':' -f6)
@@ -280,7 +350,13 @@ finish_installing_services() {
   cd ${my_dir} || exit 1
   ln -fs $(dirname ${my_dir})/birdnet.conf /etc/birdnet/birdnet.conf
   source /etc/birdnet/birdnet.conf
-
+  
+  [ -d ${EXTRACTED} ] || mkdir -p ${EXTRACTED}
+  
+  install_gotty_logs
+  
+  install_cleanup_cron
+  
   if [ ! -z "${REMOTE_RECS_DIR}" ];then
     cat << EOF > /etc/systemd/system/${SYSTEMD_MOUNT}
 [Unit]
@@ -338,6 +414,7 @@ ${EXTRACTIONS_URL} {
 root * ${EXTRACTED}
 file_server browse
 }
+
 EOF
     if [ ! -z ${REMOTE_USER} ];then
       mkdir -p /etc/systemd/system/caddy.service.d
