@@ -29,7 +29,7 @@ while read -r line;do
   echo "    + $line"
 done < ${IDFILE}
 echo
-uptime -p | sed 's/up/Listening for/'
+echo -n "Listening since $(passwd -S | awk '{print $3}')"
 sleep 180
 clear
 done
