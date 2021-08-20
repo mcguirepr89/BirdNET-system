@@ -4,7 +4,6 @@ BIRDNET_USER=${BIRDNET_USER}
 RECS_DIR=${RECS_DIR}
 LATITUDE="${LATITUDE}"
 LONGITUDE="${LONGITUDE}"
-ZIP="${ZIP}"
 
 # Set these if the recordings will be mounted from a remote directory using SSHFS
 REMOTE_USER=${REMOTE_USER}
