@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Exit when any command fails
+#set -x
 set -e
 # Keep track of the last executed command
 trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
@@ -60,10 +61,10 @@ for h in "${SCAN_DIRS[@]}";do
     OLDFILE="$(echo "${line}" | awk '{print $5}')" 
     START="$(echo "${line}" | awk '{print $6}')" 
     END="$(echo "${line}" | awk '{print $7}')" 
-    SPECIES="$(echo "${line}" \
+    SPECIES=""$(echo ${line//\'} \
 	      | awk '{for(i=11;i<=NF;++i)printf $i""FS ; print ""}' \
 	      | cut -d'0' -f1 \
-	      | xargs)"
+	      | xargs)""
     NEWFILE="${SPECIES// /_}-${OLDFILE}" 
     NEWSPECIES_BYDATE="${EXTRACTED}/By_Date/${DATE}/${SPECIES// /_}"
     NEWSPECIES_BYSPEC="${EXTRACTED}/By_Species/${SPECIES// /_}"
@@ -119,6 +120,9 @@ for h in "${SCAN_DIRS[@]}";do
       ln -fs "${NEWSPECIES_BYDATE}/${a}-${NEWFILE}"\
         "${NEWSPECIES_BYSPEC}/${a}-${NEWFILE}"
       echo "Success! New extraction for ${SPECIES}"
+    else
+      ln -fs "${NEWSPECIES_BYDATE}/${a}-${NEWFILE}"\
+        "${NEWSPECIES_BYSPEC}/${a}-${NEWFILE}"
     fi   
 
 
