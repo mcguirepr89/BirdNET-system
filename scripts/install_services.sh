@@ -351,7 +351,7 @@ finish_installing_services() {
   ln -fs $(dirname ${my_dir})/birdnet.conf /etc/birdnet/birdnet.conf
   source /etc/birdnet/birdnet.conf
   
-  [ -d ${EXTRACTED} ] || mkdir -p ${EXTRACTED}
+  [ -d ${EXTRACTED} ] || sudo -u ${BIRDNET_USER} mkdir -p ${EXTRACTED}
   
   install_gotty_logs
   
