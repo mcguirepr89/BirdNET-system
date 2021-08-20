@@ -73,4 +73,3 @@ If you would also like to remove conda, run `rm -drf ~/c4aarch64_installer` and 
 ### TODO & Notes:
 1. I ought to add the steps to setup a Pushed.co application for the mobile notifications feature. Here is a link for now https://about.pushed.co/docs/productguides#developers-quick-start
 1. It's kind of cool to reverse-proxy a gotty web terminal of the birdnet_analysis.service log output (`journalctl -fu birdnet_analysis`), so I may add that.
-1. Right now, nothing archives nor removes old recordings automatically, but there is a script included that will remove processed audio that is over 7 days old ( and can obviously be easily tweaked).
