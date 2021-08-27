@@ -270,6 +270,8 @@ install_avahi_aliases() {
   cat << 'EOF' > /etc/systemd/system/avahi-alias@.service
 [Unit]
 Description=Publish %I as alias for %H.local via mdns
+After=network.target network-online.target
+Requires=network-online.target
 
 [Service]
 Type=simple
