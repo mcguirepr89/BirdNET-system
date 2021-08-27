@@ -274,6 +274,7 @@ After=network.target network-online.target
 Requires=network-online.target
 
 [Service]
+Restart=always
 Type=simple
 ExecStart=/bin/bash -c "/usr/bin/avahi-publish -a -R %I $(avahi-resolve -4 -n %H.local | cut -f 2)"
 
