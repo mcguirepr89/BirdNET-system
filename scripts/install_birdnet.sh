@@ -28,61 +28,6 @@ spinner() {
   done
 }
 
-license_agreement() {
-  echo "
-  Before installation, please read and accept the license 
-  agreement to install and use conda4aarch64.
-  "
-
-  less -SFX <<EOF
-===============================================================================
-===============================================================================
-  Copyright (c) 2019 Jonathan J. Helmus
-  All rights reserved.
-
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions are
-  met:
-
-  a. Redistributions of source code must retain the above copyright
-  notice, this list of conditions and the following disclaimer.
-
-  b. Redistributions in binary form must reproduce the above copyright
-  notice, this list of conditions and the following disclaimer in the
-  documentation and/or other materials provided with the
-  distribution.
-
-  c. Neither the name of the author nor the names of contributors may
-  be used to endorse or promote products derived from this software
-  without specific prior written permission.
-
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-===============================================================================
-===============================================================================
-
-EOF
-while true;do
-  read -p "	Do you accept the license agreement for conda4aarch64? " YN
-  echo
-  case $YN in
-    yes|YES ) break;;
-    * ) echo \
-      "	You must accept the license agreement to use conda4aarch64.
-  If you really want to quit, use Ctrl+C.";;
-esac
-done
-}
-
 install_deps() {
   echo "	Checking dependencies"
   sudo apt update &> /dev/null
@@ -168,7 +113,9 @@ This script will do the following:
 
 echo
 read -sp "\
-  If you DO NOT want to install BirdNET and the birdnet_analysis.service, 
+Be sure you have read the software license before installing. This is
+available in the BirdNET-system directory as "LICENSE"
+If you DO NOT want to install BirdNET and the birdnet_analysis.service, 
 press Ctrl+C to cancel. If you DO wish to install BirdNET and the 
 birdnet_analysis.service, press ENTER to continue with the installation."
 
