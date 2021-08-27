@@ -175,7 +175,7 @@ birdnet_analysis.service, press ENTER to continue with the installation."
 
 [ -d ${RECS_DIR} ] || mkdir -p ${RECS_DIR} &> /dev/null
 
-license_agreement
+#license_agreement
 install_deps
 install_birdnet & spinner
 
