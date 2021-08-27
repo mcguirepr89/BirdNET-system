@@ -52,7 +52,6 @@ ${LONGITUDE}
 ${LATITUDE}
 yyyhttp://raspberrypi.local
 n
-yes
 n
 EOF
 else
@@ -64,7 +63,6 @@ ${LATITUDE}
 yyyhttp://raspberrypi.local
 y${PUSHED_APP_SECRET}
 ${PUSHED_APP_KEY}
-yes
 n
 EOF
 fi
