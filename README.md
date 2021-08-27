@@ -71,4 +71,4 @@ To remove BirdNET-system, run the included '*uninstall.sh*' script as the ${BIRD
 If you would also like to remove conda, run `rm -drf ~/c4aarch64_installer` and `rm -drf ~/.conda*`
 
 ### TODO & Notes:
-1. I ought to add the steps to setup a Pushed.co application for the mobile notifications feature. Here is a link for now https://about.pushed.co/docs/productguides#developers-quick-start
+1. I ought to add the steps to setup a Pushed.co application for the mobile notifications feature. Here is a link for now https://pushed.co/quick-start-guide
