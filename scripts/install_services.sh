@@ -259,6 +259,29 @@ get_EXTRACTIONS_URL() {
   done
 }
 
+install_avahi_aliases {
+  if ! which avahi-publish &> /dev/null; then
+    echo "Installing avahi-utils"
+    apt install -y avahi-utils &> /dev/null
+  fi
+  echo "Installing avahi-alias service"
+  cat << EOF > /etc/systemd/system/avahi-alias@.service
+[Unit]
+Description=Publish %I as alias for %H.local via mdns
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c "/usr/bin/avahi-publish -a -R %I $(avahi-resolve -4 -n %H.local | cut -f 2)"
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl enable --now avahi-alias@birdnetsystem.local.service
+  systemctl enable --now avahi-alias@birdlog.local.service
+  systemctl enable --now avahi-alias@extractionlog.local.service
+  systemctl enable --now avahi-alias@birdstats.local.service
+}
+
 get_PUSHED() {
   while true; do # Force Yes or No
     read -n1 -p "Do you have a free App key to receive mobile notifications via Pushed.co?" YN

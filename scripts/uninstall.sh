@@ -37,6 +37,11 @@ sudo systemctl disable --now extraction_log.service
 sudo rm /etc/systemd/system/extraction_log.service
 sudo systemctl disable --now birdstats.service
 sudo rm /etc/systemd/system/birdstats.service
+sudo systemctl disable --now avahi-alias@birdnetsystem.local.service
+sudo systemctl disable --now avahi-alias@birdlog.local.service
+sudo systemctl disable --now avahi-alias@extractionlog.local.service
+sudo systemctl disable --now avahi-alias@birdstats.local.service
+sudo rm /etc/systemd/system/avahi-alias@.service
 sudo rm /usr/local/bin/birdnet_analysis.sh
 sudo rm /usr/local/bin/birdnet_recording.sh
 sudo rm /usr/local/bin/cleanup.sh
