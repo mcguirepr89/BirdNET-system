@@ -67,5 +67,9 @@ n
 EOF
 fi
 echo "Thanks for installing BirdNET-system!!! The next time you power on the raspberry pi,
-all of the services will start up automatically. Visit http://raspberrypi.local or
-http://raspberrypi.lan or http://raspberrypi.lan1 to see the extractions."
+all of the services will start up automatically. 
+
+Visit http://birdnetsystem.local to see your extractions1
+      http://birdlog.local to see the log output of the birdnet_analysis.service
+      http://extractionlog to see the log output of the extraction.service
+  and http://birdstats.local to see the BirdNET-system Report"
