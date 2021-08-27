@@ -247,6 +247,8 @@ get_EXTRACTIONS_URL() {
               | sudo -E bash
 	  apt update &> /dev/null && apt install -y caddy &> /dev/null
           systemctl enable --now caddy &> /dev/null
+          install_avahi_aliases
+	  install_gotty_logs
 	else
           echo "Caddy is installed" && systemctl enable --now caddy &> /dev/null
         fi
@@ -353,8 +355,6 @@ finish_installing_services() {
   
   [ -d ${EXTRACTED} ] || sudo -u ${BIRDNET_USER} mkdir -p ${EXTRACTED}
   
-  install_gotty_logs
-  
   install_cleanup_cron
   
   if [ ! -z "${REMOTE_RECS_DIR}" ];then
@@ -411,8 +411,25 @@ EOF
     [ -d /etc/caddy ] || mkdir /etc/caddy
     cat << EOF > /etc/caddy/Caddyfile
 ${EXTRACTIONS_URL} {
-root * ${EXTRACTED}
-file_server browse
+  root * ${EXTRACTED}
+  file_server browse
+}
+
+http://birdnetsystem.local {
+  root * ${EXTRACTED}
+  file_server browse
+}
+
+http://birdlog.local {
+  reverse_proxy localhost:8080
+}
+
+http://extractionlog.local {
+  reverse_proxy localhost:8888
+}
+
+http://birdstats.local {
+  reverse_proxy localhost:9090
 }
 
 EOF
@@ -425,7 +442,6 @@ Requires=network-online.target ${SYSTEMD_MOUNT}
 EOF
       systemctl daemon-reload
       systemctl restart caddy
-      systemctl enable caddy
     fi
  fi
 }
