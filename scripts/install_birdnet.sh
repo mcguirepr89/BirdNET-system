@@ -125,7 +125,7 @@ install_birdnet() {
 
 yes
 
-yes
+no
 EOF
   echo "	Initializing conda"
   source ${HOME}/c4aarch64_installer/etc/profile.d/conda.sh
