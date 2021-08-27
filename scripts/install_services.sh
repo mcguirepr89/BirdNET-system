@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Creates and installs the systemd scripts and birdnet configuration file
-# set -x # Uncomment to enable debugging
+#set -x # Uncomment to enable debugging
 trap 'rm -f ${TMPFILE}' EXIT
 my_dir=$(realpath $(dirname $0))
 TMPFILE=$(mktemp)
@@ -251,6 +251,8 @@ get_EXTRACTIONS_URL() {
 	  install_gotty_logs
 	else
           echo "Caddy is installed" && systemctl enable --now caddy &> /dev/null
+          install_avahi_aliases
+	  install_gotty_logs
         fi
         break;;
       [Nn] ) EXTRACTIONS_URL=;break;;
@@ -259,13 +261,13 @@ get_EXTRACTIONS_URL() {
   done
 }
 
-install_avahi_aliases {
+install_avahi_aliases() {
   if ! which avahi-publish &> /dev/null; then
     echo "Installing avahi-utils"
     apt install -y avahi-utils &> /dev/null
   fi
   echo "Installing avahi-alias service"
-  cat << EOF > /etc/systemd/system/avahi-alias@.service
+  cat << 'EOF' > /etc/systemd/system/avahi-alias@.service
 [Unit]
 Description=Publish %I as alias for %H.local via mdns
 
