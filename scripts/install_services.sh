@@ -434,6 +434,7 @@ EOF
 
   if [ ! -z "${EXTRACTIONS_URL}" ];then
     [ -d /etc/caddy ] || mkdir /etc/caddy
+    cp $(dirname ${my_dir})/templates/index.html ${EXTRACTED}/
     cat << EOF > /etc/caddy/Caddyfile
 ${EXTRACTIONS_URL} {
   root * ${EXTRACTED}

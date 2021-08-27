@@ -133,7 +133,12 @@ To monitor the service logs, issue:
 To stop the service manually, issue: 
 'sudo systemctl stop birdnet_analysis'
 To stop and disable the service, issue: 
-'sudo systemctl disable --now birdnet_analysis.service'"
+'sudo systemctl disable --now birdnet_analysis.service'
+
+Visit http://birdnetsystem.local to see your extractions
+      http://birdlog.local to see the log output of the birdnet_analysis.service
+      http://extractionlog.local to see the log output of the extraction.service
+  and http://birdstats.local to see the BirdNET-system Report"
 echo
 echo "	Enabling birdnet_analysis.service now"
 sudo systemctl enable birdnet_analysis.service
