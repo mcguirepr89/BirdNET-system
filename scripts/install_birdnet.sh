@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Install BirdNET script
 #set -x # debuggings
+set -e # exit installation if anything fails
 trap 'echo -e "\n\nExiting the installation. Goodbye!" && exit' SIGINT
 my_dir=$(realpath $(dirname $0))
 cd $my_dir || exit 1
