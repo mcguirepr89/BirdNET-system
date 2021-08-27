@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 my_dir=${HOME}/BirdNET-system
 
 
