@@ -466,8 +466,8 @@ After=network.target network-online.target ${SYSTEMD_MOUNT}
 Requires=network-online.target ${SYSTEMD_MOUNT}
 EOF
       systemctl daemon-reload
-      systemctl restart caddy
     fi
+    systemctl restart caddy
  fi
 }
 
