@@ -99,17 +99,16 @@ EOF
 
 echo "
 This script will do the following:
-#1: Present the licensing agreement for conda4aarch64
-#2: Install the following BirdNET system dependencies:
+#1: Install the following BirdNET system dependencies:
 - ffmpeg
 - libblas-dev
 - liblapack-dev
 - alsa-utils (for recording)
 - sshfs (to mount remote sound file directories)
-#3: Creates a conda virtual environment for BirdNET
-#4: Builds BirdNET in the 'birdnet' conda virtual environment
-#5: Copies the systemd .service and .mount files and enables those chosen
-#6: Adds cron environments and jobs chosen"
+#2: Creates a conda virtual environment for BirdNET
+#3: Builds BirdNET in the 'birdnet' conda virtual environment
+#4: Copies the systemd .service and .mount files and enables those chosen
+#5: Adds cron environments and jobs chosen"
 
 echo
 read -sp "\
@@ -122,7 +121,6 @@ birdnet_analysis.service, press ENTER to continue with the installation."
 
 [ -d ${RECS_DIR} ] || mkdir -p ${RECS_DIR} &> /dev/null
 
-#license_agreement
 install_deps
 install_birdnet & spinner
 
