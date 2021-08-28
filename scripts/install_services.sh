@@ -435,7 +435,7 @@ ExecStart=/usr/local/bin/birdnet_analysis.sh
 WantedBy=multi-user.target
 EOF
   fi
-
+  systemctl enable birdnet_analysis.service
   if [ ! -z "${EXTRACTIONS_URL}" ];then
     [ -d /etc/caddy ] || mkdir /etc/caddy
     cp $(dirname ${my_dir})/templates/index.html ${EXTRACTED}/
