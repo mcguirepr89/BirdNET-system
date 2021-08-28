@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 # Creates and installs the systemd scripts and birdnet configuration file
-# set -x # Uncomment to enable debugging
+#set -x # Uncomment to enable debugging
 trap 'rm -f ${TMPFILE}' EXIT
 my_dir=$(realpath $(dirname $0))
 TMPFILE=$(mktemp)
 CADDY_GPG="https://dl.cloudsmith.io/public/caddy/stable/gpg.key"
 CADDY_LIST="https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt"
+gotty_url="https://github.com/yudai/gotty/releases/download/v1.0.1/gotty_linux_arm.tar.gz"
 
 ln -sf ${my_dir}/* /usr/local/bin/
 
@@ -50,8 +51,8 @@ The next few questions will populate the required configuration file."
 # Configuration settings for BirdNET as a service
 BIRDNET_USER=${BIRDNET_USER}
 RECS_DIR=${RECS_DIR}
-LONGITUDE="${LONGITUDE}"
 LATITUDE="${LATITUDE}"
+LONGITUDE="${LONGITUDE}"
 ZIP="${ZIP}"
 # Defaults
 REC_CARD=
@@ -95,8 +96,8 @@ get_RECS_DIR() {
 }
 
 get_GEO() {
-  read -p "What is the longitude where the recordings were made? " LONGITUDE
   read -p "What is the latitude where the recordings were made? " LATITUDE
+  read -p "What is the longitude where the recordings were made? " LONGITUDE
 }
 
 get_REMOTE() {
@@ -141,14 +142,13 @@ ExecStart=/usr/local/bin/birdnet_recording.sh
 [Install]
 WantedBy=multi-user.target
 EOF
-  systemctl enable --now birdnet_recording.service
+  systemctl enable birdnet_recording.service
 }
 
 
 is_it_remote() {
   while true; do
-    read -n1 -p "Are the recordings mounted on a remote file system?" YN
-    echo
+    read -n1 -p "Are the recordings mounted on a remote file system?"
     case $YN in
       [Yy] ) echo "Checking for SSHFS to mount remote filesystem"
         if ! which sshfs &> /dev/null ;then
@@ -246,14 +246,46 @@ get_EXTRACTIONS_URL() {
           curl -1sLf \
             'https://dl.cloudsmith.io/public/caddy/stable/setup.deb.sh' \
               | sudo -E bash
-        else
+	  apt update &> /dev/null && apt install -y caddy &> /dev/null
+          systemctl enable --now caddy &> /dev/null
+          install_avahi_aliases
+	  install_gotty_logs
+	else
           echo "Caddy is installed" && systemctl enable --now caddy &> /dev/null
+          install_avahi_aliases
+	  install_gotty_logs
         fi
         break;;
       [Nn] ) EXTRACTIONS_URL=;break;;
       * ) echo "Please answer Yes or No";;
     esac
   done
+}
+
+install_avahi_aliases() {
+  if ! which avahi-publish &> /dev/null; then
+    echo "Installing avahi-utils"
+    apt install -y avahi-utils &> /dev/null
+  fi
+  echo "Installing avahi-alias service"
+  cat << 'EOF' > /etc/systemd/system/avahi-alias@.service
+[Unit]
+Description=Publish %I as alias for %H.local via mdns
+After=network.target network-online.target
+Requires=network-online.target
+
+[Service]
+Restart=always
+Type=simple
+ExecStart=/bin/bash -c "/usr/bin/avahi-publish -a -R %I $(avahi-resolve -4 -n %H.local | cut -f 2)"
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl enable --now avahi-alias@birdnetsystem.local.service
+  systemctl enable --now avahi-alias@birdlog.local.service
+  systemctl enable --now avahi-alias@extractionlog.local.service
+  systemctl enable --now avahi-alias@birdstats.local.service
 }
 
 get_PUSHED() {
@@ -272,6 +304,75 @@ get_PUSHED() {
   done
 }
 
+install_cleanup_cron() {
+  echo "Adding the cleanup.cron"
+  if ! crontab -u ${BIRDNET_USER} -l &> /dev/null;then
+    cd $my_dir || exit 1
+    cd ../templates || exit 1
+    crontab -u ${BIRDNET_USER} ./cleanup.cron &> /dev/null
+  else
+    crontab -u ${BIRDNET_USER} -l > ${TMPFILE}
+    cd $my_dir || exit 1
+    cd ../templates || exit 1
+    cat ./cleanup.cron >> ${TMPFILE}
+    crontab -u ${BIRDNET_USER} "${TMPFILE}" &> /dev/null
+  fi
+}
+
+install_gotty_logs() {
+  if ! which gotty &> /dev/null;then
+  wget -c ${gotty_url} -O - |  tar -xz -C /usr/local/bin/
+  fi
+  cat << EOF > /etc/systemd/system/birdnet_log.service
+[Unit]
+Description=BirdNET Analysis Log
+
+[Service]
+Restart=on-failure
+RestartSec=3
+Type=simple
+User=${BIRDNET_USER}
+Environment=TERM=xterm-256color
+ExecStart=/usr/local/bin/gotty -p 8080 --title-format "BirdNET-system Log" journalctl -fu birdnet_analysis.service
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl enable --now birdnet_log.service
+  cat << EOF > /etc/systemd/system/extraction_log.service
+[Unit]
+Description=BirdNET Extraction Log
+
+[Service]
+Restart=on-failure
+RestartSec=3
+Type=simple
+User=${BIRDNET_USER}
+Environment=TERM=xterm-256color
+ExecStart=/usr/local/bin/gotty -p 8888 --title-format "Extractions Log" journalctl -fu extraction.service
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl enable --now extraction_log.service
+  cat << EOF > /etc/systemd/system/birdstats.service
+[Unit]
+Description=BirdNET Statistics Log
+
+[Service]
+Restart=on-failure
+RestartSec=3
+Type=simple
+User=${BIRDNET_USER}
+Environment=TERM=xterm-256color
+ExecStart=/usr/local/bin/gotty -p 9090 --title-format "BirdNET-system Statistics" /usr/local/bin/birdnet_stats.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl enable --now birdstats.service
+}
+
 finish_installing_services() {
   USER=${BIRDNET_USER}
   HOME=$(grep ^$USER /etc/passwd | cut -d':' -f6)
@@ -280,7 +381,11 @@ finish_installing_services() {
   cd ${my_dir} || exit 1
   ln -fs $(dirname ${my_dir})/birdnet.conf /etc/birdnet/birdnet.conf
   source /etc/birdnet/birdnet.conf
-
+  
+  [ -d ${EXTRACTED} ] || sudo -u ${BIRDNET_USER} mkdir -p ${EXTRACTED}
+  
+  install_cleanup_cron
+  
   if [ ! -z "${REMOTE_RECS_DIR}" ];then
     cat << EOF > /etc/systemd/system/${SYSTEMD_MOUNT}
 [Unit]
@@ -333,11 +438,30 @@ EOF
 
   if [ ! -z "${EXTRACTIONS_URL}" ];then
     [ -d /etc/caddy ] || mkdir /etc/caddy
+    cp $(dirname ${my_dir})/templates/index.html ${EXTRACTED}/
     cat << EOF > /etc/caddy/Caddyfile
 ${EXTRACTIONS_URL} {
-root * ${EXTRACTED}
-file_server browse
+  root * ${EXTRACTED}
+  file_server browse
 }
+
+http://birdnetsystem.local {
+  root * ${EXTRACTED}
+  file_server browse
+}
+
+http://birdlog.local {
+  reverse_proxy localhost:8080
+}
+
+http://extractionlog.local {
+  reverse_proxy localhost:8888
+}
+
+http://birdstats.local {
+  reverse_proxy localhost:9090
+}
+
 EOF
     if [ ! -z ${REMOTE_USER} ];then
       mkdir -p /etc/systemd/system/caddy.service.d
@@ -347,9 +471,8 @@ After=network.target network-online.target ${SYSTEMD_MOUNT}
 Requires=network-online.target ${SYSTEMD_MOUNT}
 EOF
       systemctl daemon-reload
-      systemctl restart caddy
-      systemctl enable caddy
     fi
+    systemctl restart caddy
  fi
 }
 
