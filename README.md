@@ -85,4 +85,4 @@ To remove BirdNET and BirdNET-system, run the included '*uninstall.sh*' script a
 
 ### TODO & Notes:
 1. I ought to add the steps to setup a Pushed.co application for the mobile notifications feature. Here is a link for now https://about.pushed.co/docs/productguides#developers-quick-start
-1. Right now, nothing archives nor removes old recordings automatically, but there is a script included that will remove processed audio that is over 2 days old ( and can obviously be easily tweaked). This can be added as a cron job to keep things cleaned up on the system.
+1. Right now, the Processed data is automatically rotated after two days. You can either alter the cleanup.sh script manually to adjust the rotation time-frame or remove the cron task that triggers the cleanup.sh script altogether.
