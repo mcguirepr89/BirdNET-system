@@ -6,7 +6,7 @@ my_dir=$(realpath $(dirname $0))
 TMPFILE=$(mktemp)
 CADDY_GPG="https://dl.cloudsmith.io/public/caddy/stable/gpg.key"
 CADDY_LIST="https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt"
-gotty_url="https://github.com/yudai/gotty/releases/download/v1.0.1/gotty_linux_arm.tar.gz"
+gotty_url="https://github.com/yudai/gotty/releases/download/v1.0.1/gotty_linux_amd64.tar.gz"
 
 ln -sf ${my_dir}/* /usr/local/bin/
 
