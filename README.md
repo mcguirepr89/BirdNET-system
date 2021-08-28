@@ -66,12 +66,19 @@ Currently, there are three types of configurations that I've tried and that have
 At any time, you can reconfigure the settings you opted for during installation by running the '*uninstall.sh*' script, then running the '*reconfigure_birdnet.sh*' script with super user privileges.
 Just issue `/usr/local/bin/uninstall.sh && sudo ~/BirdNET-system/scripts/reconfigure_birdnet.sh` and that ought to do the trick.
 
+## Access your BirdNET-system
+If you configured BirdNET-system with the Caddy webserver, you can access the extractions locally at
+- http://birdnetsystem.local
+You can also view the log output for the <code>birdnet_analysis.service</code> and <code>extraction.service</code> at
+- http://birdlog.local
+- http://extractionlog.local
+and the BirdNET-system Statistics Report at
+- http://birdstats.local
+
 ## How to uninstall BirdNET-system
 To remove BirdNET and BirdNET-system, run the included '*uninstall.sh*' script as the ${BIRDNET_USER}.
 1. Issue `/usr/local/bin/uninstall.sh && cd ~ && rm -drf BirdNET-system`
 
 ### TODO & Notes:
 1. I ought to add the steps to setup a Pushed.co application for the mobile notifications feature. Here is a link for now https://about.pushed.co/docs/productguides#developers-quick-start
-1. It's kind of cool to reverse-proxy a gotty web terminal of the birdnet_analysis.service log output (`journalctl -fu birdnet_analysis`), so I may add that.
-1. I've setup mDNS to make extractions ALWAYS available at <nowiki>http://birdnetsystem.local</nowiki> -- I will include this in both installations soon.
 1. Right now, nothing archives nor removes old recordings automatically, but there is a script included that will remove processed audio that is over 2 days old ( and can obviously be easily tweaked). This can be added as a cron job to keep things cleaned up on the system.
