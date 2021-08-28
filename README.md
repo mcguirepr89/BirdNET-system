@@ -68,10 +68,14 @@ Just issue `/usr/local/bin/uninstall.sh && sudo ~/BirdNET-system/scripts/reconfi
 
 ## Access your BirdNET-system
 If you configured BirdNET-system with the Caddy webserver, you can access the extractions locally at
+
 - http://birdnetsystem.local
+
 You can also view the log output for the <code>birdnet_analysis.service</code> and <code>extraction.service</code> at
+
 - http://birdlog.local
 - http://extractionlog.local
+
 and the BirdNET-system Statistics Report at
 - http://birdstats.local
 
