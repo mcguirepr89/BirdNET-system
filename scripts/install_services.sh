@@ -208,6 +208,7 @@ ExecStart=/usr/local/bin/extract_new_birdsounds.sh
 [Install]
 WantedBy=multi-user.target
 EOF
+        systemctl enable extraction.service
         echo "Adding the species_updater.cron"
         if ! crontab -u ${BIRDNET_USER} -l &> /dev/null;then
           cd $my_dir || exit 1
