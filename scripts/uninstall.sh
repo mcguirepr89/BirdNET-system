@@ -28,6 +28,7 @@ if [ -f /etc/systemd/system/birdnet_recording.service ];then
 fi
 
 if [ -f /etc/systemd/system/extraction.service ];then
+  sudo systemctl disable --now extraction.service
   sudo rm /etc/systemd/system/extraction.service
 fi
 
