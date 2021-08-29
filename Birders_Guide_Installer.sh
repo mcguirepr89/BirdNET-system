@@ -101,10 +101,16 @@ Visit http://birdnetsystem.local to see your extractions
       http://birdlog.local to see the log output of the birdnet_analysis.service
       http://extractionlog.local to see the log output of the extraction.service
   and http://birdstats.local to see the BirdNET-system Report"
+
+
+  echo "The installation has finished. Press Enter to close this window."
 }
 
 if [ ! -f ${HOME}/stage_1_complete ] ;then
   stage_1
 else
   stage_2
+  systemctl disable --now birdnet-system-installer.service
+  sudo rm /etc/systemd/user/birdnet-system-installer.service
+  rm ${HOME}/stage_1_complete
 fi  
