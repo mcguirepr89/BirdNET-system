@@ -18,11 +18,10 @@ computer is updated properly."
 [Unit]
 Description=A BirdNET-system Installation Script Service
 After=graphical.target
-Requires=graphical.target
 
 [Service]
 Type=simple
-Restart=onfailure
+Restart=on-failure
 RestartSec=3
 ExecStart=lxterminal -e /home/pi/Birders_Guide_Installer.sh
 
