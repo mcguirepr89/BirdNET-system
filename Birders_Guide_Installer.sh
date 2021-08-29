@@ -49,8 +49,9 @@ if [ ! -d ${my_dir} ];then
 fi
 
 if [ -f ${my_dir}/Birders_Guide_Installer_Configuration.txt ];then
-  mousepad ${my_dir}/Birders_Guide_Installer_Configuration.txt
-  sleep 3
+  echo "Follow the instructions to fill out the ${LATITUDE} and ${LONGITUDE} variables
+Save the file after editing and then close the Mouse Pad editing window"
+  mousepad ${my_dir}/Birders_Guide_Installer_Configuration.txt &> /dev/null
   while pgrep mouse &> /dev/null;do
     sleep 1
   done
@@ -101,12 +102,6 @@ EOF
 fi
 echo "Thanks for installing BirdNET-system!!! The next time you power on the raspberry pi,
 all of the services will start up automatically. 
-
-Visit http://birdnetsystem.local to see your extractions
-      http://birdlog.local to see the log output of the birdnet_analysis.service
-      http://extractionlog.local to see the log output of the extraction.service
-  and http://birdstats.local to see the BirdNET-system Report"
-
 
   echo "The installation has finished. Press Enter to close this window."
 }
