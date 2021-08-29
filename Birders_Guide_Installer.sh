@@ -2,12 +2,25 @@
 set -e
 my_dir=${HOME}/BirdNET-system
 
-
-if ! which git &> /dev/null ;then
+stage_1() {
+  echo "Welcome to the Birders Guide Installer script.
+This will run in two stages. The first stage will simply ensure your
+computer is updated properly."
+  echo "Installing stage 2 now."
+  curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/testing/Birders_Guide_Installer.sh"
+  sudo apt update && sudo apt -y upgrade
   echo "Installing git"
-  sudo apt update > /dev/null && sudo apt install -y git > /dev/null
-fi
+  sudo apt install -y git
+  echo "Stage 1 complete."
+  touch ${HOME}/stage_1_complete
+  echo "Setting up /etc/rc.local for reboot"
+  sed -i '/^exit*/i lxterminal -e /home/pi/Birders_Guide_Installer.sh' /etc/rc.local
+  sudo reboot
+}
 
+stage_2() {
+  echo "Welcome back! Press enter to continue the BirdNET-system installation"
+  read
 if [ ! -d ${my_dir} ];then
   cd ~ || exit 1
   echo "Cloning the BirdNET-system repository in your home directory"
@@ -74,3 +87,10 @@ Visit http://birdnetsystem.local to see your extractions
       http://birdlog.local to see the log output of the birdnet_analysis.service
       http://extractionlog.local to see the log output of the extraction.service
   and http://birdstats.local to see the BirdNET-system Report"
+}
+
+if [ ! -f ${HOME}/stage_1_complete ] ;then
+  stage_1
+else
+  stage_2
+fi  
