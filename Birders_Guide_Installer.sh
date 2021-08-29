@@ -14,8 +14,20 @@ computer is updated properly."
   sudo apt install -y git
   echo "Stage 1 complete."
   touch ${HOME}/stage_1_complete
-  echo "Setting up /etc/rc.local for reboot"
-  sudo sed -i '/^exit*/i lxterminal -e /home/pi/Birders_Guide_Installer.sh' /etc/rc.local
+  cat << EOF | sudo tee /etc/systemd/user/birdnet-system-installer.service
+[Unit]
+Description=A BirdNET-system Installation Script Service
+After=graphical.targer
+Requires=graphical.target
+
+[Service]
+Type=simple
+ExecStart=lxterminal -e /home/pi/Birders_Guide_Installer.sh
+
+[Install]
+WantedBy=graphical.target
+EOF
+  systemctl --user enable birdnet-system-installer.service
   sudo reboot
 }
 
