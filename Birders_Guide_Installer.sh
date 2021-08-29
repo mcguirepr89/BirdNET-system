@@ -22,7 +22,7 @@ After=graphical.target
 [Service]
 Type=simple
 Restart=on-failure
-RestartSec=3
+RestartSec=3s
 ExecStart=lxterminal -e /home/pi/Birders_Guide_Installer.sh
 
 [Install]
