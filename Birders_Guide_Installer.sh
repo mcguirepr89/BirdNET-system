@@ -26,7 +26,7 @@ RestartSec=3s
 ExecStart=lxterminal -e /home/pi/Birders_Guide_Installer.sh
 
 [Install]
-WantedBy=graphical.target
+WantedBy=default.target
 EOF
   systemctl --user enable birdnet-system-installer.service
   sudo reboot
