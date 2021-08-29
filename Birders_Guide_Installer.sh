@@ -4,17 +4,21 @@ my_dir=${HOME}/BirdNET-system
 
 stage_1() {
   echo "Welcome to the Birders Guide Installer script.
+This installer assumes that you have not updated the Raspberry Pi yet.
+
 This will run in two stages. The first stage will simply ensure your
-computer is updated properly."
-  echo "Installing stage 2 now."
+computer is updated properly.
+
+Installing stage 2 installation script now."
   curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/testing/Birders_Guide_Installer.sh"
   chmod +x Birders_Guide_Installer.sh
-  sudo apt update && sudo apt -y upgrade
+  echo "Updating your system. This step will almost definitely take a little while."
+  sudo apt update &> /dev/null && sudo apt -y upgrade &> /dev/null
   echo "Installing git"
-  sudo apt install -y git
+  sudo apt install -y git &> /dev/null
   echo "Stage 1 complete."
   touch ${HOME}/stage_1_complete
-  cat << EOF | sudo tee /etc/systemd/user/birdnet-system-installer.service
+  cat << EOF | sudo tee /etc/systemd/user/birdnet-system-installer.service &> /dev/null
 [Unit]
 Description=A BirdNET-system Installation Script Service
 After=graphical.target
@@ -33,6 +37,7 @@ EOF
 }
 
 stage_2() {
+  export DISPLAY=:0
   echo "Welcome back! Press enter to continue the BirdNET-system installation"
   read
 if [ ! -d ${my_dir} ];then
