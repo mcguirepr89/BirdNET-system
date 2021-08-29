@@ -8,6 +8,7 @@ This will run in two stages. The first stage will simply ensure your
 computer is updated properly."
   echo "Installing stage 2 now."
   curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/testing/Birders_Guide_Installer.sh"
+  chmod +x Birders_Guide_Installer.sh
   sudo apt update && sudo apt -y upgrade
   echo "Installing git"
   sudo apt install -y git
