@@ -115,7 +115,7 @@ if [ ! -f ${HOME}/stage_1_complete ] ;then
   stage_1
 else
   stage_2
-  systemctl disable --now birdnet-system-installer.service
+  systemctl disable birdnet-system-installer.service
   sudo rm /etc/systemd/user/birdnet-system-installer.service
   rm ${HOME}/stage_1_complete
 fi  
