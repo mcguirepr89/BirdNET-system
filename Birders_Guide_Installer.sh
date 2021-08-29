@@ -14,7 +14,7 @@ computer is updated properly."
   echo "Stage 1 complete."
   touch ${HOME}/stage_1_complete
   echo "Setting up /etc/rc.local for reboot"
-  sed -i '/^exit*/i lxterminal -e /home/pi/Birders_Guide_Installer.sh' /etc/rc.local
+  sudo sed -i '/^exit*/i lxterminal -e /home/pi/Birders_Guide_Installer.sh' /etc/rc.local
   sudo reboot
 }
 
