@@ -49,8 +49,8 @@ if [ -z ${PUSHED_APP_SECRET} ] || [ -z ${PUSHED_APP_KEY} ];then
   ${my_dir}/scripts/install_birdnet.sh << EOF
 ypi
 /home/pi/BirdSongs
-${LONGITUDE}
 ${LATITUDE}
+${LONGITUDE}
 yyyhttp://raspberrypi.local
 n
 n
@@ -59,8 +59,8 @@ else
   ${my_dir}/scripts/install_birdnet.sh << EOF
 ypi
 /home/pi/BirdSongs
-${LONGITUDE}
 ${LATITUDE}
+${LONGITUDE}
 yyyhttp://raspberrypi.local
 y${PUSHED_APP_SECRET}
 ${PUSHED_APP_KEY}
