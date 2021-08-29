@@ -61,6 +61,20 @@ Currently, there are three types of configurations that I've tried and that have
 4. Follow the installation prompts to configure the BirdNET-system to your needs.
 - Note: The installation should be run as a regular user, but will require super user privileges, i.e., will ask you for your super user password.
 
+## Access your BirdNET-system
+### Currently offline for testing -- August 29th, 2021
+If you configured BirdNET-system with the Caddy webserver, you can access the extractions locally at
+
+- http://birdnetsystem.local
+
+You can also view the log output for the <code>birdnet_analysis.service</code> and <code>extraction.service</code> at
+
+- http://birdlog.local
+- http://extractionlog.local
+
+and the BirdNET-system Statistics Report at
+- http://birdstats.local
+
 ## How to reconfigure your setup
 At any time, you can reconfigure the settings you opted for during installation by running the '*uninstall.sh*' script, then running the '*reconfigure_birdnet.sh*' script with super user privileges.
 Just issue `/usr/local/bin/uninstall.sh && sudo ~/BirdNET-system/scripts/reconfigure_birdnet.sh` and that ought to do the trick.
