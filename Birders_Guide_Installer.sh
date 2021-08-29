@@ -49,7 +49,7 @@ if [ ! -d ${my_dir} ];then
 fi
 
 if [ -f ${my_dir}/Birders_Guide_Installer_Configuration.txt ];then
-  xdg-open ${my_dir}/Birders_Guide_Installer_Configuration.txt
+  mousepad ${my_dir}/Birders_Guide_Installer_Configuration.txt
   sleep 3
   while pgrep mouse &> /dev/null;do
     sleep 1
