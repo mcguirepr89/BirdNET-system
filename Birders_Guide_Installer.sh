@@ -17,7 +17,7 @@ computer is updated properly."
   cat << EOF | sudo tee /etc/systemd/user/birdnet-system-installer.service
 [Unit]
 Description=A BirdNET-system Installation Script Service
-After=graphical.targer
+After=graphical.target
 Requires=graphical.target
 
 [Service]
