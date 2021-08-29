@@ -41,7 +41,7 @@ Currently, there are three types of configurations that I've tried and that have
 1. Creates ssh-key pairings as necessary.
 1. Creates and copies the appropriate systemd *.service* and/or *.mount* files.
 1. Installs any selected '*.cron*' jobs.
-1. Installs *conda* for the aarch64 architecture using the current release from jjhelmus@ https://github.com/jjhelmus/conda4aarch64/releases
+1. Installs *miniforge* for the aarch64 architecture using the current release from https://github.com/conda-forge/miniforge
 1. Builds BirdNET in conda's *'birdnet'* virtual environment.
 1. Enables (but does not start) birdnet_analysis.service
 
@@ -82,7 +82,6 @@ Just issue `/usr/local/bin/uninstall.sh && sudo ~/BirdNET-system/scripts/reconfi
 ## How to uninstall BirdNET-system
 To remove BirdNET-system, run the included '*uninstall.sh*' script as the ${BIRDNET_USER}.
 1. Issue `/usr/local/bin/uninstall.sh && cd ~ && rm -drf BirdNET-system`
-If you would also like to remove conda, run `rm -drf ~/c4aarch64_installer` and `rm -drf ~/.conda*`
 
 ### TODO & Notes:
 1. I ought to add the steps to setup a Pushed.co application for the mobile notifications feature. Here is a link for now https://pushed.co/quick-start-guide

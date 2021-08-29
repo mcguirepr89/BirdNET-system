@@ -12,7 +12,7 @@ source /etc/birdnet/birdnet.conf
 
 LASAG="https://github.com/Lasagne/Lasagne/archive/master.zip"
 THEON="https://raw.githubusercontent.com/Lasagne/Lasagne/master/requirements.txt"
-CONDA="https://github.com/jjhelmus/conda4aarch64/releases/download/1.0.0/c4aarch64_installer-1.0.0-Linux-aarch64.sh"
+CONDA="https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-aarch64.sh"
 APT_DEPS=(ffmpeg wget)
 LIBS_MODULES=(libblas-dev liblapack-dev llvm-9)
 
@@ -56,43 +56,37 @@ install_deps() {
 }
 
 install_birdnet() {
+  set -e
   cd ~/BirdNET-system || exit 1
   if [ ! -f "model/BirdNET_Soundscape_Model.pkl" ];then
     echo "	Fetching the model"
     sh model/fetch_model.sh > /dev/null 
   fi
-  if [ ! -f "./scripts/install_conda.sh" ];then
-    echo "	Fetching the conda4aarch64 installation script"
-    wget -O ./scripts/install_conda.sh "${CONDA}" > /dev/null 
+  if [ ! -f "./scripts/install_miniforge.sh" ];then
+    echo "	Fetching the Miniforge3 installation script"
+    wget -O ./scripts/install_miniforge.sh "${CONDA}" &> /dev/null
   fi
-  echo "	Installing conda4aarch64"
-  bash ./scripts/install_conda.sh > /dev/null<< EOF
-
-yes
-
-no
-EOF
-  echo "	Initializing conda"
-  source ${HOME}/c4aarch64_installer/etc/profile.d/conda.sh
-  echo "	Adding the conda-forge channel"
-  conda config --add channels conda-forge
+  echo "	Installing Miniforge3 for aarch64"
+  bash ./scripts/install_miniforge.sh \
+    -b -p$(dirname ${my_dir})/miniforge > /dev/null
+      echo "	Initializing Miniforge (conda)"
+  source $(dirname ${my_dir})/miniforge/etc/profile.d/conda.sh
   echo "	Initializing the birdnet virtual environment with
             - numba
             - numpy
             - scipy
             - future
-            - theano
             - python=3.7"
   conda create -y --name birdnet \
-    numba numpy scipy future theano python=3.7 &> /dev/null
+    numba numpy scipy future python=3.7 &> /dev/null
   echo "	Activating new environment"
   conda activate birdnet > /dev/null 
   echo "	Upgrading pip, wheel, and setuptools"
   pip install --upgrade pip wheel setuptools > /dev/null 
   echo "	Installing Librosa"
   pip install librosa > /dev/null 
-  #echo "Installing Theano"
-  #pip install -r "$THEON" > /dev/null 
+  echo "Installing Theano"
+  pip install -r "$THEON" > /dev/null 
   echo "	Installing Lasagne"
   pip install "$LASAG" > /dev/null 
 }
