@@ -103,7 +103,7 @@ fi
 echo "Thanks for installing BirdNET-system!!! The next time you power on the raspberry pi,
 all of the services will start up automatically. 
 
-  echo "The installation has finished. Press Enter to close this window."
+The installation has finished. Press Enter to close this window."
 }
 
 if [ ! -f ${HOME}/stage_1_complete ] ;then
