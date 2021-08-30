@@ -62,7 +62,6 @@ Currently, there are three types of configurations that I've tried and that have
 - Note: The installation should be run as a regular user, but will require super user privileges, i.e., will ask you for your super user password.
 
 ## Access your BirdNET-system
-### Currently offline for testing -- August 29th, 2021
 If you configured BirdNET-system with the Caddy webserver, you can access the extractions locally at
 
 - http://birdnetsystem.local
