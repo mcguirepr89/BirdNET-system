@@ -114,4 +114,5 @@ else
   systemctl --user disable birdnet-system-installer.service
   sudo rm /etc/systemd/user/birdnet-system-installer.service
   rm ${HOME}/stage_1_complete
+  rm ${HOME}/Birders_Guide_Installer.sh
 fi  
