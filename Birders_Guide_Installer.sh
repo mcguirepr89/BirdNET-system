@@ -2,12 +2,44 @@
 set -e
 my_dir=${HOME}/BirdNET-system
 
+stage_1() {
+  echo "Welcome to the Birders Guide Installer script.
+This installer assumes that you have not updated the Raspberry Pi yet.
 
-if ! which git &> /dev/null ;then
+This will run in two stages. The first stage will simply ensure your
+computer is updated properly.
+
+Installing stage 2 installation script now."
+  curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/testing/Birders_Guide_Installer.sh"
+  chmod +x Birders_Guide_Installer.sh
+  echo "Updating your system. This step will almost definitely take a little while."
+  sudo apt update &> /dev/null && sudo apt -y upgrade &> /dev/null
   echo "Installing git"
-  sudo apt update > /dev/null && sudo apt install -y git > /dev/null
-fi
+  sudo apt install -y git &> /dev/null
+  echo "Stage 1 complete."
+  touch ${HOME}/stage_1_complete
+  cat << EOF | sudo tee /etc/systemd/user/birdnet-system-installer.service &> /dev/null
+[Unit]
+Description=A BirdNET-system Installation Script Service
+After=graphical.target
 
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=3s
+ExecStart=lxterminal -e /home/pi/Birders_Guide_Installer.sh
+
+[Install]
+WantedBy=default.target
+EOF
+  systemctl --user enable birdnet-system-installer.service
+  sudo reboot
+}
+
+stage_2() {
+  export DISPLAY=:0
+  echo "Welcome back! Press enter to continue the BirdNET-system installation"
+  read
 if [ ! -d ${my_dir} ];then
   cd ~ || exit 1
   echo "Cloning the BirdNET-system repository in your home directory"
@@ -17,8 +49,9 @@ if [ ! -d ${my_dir} ];then
 fi
 
 if [ -f ${my_dir}/Birders_Guide_Installer_Configuration.txt ];then
-  xdg-open ${my_dir}/Birders_Guide_Installer_Configuration.txt
-  sleep 3
+  echo "Follow the instructions to fill out the ${LATITUDE} and ${LONGITUDE} variables
+Save the file after editing and then close the Mouse Pad editing window"
+  mousepad ${my_dir}/Birders_Guide_Installer_Configuration.txt &> /dev/null
   while pgrep mouse &> /dev/null;do
     sleep 1
   done
@@ -70,7 +103,16 @@ fi
 echo "Thanks for installing BirdNET-system!!! The next time you power on the raspberry pi,
 all of the services will start up automatically. 
 
-Visit http://birdnetsystem.local to see your extractions
-      http://birdlog.local to see the log output of the birdnet_analysis.service
-      http://extractionlog.local to see the log output of the extraction.service
-  and http://birdstats.local to see the BirdNET-system Report"
+The installation has finished. Press Enter to close this window."
+read
+}
+
+if [ ! -f ${HOME}/stage_1_complete ] ;then
+  stage_1
+else
+  stage_2
+  systemctl --user disable birdnet-system-installer.service
+  sudo rm /etc/systemd/user/birdnet-system-installer.service
+  rm ${HOME}/stage_1_complete
+  rm ${HOME}/Birders_Guide_Installer.sh
+fi  
