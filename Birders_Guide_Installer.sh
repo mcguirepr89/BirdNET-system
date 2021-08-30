@@ -104,13 +104,14 @@ echo "Thanks for installing BirdNET-system!!! The next time you power on the ras
 all of the services will start up automatically. 
 
 The installation has finished. Press Enter to close this window."
+read
 }
 
 if [ ! -f ${HOME}/stage_1_complete ] ;then
   stage_1
 else
   stage_2
-  systemctl disable --user birdnet-system-installer.service
+  systemctl --user disable birdnet-system-installer.service
   sudo rm /etc/systemd/user/birdnet-system-installer.service
   rm ${HOME}/stage_1_complete
 fi  
