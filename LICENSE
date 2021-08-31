@@ -1,9 +1,10 @@
 =============================================================================
-BirdNET
+BirdNET & GoTTY use the MIT License
 =============================================================================
 MIT License
 
-Copyright (c) 2019 Stefan Kahl
+BirdNET - Copyright (c) 2019 Stefan Kahl
+GoTTY - Copyright (c) 2015-2017 Iwasaki Yudai
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,10 +27,8 @@ SOFTWARE.
 
 
 =============================================================================
-Miniforge
-=============================================================================
 Miniforge installer code uses BSD-3-Clause license as stated below.
-
+=============================================================================
 Binary packages that come with it have their own licensing terms
 and by installing miniforge you agree to the licensing terms of individual
 packages as well. They include different OSI-approved licenses including
@@ -44,7 +43,7 @@ nlohmann-json, reproc and zstd which are licensed under BSD-3-Clause,
 MIT and OpenSSL licenses. Licenses and copyright notices of these
 projects can be found at the following URL.
 https://github.com/conda-forge/micromamba-feedstock/tree/master/recipe.
----
+=============================================================================
 Copyright (c) 2019-2021, conda-forge
 All rights reserved.
 
@@ -279,31 +278,4 @@ Caddy is licensed with the Apache 2.0 open source license.
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-=============================================================================
-
-
-=============================================================================
-gotty
-=============================================================================
-The MIT License (MIT)
-
-Copyright (c) 2015-2017 Iwasaki Yudai
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
 =============================================================================
