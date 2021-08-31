@@ -208,7 +208,7 @@ ExecStart=/usr/local/bin/extract_new_birdsounds.sh
 [Install]
 WantedBy=multi-user.target
 EOF
-        systemctl enable extraction.service
+        systemctl enable --now extraction.service
         echo "Adding the species_updater.cron"
         if ! crontab -u ${BIRDNET_USER} -l &> /dev/null;then
           cd $my_dir || exit 1
@@ -246,14 +246,16 @@ get_EXTRACTIONS_URL() {
           curl -1sLf \
             'https://dl.cloudsmith.io/public/caddy/stable/setup.deb.sh' \
               | sudo -E bash
-	  apt update &> /dev/null && apt install -y caddy &> /dev/null
+	        apt update &> /dev/null 
+          apt install -y caddy &> /dev/null
           systemctl enable --now caddy &> /dev/null
           install_avahi_aliases
-	  install_gotty_logs
+	        install_gotty_logs
 	else
-          echo "Caddy is installed" && systemctl enable --now caddy &> /dev/null
+          echo "Caddy is installed" 
+          systemctl enable --now caddy &> /dev/null
           install_avahi_aliases
-	  install_gotty_logs
+	        install_gotty_logs
         fi
         break;;
       [Nn] ) EXTRACTIONS_URL=;break;;
