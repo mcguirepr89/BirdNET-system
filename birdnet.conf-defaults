@@ -2,8 +2,8 @@
 # Configuration settings for BirdNET as a service
 BIRDNET_USER=${BIRDNET_USER}
 RECS_DIR=${RECS_DIR}
-LONGITUDE="${LONGITUDE}"
 LATITUDE="${LATITUDE}"
+LONGITUDE="${LONGITUDE}"
 
 # Set these if the recordings will be mounted from a remote directory using SSHFS
 REMOTE_USER=${REMOTE_USER}
