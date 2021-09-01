@@ -29,9 +29,7 @@ be_sure_config_exists() {
 }
 
 fill_out_config() {
-  echo "Great! FYI, these settings can be changed anytime by rerunning
-the configuration setup via 'sudo reconfigure_birdnet.sh'
-The next few questions will populate the required configuration file."
+  echo "The next few questions will populate the required configuration file."
   echo
   get_BIRDNET_USER
   get_RECS_DIR
