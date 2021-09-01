@@ -53,7 +53,7 @@ BIRDNET_USER=${BIRDNET_USER}
 RECS_DIR=${RECS_DIR}
 LATITUDE="${LATITUDE}"
 LONGITUDE="${LONGITUDE}"
-ZIP="${ZIP}"
+
 # Defaults
 REC_CARD=
 #  This is where BirdNet moves audio and selection files after they have been
