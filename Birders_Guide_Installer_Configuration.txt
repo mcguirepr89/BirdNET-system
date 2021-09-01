@@ -19,6 +19,8 @@
 #LONGITUDE=2.294
 LATITUDE=
 LONGITUDE=
+STREAM_PWD=system
+ICE_PWD=stream
 
 # This section can be left alone. If you setup a Pushed.co
 # mobile application, you can enter the App secret and secret
