@@ -276,16 +276,19 @@ get_STREAM_PWD() {
 }
 
 get_ICE_PWD() {
-  while true; do
-    read -p "Please set the icecast password (you won't need to remember
+  if [ -z $ICE_PWD ] ;then
+    while true; do
+      read -p "Please set the icecast password (you won't need to remember
 this one, but no special characters. Use onle alphanumeric characters." ICE_PWD
-    echo
-    case ${ICE_PWD} in
-      "" ) echo The password cannot be empty. Please make a password.;;
-      * ) install_ICECAST; install_stream_service;break;;
-    esac
-  done
-
+      echo
+     case ${ICE_PWD} in
+        "" ) echo The password cannot be empty. Please make a password.;;
+        * ) install_ICECAST; install_stream_service;break;;
+      esac
+    done
+  else
+    install_ICECAST; install_stream_service
+  fi
 }
 
 install_ICECAST() {
