@@ -61,7 +61,6 @@ else
   exit 1
 fi
 
-
 if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE} ] ;then
   echo "It looks like you haven't filled out the Birders_Guide_Installer_Configuration.txt file
 
@@ -85,6 +84,8 @@ ypi
 ${LATITUDE}
 ${LONGITUDE}
 yyyhttp://raspberrypi.local
+system
+system
 n
 n
 EOF
@@ -95,6 +96,8 @@ ypi
 ${LATITUDE}
 ${LONGITUDE}
 yyyhttp://raspberrypi.local
+system
+system
 y${PUSHED_APP_SECRET}
 ${PUSHED_APP_KEY}
 n
