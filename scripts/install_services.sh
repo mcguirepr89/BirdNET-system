@@ -268,9 +268,11 @@ get_EXTRACTIONS_URL() {
 
 get_STREAM_PWD() {
   echo "Please enter a password here that will protect your live stream."
-  echo ${STREAM_PWD} && exit 1
+  source $(dirname ${my_dir})/Birders_Guide_Installer_Configuration.txt
   until [ ! -z $STREAM_PWD ];do
-    STREAM_PWD=$(caddy hash-password)
+    STREAM_PWD=$(caddy hash-password << EOF
+${STREAM_PWD}
+${STREAM_PWD})
   done
   get_ICE_PWD
 }
@@ -280,8 +282,7 @@ get_ICE_PWD() {
   echo $ICE_PWD
   if [ -z $ICE_PWD ] ;then
     while true; do
-      read -p "Please set the icecast password (you won't need to remember
-this one, but no special characters. Use onle alphanumeric characters." ICE_PWD
+      read -p "Please set the icecast password. Use only alphanumeric characters. " ICE_PWD
       echo
      case ${ICE_PWD} in
         "" ) echo The password cannot be empty. Please make a password.;;
