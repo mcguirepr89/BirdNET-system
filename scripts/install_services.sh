@@ -267,8 +267,8 @@ get_EXTRACTIONS_URL() {
 }
 
 get_STREAM_PWD() {
-  echo "Please enter a password here that will protect your live stream.
-  **Note: the username will be \"stream\""
+  echo "Please enter a password here that will protect your live stream."
+  echo ${STREAM_PWD} && exit 1
   until [ ! -z $STREAM_PWD ];do
     STREAM_PWD=$(caddy hash-password)
   done
