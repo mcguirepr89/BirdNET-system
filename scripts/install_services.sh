@@ -277,6 +277,7 @@ get_STREAM_PWD() {
 
 get_ICE_PWD() {
   source $(dirname ${my_dir})/Birders_Guide_Installer_Configuration.txt
+  echo $ICE_PWD && exit 1
   if [ -z $ICE_PWD ] ;then
     while true; do
       read -p "Please set the icecast password (you won't need to remember
