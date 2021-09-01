@@ -40,6 +40,8 @@ fill_out_config() {
   get_REMOTE
   get_EXTRACTIONS
   get_EXTRACTIONS_URL
+  get_STREAM_PWD
+  install_ICECAST
   get_PUSHED
   # Change to BirdNET-system directory to install birdnet.conf
   cd $my_dir || exit 1
@@ -53,6 +55,7 @@ LATITUDE="${LATITUDE}"
 LONGITUDE="${LONGITUDE}"
 
 # Defaults
+STREAM_PWD=${STREAM_PWD}
 REC_CARD=
 #  This is where BirdNet moves audio and selection files after they have been
 #  analyzed.
@@ -259,6 +262,20 @@ get_EXTRACTIONS_URL() {
     esac
   done
 }
+
+get_STREAM_PWD() {
+  while true; do
+    read -p "Please enter a password here that will protect your live stream.
+  **Note: the username will be \"stream\"" ${STREAM_PWD}
+    echo
+    case ${STEAM_PWD} in
+      "" ) echo The password cannot be empty. Please make a password.;;
+      * ) break;;
+    esac
+  done
+}
+
+install_ICECAST() {}
 
 install_avahi_aliases() {
   if ! which avahi-publish &> /dev/null; then
