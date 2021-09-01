@@ -269,7 +269,7 @@ get_EXTRACTIONS_URL() {
 get_STREAM_PWD() {
   echo "Please enter a password here that will protect your live stream."
   source $(dirname ${my_dir})/Birders_Guide_Installer_Configuration.txt
-  STREAM_PWD=$(caddy hash-password -plaintext ${STREAM_PWD})
+  HASHWORD=$(caddy hash-password -plaintext ${STREAM_PWD})
   get_ICE_PWD
 }
 
@@ -515,10 +515,10 @@ ${EXTRACTIONS_URL} {
   root * ${EXTRACTED}
   file_server browse
   basicauth /Processed* {
-    birdnet ${STREAM_PWD}
+    birdnet ${HASHWORD}
   }
   basicauth /stream {
-    birdnet ${STREAM_PWD}
+    birdnet ${HASHWORD}
   }
   reverse_proxy /stream localhost:8000
 }
@@ -527,10 +527,10 @@ http://birdnetsystem.local {
   root * ${EXTRACTED}
   file_server browse
   basicauth /Processed* {
-    birdnet ${STREAM_PWD}
+    birdnet ${HASHWORD}
   }
   basicauth /stream {
-    birdnet ${STREAM_PWD}
+    birdnet ${HASHWORD}
   }
   reverse_proxy /stream localhost:8000
 }
