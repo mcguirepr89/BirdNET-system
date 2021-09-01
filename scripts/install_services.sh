@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Creates and installs the systemd scripts and birdnet configuration file
-#set -x # Uncomment to enable debugging
+set -x # Uncomment to enable debugging
 trap 'rm -f ${TMPFILE}' EXIT
 my_dir=$(realpath $(dirname $0))
 TMPFILE=$(mktemp)
@@ -40,8 +40,6 @@ fill_out_config() {
   get_REMOTE
   get_EXTRACTIONS
   get_EXTRACTIONS_URL
-  get_STREAM_PWD
-  install_ICECAST
   get_PUSHED
   # Change to BirdNET-system directory to install birdnet.conf
   cd $my_dir || exit 1
@@ -53,9 +51,10 @@ BIRDNET_USER=${BIRDNET_USER}
 RECS_DIR=${RECS_DIR}
 LATITUDE="${LATITUDE}"
 LONGITUDE="${LONGITUDE}"
+STREAM_PWD=${STREAM_PWD}
+ICE_PWD=${ICE_PWD}
 
 # Defaults
-STREAM_PWD=${STREAM_PWD}
 REC_CARD=
 #  This is where BirdNet moves audio and selection files after they have been
 #  analyzed.
@@ -247,14 +246,18 @@ get_EXTRACTIONS_URL() {
           curl -1sLf \
             'https://dl.cloudsmith.io/public/caddy/stable/setup.deb.sh' \
               | sudo -E bash
-	  apt update &> /dev/null && apt install -y caddy &> /dev/null
+	        apt update &> /dev/null 
+          apt install -y caddy &> /dev/null
           systemctl enable --now caddy &> /dev/null
+          get_STREAM_PWD
           install_avahi_aliases
-	  install_gotty_logs
-	else
-          echo "Caddy is installed" && systemctl enable --now caddy &> /dev/null
+	        install_gotty_logs
+	      else
+          echo "Caddy is installed"
+          systemctl enable --now caddy &> /dev/null
+          get_STREAM_PWD
           install_avahi_aliases
-	  install_gotty_logs
+	        install_gotty_logs
         fi
         break;;
       [Nn] ) EXTRACTIONS_URL=;break;;
@@ -264,18 +267,69 @@ get_EXTRACTIONS_URL() {
 }
 
 get_STREAM_PWD() {
-  while true; do
-    read -p "Please enter a password here that will protect your live stream.
-  **Note: the username will be \"stream\"" ${STREAM_PWD}
-    echo
-    case ${STEAM_PWD} in
-      "" ) echo The password cannot be empty. Please make a password.;;
-      * ) break;;
-    esac
+  echo "Please enter a password here that will protect your live stream.
+  **Note: the username will be \"stream\""
+  until [ ! -z $STREAM_PWD ];do
+    STREAM_PWD=$(caddy hash-password)
   done
+  get_ICE_PWD
 }
 
-install_ICECAST() {}
+get_ICE_PWD() {
+  while true; do
+    read -p "Please set the icecast password (you won't need to remember
+this one, but no special characters. Use onle alphanumeric characters." ICE_PWD
+    echo
+    case ${ICE_PWD} in
+      "" ) echo The password cannot be empty. Please make a password.;;
+      * ) install_ICECAST; install_stream_service;break;;
+    esac
+  done
+
+}
+
+install_ICECAST() {
+  if ! which icecast2;then
+    echo "Installing IceCast2"
+    apt update &> /dev/null
+    echo "icecast2 icecast2/icecast-setup boolean false" | debconf-set-selections
+    apt install -qy icecast2 &> /dev/null
+    config_ICECAST
+    systemctl enable --now icecast2
+    /etc/init.d/icecast2 start
+  else
+    echo "Icecast2 is installed"
+    config_ICECAST
+    systemctl reenable --now icecast2
+    /etc/init.d/icecast2 start
+  fi
+}
+
+config_ICECAST() {
+  sed -i 's/>admin</>birdnet</g' /etc/icecast2/icecast.xml
+  sed -i "s/hackme/${ICE_PWD}/g" /etc/icecast2/icecast.xml
+}
+
+install_stream_service() {
+  echo "Installing Live Stream service"
+  REC_CARD=$(aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head')
+  cat << EOF > /etc/systemd/system/livestream.service
+[Unit]
+Description=BirdNET-system Live Stream
+
+[Service]
+Environment=XDG_RUNTIME_DIR=/run/usr/1000
+Restart=always
+Type=simple
+RestartSec=3
+User=pi
+ExecStart=ffmpeg -loglevel 52 -ac 2 -f alsa -i ${REC_CARD} -acodec libmp3lame -b:a 320k -ac 2 -content_type 'audio/mpeg' -f mp3 icecast://source:${ICE_PWD}@localhost:8000/stream -re
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl enable --now livestream.service
+}
 
 install_avahi_aliases() {
   if ! which avahi-publish &> /dev/null; then
@@ -458,11 +512,25 @@ EOF
 ${EXTRACTIONS_URL} {
   root * ${EXTRACTED}
   file_server browse
+  basicauth /Processed* {
+    birdnet ${STREAM_PWD}
+  }
+  basicauth /stream {
+    birdnet ${STREAM_PWD}
+  }
+  reverse_proxy /stream localhost:8000
 }
 
 http://birdnetsystem.local {
   root * ${EXTRACTED}
   file_server browse
+  basicauth /Processed* {
+    birdnet ${STREAM_PWD}
+  }
+  basicauth /stream {
+    birdnet ${STREAM_PWD}
+  }
+  reverse_proxy /stream localhost:8000
 }
 
 http://birdlog.local {
