@@ -37,6 +37,9 @@ EOF
 }
 
 stage_2() {
+  systemctl --user disable birdnet-system-installer.service
+  sudo rm /etc/systemd/user/birdnet-system-installer.service
+  rm ${HOME}/stage_1_complete
   export DISPLAY=:0
   echo "Welcome back! Press enter to continue the BirdNET-system installation"
   read
@@ -110,8 +113,5 @@ if [ ! -f ${HOME}/stage_1_complete ] ;then
   stage_1
 else
   stage_2
-  systemctl --user disable birdnet-system-installer.service
-  sudo rm /etc/systemd/user/birdnet-system-installer.service
-  rm ${HOME}/stage_1_complete
   rm ${HOME}/Birders_Guide_Installer.sh
 fi  
