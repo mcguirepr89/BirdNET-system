@@ -374,7 +374,7 @@ get_PUSHED() {
       [Nn] ) PUSHED_APP_KEY=
         PUSHED_APP_SECRET=
         break;;
-      * ) echo "A simple Yea or Nay will do"; exit 1;
+      * ) echo "A simple Yea or Nay will do"; exit 1;;
     esac
   done
 }
