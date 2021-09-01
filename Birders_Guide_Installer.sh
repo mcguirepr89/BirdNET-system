@@ -43,7 +43,7 @@ stage_2() {
 if [ ! -d ${my_dir} ];then
   cd ~ || exit 1
   echo "Cloning the BirdNET-system repository in your home directory"
-  git clone https://github.com/mcguirepr89/BirdNET-system.git > /dev/null
+  git clone https://github.com/mcguirepr89/BirdNET-system.git
   echo "Switching to the testing branch"
   cd BirdNET-system && git checkout testing > /dev/null
 fi
