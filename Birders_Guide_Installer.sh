@@ -10,7 +10,7 @@ This will run in two stages. The first stage will simply ensure your
 computer is updated properly.
 
 Installing stage 2 installation script now."
-  curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/testing/Birders_Guide_Installer.sh"
+  curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/BirdNET-system-for-raspi4/Birders_Guide_Installer.sh"
   chmod +x Birders_Guide_Installer.sh
   echo "Updating your system. This step will almost definitely take a little while."
   sudo apt update &> /dev/null && sudo apt -y upgrade &> /dev/null
