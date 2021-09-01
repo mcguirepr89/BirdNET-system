@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Creates and installs the systemd scripts and birdnet configuration file
-set -x # Uncomment to enable debugging
+#set -x # Uncomment to enable debugging
 trap 'rm -f ${TMPFILE}' EXIT
 my_dir=$(realpath $(dirname $0))
 TMPFILE=$(mktemp)
