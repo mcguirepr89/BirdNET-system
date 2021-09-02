@@ -4,7 +4,7 @@
 trap 'rm -f ${TMPFILE}' EXIT
 my_dir=$(realpath $(dirname $0))
 TMPFILE=$(mktemp)
-gotty_url="https://github.com/yudai/gotty/releases/download/v1.0.1/gotty_linux_arm.tar.gz"
+gotty_url="https://github.com/yudai/gotty/releases/download/v1.0.1/gotty_linux_amd64.tar.gz"
 CONFIG_FILE="$(dirname ${my_dir})/Birders_Guide_Installer_Configuration.txt"
 
 ln -sf ${my_dir}/* /usr/local/bin/
@@ -54,7 +54,7 @@ STREAM_PWD=${STREAM_PWD}
 ICE_PWD=${ICE_PWD}
 
 # Defaults
-REC_CARD=
+REC_CARD=$(sudo -u ${BIRDNET_USER} aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head' -e 'PCH' | uniq)
 #  This is where BirdNet moves audio and selection files after they have been
 #  analyzed.
 ANALYZED=${RECS_DIR}/*/*Analyzed
@@ -315,13 +315,13 @@ config_ICECAST() {
   sed -i 's/>admin</>birdnet</g' /etc/icecast2/icecast.xml
   passwords=("source-" "relay-" "admin-" "master-" "")
   for i in "${passwords[@]}";do
-  sed "s/<${i}password>.*<\/${i}password>/<${i}password>${ICE_PWD}<\/${i}password>/g" /etc/icecast2/icecast.xml
+  sed -i "s/<${i}password>.*<\/${i}password>/<${i}password>${ICE_PWD}<\/${i}password>/g" /etc/icecast2/icecast.xml
   done
 }
 
 install_stream_service() {
   echo "Installing Live Stream service"
-  REC_CARD=$(aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head' -e 'PCH' | uniq)
+  REC_CARD="$(sudo -u ${BIRDNET_USER} aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head' -e 'PCH' | uniq)"
   cat << EOF > /etc/systemd/system/livestream.service
 [Unit]
 Description=BirdNET-system Live Stream
