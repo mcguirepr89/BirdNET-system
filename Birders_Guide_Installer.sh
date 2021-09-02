@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+t#!/usr/bin/env bash
 set -e
 my_dir=${HOME}/BirdNET-system
 
@@ -10,7 +10,7 @@ This will run in two stages. The first stage will simply ensure your
 computer is updated properly.
 
 Installing stage 2 installation script now."
-  curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/testing/Birders_Guide_Installer.sh"
+  curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/BirdNET-system-for-raspi4/Birders_Guide_Installer.sh"
   chmod +x Birders_Guide_Installer.sh
   echo "Updating your system. This step will almost definitely take a little while."
   sudo apt update &> /dev/null && sudo apt -y upgrade &> /dev/null
@@ -47,8 +47,8 @@ if [ ! -d ${my_dir} ];then
   cd ~ || exit 1
   echo "Cloning the BirdNET-system repository in your home directory"
   git clone https://github.com/mcguirepr89/BirdNET-system.git
-  echo "Switching to the testing branch"
-  cd BirdNET-system && git checkout testing > /dev/null
+  echo "Switching to the BirdNET-system-for-raspi4 branch"
+  cd BirdNET-system && git checkout BirdNET-system-for-raspi4 > /dev/null
 fi
 
 if [ -f ${my_dir}/Birders_Guide_Installer_Configuration.txt ];then
