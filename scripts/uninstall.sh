@@ -13,7 +13,8 @@ SCRIPTS=(/usr/local/bin/birdnet_analysis.sh
 /usr/local/bin/reconfigure_birdnet.sh
 /usr/local/bin/species_notifier.sh
 /usr/local/bin/uninstall.sh
-/usr/local/bin/update_species.sh)
+/usr/local/bin/update_species.sh
+$(cat /etc/passwd | grep "$find_user" | cut -d":" -f6)/.gotty)
 
 SERVICES=(avahi-alias@birdlog.local.service
 avahi-alias@birdnetsystem.local.service
