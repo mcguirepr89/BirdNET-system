@@ -321,7 +321,7 @@ config_ICECAST() {
 
 install_stream_service() {
   echo "Installing Live Stream service"
-  REC_CARD=$(aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head' -e 'PCH')
+  REC_CARD=$(aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head' -e 'PCH' | uniq)
   cat << EOF > /etc/systemd/system/livestream.service
 [Unit]
 Description=BirdNET-system Live Stream
