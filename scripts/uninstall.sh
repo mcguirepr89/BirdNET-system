@@ -32,6 +32,11 @@ if [ -f /etc/systemd/system/extraction.service ];then
   sudo rm /etc/systemd/system/extraction.service
 fi
 
+if [ -f /etc/systemd/system/livestream.service ];then
+  sudo systemctl disable --now livestream.service
+  sudo rm /etc/systemd/system/livestream.service
+fi
+
 sudo systemctl disable --now birdnet_log.service
 sudo rm /etc/systemd/system/birdnet_log.service
 sudo systemctl disable --now extraction_log.service
@@ -42,8 +47,15 @@ sudo systemctl disable --now avahi-alias@birdnetsystem.local.service
 sudo systemctl disable --now avahi-alias@birdlog.local.service
 sudo systemctl disable --now avahi-alias@extractionlog.local.service
 sudo systemctl disable --now avahi-alias@birdstats.local.service
+
+if [ -f /etc/init.d/icecast2 ];then
+  sudo /etc/init.d/icecast2 stop
+  sudo systemctl disable --now icecast2
+fi
+
 sudo rm /etc/systemd/system/avahi-alias@.service
 sudo rm /usr/local/bin/birdnet_analysis.sh
+sudo rm /usr/local/bin/birdnet_stats.sh
 sudo rm /usr/local/bin/birdnet_recording.sh
 sudo rm /usr/local/bin/cleanup.sh
 sudo rm /usr/local/bin/extract_new_birdsounds.sh
