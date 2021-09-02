@@ -37,13 +37,16 @@ EOF
 }
 
 stage_2() {
+  systemctl --user disable birdnet-system-installer.service &> /dev/null
+  sudo rm /etc/systemd/user/birdnet-system-installer.service
+  rm ${HOME}/stage_1_complete
   export DISPLAY=:0
   echo "Welcome back! Press enter to continue the BirdNET-system installation"
   read
 if [ ! -d ${my_dir} ];then
   cd ~ || exit 1
   echo "Cloning the BirdNET-system repository in your home directory"
-  git clone https://github.com/mcguirepr89/BirdNET-system.git > /dev/null
+  git clone https://github.com/mcguirepr89/BirdNET-system.git
   echo "Switching to the BirdNET-system-for-raspi4 branch"
   cd BirdNET-system && git checkout BirdNET-system-for-raspi4 > /dev/null
 fi
@@ -60,7 +63,6 @@ else
   echo "Something went wrong. I can't find the configuration file."
   exit 1
 fi
-
 
 if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE} ] ;then
   echo "It looks like you haven't filled out the Birders_Guide_Installer_Configuration.txt file
@@ -111,8 +113,5 @@ if [ ! -f ${HOME}/stage_1_complete ] ;then
   stage_1
 else
   stage_2
-  systemctl --user disable birdnet-system-installer.service
-  sudo rm /etc/systemd/user/birdnet-system-installer.service
-  rm ${HOME}/stage_1_complete
   rm ${HOME}/Birders_Guide_Installer.sh
 fi  

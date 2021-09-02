@@ -51,6 +51,8 @@ BIRDNET_USER=${BIRDNET_USER}
 RECS_DIR=${RECS_DIR}
 LATITUDE="${LATITUDE}"
 LONGITUDE="${LONGITUDE}"
+STREAM_PWD=${STREAM_PWD}
+ICE_PWD=${ICE_PWD}
 
 # Defaults
 REC_CARD=
@@ -244,20 +246,93 @@ get_EXTRACTIONS_URL() {
           curl -1sLf \
             'https://dl.cloudsmith.io/public/caddy/stable/setup.deb.sh' \
               | sudo -E bash
-	  apt update &> /dev/null && apt install -y caddy &> /dev/null
+	        apt update &> /dev/null 
+          apt install -y caddy &> /dev/null
           systemctl enable --now caddy &> /dev/null
+          get_STREAM_PWD
           install_avahi_aliases
-	  install_gotty_logs
-	else
-          echo "Caddy is installed" && systemctl enable --now caddy &> /dev/null
+	        install_gotty_logs
+	      else
+          echo "Caddy is installed"
+          systemctl enable --now caddy &> /dev/null
+          get_STREAM_PWD
           install_avahi_aliases
-	  install_gotty_logs
+	        install_gotty_logs
         fi
         break;;
       [Nn] ) EXTRACTIONS_URL=;break;;
       * ) echo "Please answer Yes or No";;
     esac
   done
+}
+
+get_STREAM_PWD() {
+  source $(dirname ${my_dir})/Birders_Guide_Installer_Configuration.txt
+  if [ -z ${STREAM_PWD} ]; then
+    read -p "Please set a password to protect your live stream: " STREAM_PWD
+  fi
+  HASHWORD=$(caddy hash-password -plaintext ${STREAM_PWD})
+  get_ICE_PWD
+}
+
+get_ICE_PWD() {
+  source $(dirname ${my_dir})/Birders_Guide_Installer_Configuration.txt
+  echo $ICE_PWD
+  if [ -z $ICE_PWD ] ;then
+    while true; do
+      read -p "Please set the icecast password. Use only alphanumeric characters. " ICE_PWD
+      echo
+     case ${ICE_PWD} in
+        "" ) echo The password cannot be empty. Please make a password.;;
+        * ) install_ICECAST; install_stream_service;break;;
+      esac
+    done
+  else
+    install_ICECAST; install_stream_service
+  fi
+}
+
+install_ICECAST() {
+  if ! which icecast2;then
+    echo "Installing IceCast2"
+    apt update &> /dev/null
+    echo "icecast2 icecast2/icecast-setup boolean false" | debconf-set-selections
+    apt install -qy icecast2 &> /dev/null
+    config_ICECAST
+    systemctl enable --now icecast2
+    /etc/init.d/icecast2 start
+  else
+    echo "Icecast2 is installed"
+    config_ICECAST
+    systemctl reenable --now icecast2
+    /etc/init.d/icecast2 start
+  fi
+}
+
+config_ICECAST() {
+  sed -i 's/>admin</>birdnet</g' /etc/icecast2/icecast.xml
+  sed -i "s/hackme/${ICE_PWD}/g" /etc/icecast2/icecast.xml
+}
+
+install_stream_service() {
+  echo "Installing Live Stream service"
+  REC_CARD=$(aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head')
+  cat << EOF > /etc/systemd/system/livestream.service
+[Unit]
+Description=BirdNET-system Live Stream
+
+[Service]
+Environment=XDG_RUNTIME_DIR=/run/usr/1000
+Restart=always
+Type=simple
+RestartSec=3
+User=pi
+ExecStart=ffmpeg -loglevel 52 -ac 2 -f alsa -i ${REC_CARD} -acodec libmp3lame -b:a 320k -ac 2 -content_type 'audio/mpeg' -f mp3 icecast://source:${ICE_PWD}@localhost:8000/stream -re
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl enable --now livestream.service
 }
 
 install_avahi_aliases() {
@@ -441,11 +516,25 @@ EOF
 ${EXTRACTIONS_URL} {
   root * ${EXTRACTED}
   file_server browse
+  basicauth /Processed* {
+    birdnet ${HASHWORD}
+  }
+  basicauth /stream {
+    birdnet ${HASHWORD}
+  }
+  reverse_proxy /stream localhost:8000
 }
 
 http://birdnetsystem.local {
   root * ${EXTRACTED}
   file_server browse
+  basicauth /Processed* {
+    birdnet ${HASHWORD}
+  }
+  basicauth /stream {
+    birdnet ${HASHWORD}
+  }
+  reverse_proxy /stream localhost:8000
 }
 
 http://birdlog.local {
