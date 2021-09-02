@@ -269,6 +269,9 @@ get_EXTRACTIONS_URL() {
 get_STREAM_PWD() {
   echo "Please enter a password here that will protect your live stream."
   source $(dirname ${my_dir})/Birders_Guide_Installer_Configuration.txt
+  while [ ! -z ${STREAM_PWD} ]; do
+    read STREAM_PWD
+  done
   HASHWORD=$(caddy hash-password -plaintext ${STREAM_PWD})
   get_ICE_PWD
 }
