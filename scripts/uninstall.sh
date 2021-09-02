@@ -3,31 +3,31 @@
 # set -x # Uncomment to debug
 trap 'rm -f ${TMPFILE}' EXIT
 source /etc/birdnet/birdnet.conf &> /dev/null
-SCRIPTS=(/usr/local/bin/birdnet_analysis.sh
-/usr/local/bin/birdnet_recording.sh
-/usr/local/bin/birdnet_stats.sh
-/usr/local/bin/cleanup.sh
-/usr/local/bin/extract_new_birdsounds.sh
-/usr/local/bin/install_birdnet.sh
-/usr/local/bin/install_services.sh
-/usr/local/bin/reconfigure_birdnet.sh
-/usr/local/bin/species_notifier.sh
-/usr/local/bin/uninstall.sh
-/usr/local/bin/update_species.sh
-$(cat /etc/passwd | grep "$find_user" | cut -d":" -f6)/.gotty)
+SCRIPTS=("/usr/local/bin/birdnet_analysis.sh"
+"/usr/local/bin/birdnet_recording.sh"
+"/usr/local/bin/birdnet_stats.sh"
+"/usr/local/bin/cleanup.sh"
+"/usr/local/bin/extract_new_birdsounds.sh"
+"/usr/local/bin/install_birdnet.sh"
+"/usr/local/bin/install_services.sh"
+"/usr/local/bin/reconfigure_birdnet.sh"
+"/usr/local/bin/species_notifier.sh"
+"/usr/local/bin/uninstall.sh"
+"/usr/local/bin/update_species.sh"
+"$(grep "${BIRDNET_USER}" /etc/passwd | cut -d":" -f6)/.gotty")
 
-SERVICES=(avahi-alias@birdlog.local.service
-avahi-alias@birdnetsystem.local.service
-avahi-alias@birdstats.local.service
-avahi-alias@extractionlog.local.service
-birdnet_analysis.service
-birdnet_log.service
-birdnet_recording.service
-birdstats.service
-caddy.service
-extraction_log.service
-extraction.service
-livestream.service)
+SERVICES=("avahi-alias@birdlog.local.service"
+"avahi-alias@birdnetsystem.local.service"
+"avahi-alias@birdstats.local.service"
+"avahi-alias@extractionlog.local.service"
+"birdnet_analysis.service"
+"birdnet_log.service"
+"birdnet_recording.service"
+"birdstats.service"
+"caddy.service"
+"extraction_log.service"
+"extraction.service"
+"livestream.service")
 
 remove_services() {
   for i in "${SERVICES[@]}"; do
