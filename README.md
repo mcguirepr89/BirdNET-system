@@ -16,7 +16,7 @@ Currently, there are three types of configurations that I've tried and that have
      - Recording
      - BirdNET Analysis
      - Extraction of identified BirdNET selections
-     - Hosting extracted selections via Caddy at configurable ${EXTRACTIONS_URL}
+     - Hosting extracted selections and live audio stream
 1. Recorder/Analyzer
    - These work together accordingly:
      - Recorder
@@ -39,6 +39,7 @@ Currently, there are three types of configurations that I've tried and that have
 	- libblas-dev
 	- liblapack-dev
 	- caddy (for web access to extractions)
+	- icecast2 (the live stream)
 	- alsa-utils (for recording)
 	- sshfs (to mount remote sound file directories)
 1. Creates a python virtual environment to install BirdNET site-packages.
