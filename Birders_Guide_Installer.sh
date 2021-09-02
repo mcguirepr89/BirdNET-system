@@ -37,7 +37,7 @@ EOF
 }
 
 stage_2() {
-  systemctl --user disable birdnet-system-installer.service
+  systemctl --user disable birdnet-system-installer.service &> /dev/null
   sudo rm /etc/systemd/user/birdnet-system-installer.service
   rm ${HOME}/stage_1_complete
   export DISPLAY=:0
