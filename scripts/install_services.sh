@@ -78,7 +78,7 @@ PUSHED_APP_KEY=${PUSHED_APP_KEY}
 PUSHED_APP_SECRET=${PUSHED_APP_SECRET}
 # Don't touch these
 SYSTEMD_MOUNT=$(echo ${RECS_DIR#/} | tr / -).mount
-VENV=$(dirname ${my_dir})/miniforge/envs/birdnet
+VENV=$(dirname ${my_dir})/birdnet
 EOF
 }
 
