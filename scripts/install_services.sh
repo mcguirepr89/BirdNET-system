@@ -268,7 +268,7 @@ get_EXTRACTIONS_URL() {
 
 get_STREAM_PWD() {
   source $(dirname ${my_dir})/Birders_Guide_Installer_Configuration.txt
-  if [ ! -z ${STREAM_PWD} ]; then
+  if [ -z ${STREAM_PWD} ]; then
     read -p "Please set a password to protect your live stream: " STREAM_PWD
   fi
   HASHWORD=$(caddy hash-password -plaintext ${STREAM_PWD})
