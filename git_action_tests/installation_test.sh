@@ -6,6 +6,8 @@ yrunner
 -80.754
 35.678
 yyyhttp://localhost
+chess
+bacon
 n
 n
 EOF
