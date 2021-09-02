@@ -19,8 +19,8 @@
 # 4. Set a password that that IceCast2 will use to authenticate the stream source.
 #    You can set this to anything also, but keep it alpha-numeric. You will never use
 #    this again, so just set it to your favorite word.
-# 3. FILE SAVE!!! Don't forget to save this file after editing.
-# 4. Close this window to continue the installation.
+# 5. FILE SAVE!!! Don't forget to save this file after editing.
+# 6. Close this window to continue the installation.
 # Example: these coordinates would indicate the Eiffel Tower in Paris, France.
 #LATITUDE=48.858
 #LONGITUDE=2.294
