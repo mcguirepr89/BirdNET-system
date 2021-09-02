@@ -78,8 +78,7 @@ echo "	This script will do the following:
         - python3-pip
         - libblas-dev
         - liblapack-dev
-        - alsa-utils (for recording)
-        - sshfs (to mount remote sound file directories)
+        - wget
   #2: Creates a python virtual environment for BirdNET
   #3: Builds BirdNET in the 'birdnet' virtual environment
   #4: Copies the systemd .service and .mount files and enables those chosen
@@ -99,6 +98,9 @@ install_deps & spinner
 installation & spinner
 
 echo "	BirdNet is finished installing!!"
+echo "	Enabling birdnet_analysis.service now"
+sudo systemctl enable birdnet_analysis.service
+echo "	BirdNET is enabled."
 echo
 echo "	To start the service manually, issue:
   'sudo systemctl start birdnet_analysis'
@@ -114,9 +116,6 @@ echo "	To start the service manually, issue:
       http://extractionlog.local to see the log output of the extraction.service
   and http://birdstats.local to see the BirdNET-system Report"
 echo
-echo "	Enabling birdnet_analysis.service now"
-sudo systemctl enable birdnet_analysis.service
-echo "	BirdNET is enabled."
 read -n1 -p "	Would you like to run the BirdNET service now?" YN
 case $YN in
   [Yy] ) sudo systemctl start birdnet_analysis.service \
