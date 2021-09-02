@@ -4,9 +4,8 @@
 trap 'rm -f ${TMPFILE}' EXIT
 my_dir=$(realpath $(dirname $0))
 TMPFILE=$(mktemp)
-CADDY_GPG="https://dl.cloudsmith.io/public/caddy/stable/gpg.key"
-CADDY_LIST="https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt"
 gotty_url="https://github.com/yudai/gotty/releases/download/v1.0.1/gotty_linux_arm.tar.gz"
+CONFIG_FILE="$(dirname ${my_dir})/Birders_Guide_Installer_Configuration.txt"
 
 ln -sf ${my_dir}/* /usr/local/bin/
 
@@ -55,7 +54,7 @@ STREAM_PWD=${STREAM_PWD}
 ICE_PWD=${ICE_PWD}
 
 # Defaults
-REC_CARD=
+REC_CARD=$(sudo -u ${BIRDNET_USER} aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head' -e 'PCH' | uniq)
 #  This is where BirdNet moves audio and selection files after they have been
 #  analyzed.
 ANALYZED=${RECS_DIR}/*/*Analyzed
@@ -79,7 +78,7 @@ PUSHED_APP_KEY=${PUSHED_APP_KEY}
 PUSHED_APP_SECRET=${PUSHED_APP_SECRET}
 # Don't touch these
 SYSTEMD_MOUNT=$(echo ${RECS_DIR#/} | tr / -).mount
-VENV=$(dirname ${my_dir})/miniforge/envs/birdnet
+VENV=$(dirname ${my_dir})/birdnet
 EOF
 }
 
@@ -267,7 +266,7 @@ get_EXTRACTIONS_URL() {
 }
 
 get_STREAM_PWD() {
-  source $(dirname ${my_dir})/Birders_Guide_Installer_Configuration.txt
+  if [ -f ${CONFIG_FILE} ];then source ${CONFIG_FILE};fi
   if [ -z ${STREAM_PWD} ]; then
     read -p "Please set a password to protect your live stream: " STREAM_PWD
   fi
@@ -276,7 +275,7 @@ get_STREAM_PWD() {
 }
 
 get_ICE_PWD() {
-  source $(dirname ${my_dir})/Birders_Guide_Installer_Configuration.txt
+  if [ -f ${CONFIG_FILE} ];then source ${CONFIG_FILE};fi
   echo $ICE_PWD
   if [ -z $ICE_PWD ] ;then
     while true; do
@@ -310,13 +309,19 @@ install_ICECAST() {
 }
 
 config_ICECAST() {
+  if [ -f /etc/icecast2/icecast.xml ];then 
+    cp /etc/icecast2/icecast.xml{,.prebirdnetsystem}
+  fi
   sed -i 's/>admin</>birdnet</g' /etc/icecast2/icecast.xml
-  sed -i "s/hackme/${ICE_PWD}/g" /etc/icecast2/icecast.xml
+  passwords=("source-" "relay-" "admin-" "master-" "")
+  for i in "${passwords[@]}";do
+  sed -i "s/<${i}password>.*<\/${i}password>/<${i}password>${ICE_PWD}<\/${i}password>/g" /etc/icecast2/icecast.xml
+  done
 }
 
 install_stream_service() {
   echo "Installing Live Stream service"
-  REC_CARD=$(aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head')
+  REC_CARD="$(sudo -u ${BIRDNET_USER} aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head' -e 'PCH' | uniq)"
   cat << EOF > /etc/systemd/system/livestream.service
 [Unit]
 Description=BirdNET-system Live Stream
@@ -326,7 +331,7 @@ Environment=XDG_RUNTIME_DIR=/run/usr/1000
 Restart=always
 Type=simple
 RestartSec=3
-User=pi
+User=${BIRDNET_USER}
 ExecStart=ffmpeg -loglevel 52 -ac 2 -f alsa -i ${REC_CARD} -acodec libmp3lame -b:a 320k -ac 2 -content_type 'audio/mpeg' -f mp3 icecast://source:${ICE_PWD}@localhost:8000/stream -re
 
 [Install]
