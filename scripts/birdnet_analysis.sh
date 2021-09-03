@@ -69,7 +69,13 @@ run_birdnet() {
   run_analysis "${1}" "${2}"
 }
 
+if [ $(find ${RECS_DIR} -name '*wav' | wc -l) -gt 0 ];then
+  run_birdnet "${RECS_DIR}" "today"
+fi
+
 for i in ${!DAYS[@]};do
   DIRECTORY="$RECS_DIR/$(date --date="${DAYS[$i]}" "+%B-%Y/%d-%A")"
-  run_birdnet "${DIRECTORY}" "${DAYS[$i]}"
+  if [ $(find ${DIRECTORY} -name '*wav' &> /dev/null | wc -l) -gt 0 ];then
+    run_birdnet "${DIRECTORY}" "${DAYS[$i]}"
+  fi
 done
