@@ -303,7 +303,7 @@ install_ICECAST() {
   else
     echo "Icecast2 is installed"
     config_ICECAST
-    systemctl reenable --now icecast2
+    systemctl enable --now icecast2
     /etc/init.d/icecast2 start
   fi
 }
