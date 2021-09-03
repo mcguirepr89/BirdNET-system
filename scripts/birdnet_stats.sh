@@ -19,7 +19,7 @@ if [ "$(find ${EXTRACTED} -name '*.wav' | wc -l)" -ge 1 ];then
     | sort -n \
     | tail -n1 )
 else
-  a=1
+  a=0
 fi
 echo
 SOFAR=$(wc -l ${IDFILE}| cut -d' ' -f1)

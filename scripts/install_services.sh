@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 # Creates and installs the systemd scripts and birdnet configuration file
-# set -x # Uncomment to enable debugging
+#set -x # Uncomment to enable debugging
 trap 'rm -f ${TMPFILE}' EXIT
 my_dir=$(realpath $(dirname $0))
 TMPFILE=$(mktemp)
-CADDY_GPG="https://dl.cloudsmith.io/public/caddy/stable/gpg.key"
-CADDY_LIST="https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt"
 gotty_url="https://github.com/yudai/gotty/releases/download/v1.0.1/gotty_linux_arm.tar.gz"
+CONFIG_FILE="$(dirname ${my_dir})/Birders_Guide_Installer_Configuration.txt"
 
 ln -sf ${my_dir}/* /usr/local/bin/
 
@@ -29,9 +28,7 @@ be_sure_config_exists() {
 }
 
 fill_out_config() {
-  echo "Great! FYI, these settings can be changed anytime by rerunning
-the configuration setup via 'sudo reconfigure_birdnet.sh'
-The next few questions will populate the required configuration file."
+  echo "The next few questions will populate the required configuration file."
   echo
   get_BIRDNET_USER
   get_RECS_DIR
@@ -53,9 +50,11 @@ BIRDNET_USER=${BIRDNET_USER}
 RECS_DIR=${RECS_DIR}
 LATITUDE="${LATITUDE}"
 LONGITUDE="${LONGITUDE}"
-ZIP="${ZIP}"
+STREAM_PWD=${STREAM_PWD}
+ICE_PWD=${ICE_PWD}
+
 # Defaults
-REC_CARD=
+REC_CARD=$(sudo -u ${BIRDNET_USER} aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head' -e 'PCH' | uniq)
 #  This is where BirdNet moves audio and selection files after they have been
 #  analyzed.
 ANALYZED=${RECS_DIR}/*/*Analyzed
@@ -79,7 +78,7 @@ PUSHED_APP_KEY=${PUSHED_APP_KEY}
 PUSHED_APP_SECRET=${PUSHED_APP_SECRET}
 # Don't touch these
 SYSTEMD_MOUNT=$(echo ${RECS_DIR#/} | tr / -).mount
-VENV=${HOME}/c4aarch64_installer/envs/birdnet
+VENV=$(dirname ${my_dir})/birdnet
 EOF
 }
 
@@ -208,6 +207,7 @@ ExecStart=/usr/local/bin/extract_new_birdsounds.sh
 [Install]
 WantedBy=multi-user.target
 EOF
+        systemctl enable extraction.service
         echo "Adding the species_updater.cron"
         if ! crontab -u ${BIRDNET_USER} -l &> /dev/null;then
           cd $my_dir || exit 1
@@ -245,16 +245,125 @@ get_EXTRACTIONS_URL() {
           curl -1sLf \
             'https://dl.cloudsmith.io/public/caddy/stable/setup.deb.sh' \
               | sudo -E bash
-	  apt update &> /dev/null && apt install -y caddy &> /dev/null
+	        apt update &> /dev/null 
+          apt install -y caddy &> /dev/null
           systemctl enable --now caddy &> /dev/null
-	else
-          echo "Caddy is installed" && systemctl enable --now caddy &> /dev/null
+          get_STREAM_PWD
+          install_avahi_aliases
+	        install_gotty_logs
+	      else
+          echo "Caddy is installed"
+          systemctl enable --now caddy &> /dev/null
+          get_STREAM_PWD
+          install_avahi_aliases
+	        install_gotty_logs
         fi
         break;;
       [Nn] ) EXTRACTIONS_URL=;break;;
       * ) echo "Please answer Yes or No";;
     esac
   done
+}
+
+get_STREAM_PWD() {
+  if [ -f ${CONFIG_FILE} ];then source ${CONFIG_FILE};fi
+  if [ -z ${STREAM_PWD} ]; then
+    read -p "Please set a password to protect your live stream: " STREAM_PWD
+  fi
+  HASHWORD=$(caddy hash-password -plaintext ${STREAM_PWD})
+  get_ICE_PWD
+}
+
+get_ICE_PWD() {
+  if [ -f ${CONFIG_FILE} ];then source ${CONFIG_FILE};fi
+  echo $ICE_PWD
+  if [ -z $ICE_PWD ] ;then
+    while true; do
+      read -p "Please set the icecast password. Use only alphanumeric characters. " ICE_PWD
+      echo
+     case ${ICE_PWD} in
+        "" ) echo The password cannot be empty. Please make a password.;;
+        * ) install_ICECAST; install_stream_service;break;;
+      esac
+    done
+  else
+    install_ICECAST; install_stream_service
+  fi
+}
+
+install_ICECAST() {
+  if ! which icecast2;then
+    echo "Installing IceCast2"
+    apt update &> /dev/null
+    echo "icecast2 icecast2/icecast-setup boolean false" | debconf-set-selections
+    apt install -qy icecast2 &> /dev/null
+    config_ICECAST
+    systemctl enable --now icecast2
+    /etc/init.d/icecast2 start
+  else
+    echo "Icecast2 is installed"
+    config_ICECAST
+    systemctl enable --now icecast2
+    /etc/init.d/icecast2 start
+  fi
+}
+
+config_ICECAST() {
+  if [ -f /etc/icecast2/icecast.xml ];then 
+    cp /etc/icecast2/icecast.xml{,.prebirdnetsystem}
+  fi
+  sed -i 's/>admin</>birdnet</g' /etc/icecast2/icecast.xml
+  passwords=("source-" "relay-" "admin-" "master-" "")
+  for i in "${passwords[@]}";do
+  sed -i "s/<${i}password>.*<\/${i}password>/<${i}password>${ICE_PWD}<\/${i}password>/g" /etc/icecast2/icecast.xml
+  done
+}
+
+install_stream_service() {
+  echo "Installing Live Stream service"
+  REC_CARD="$(sudo -u ${BIRDNET_USER} aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head' -e 'PCH' | uniq)"
+  cat << EOF > /etc/systemd/system/livestream.service
+[Unit]
+Description=BirdNET-system Live Stream
+
+[Service]
+Environment=XDG_RUNTIME_DIR=/run/usr/1000
+Restart=always
+Type=simple
+RestartSec=3
+User=${BIRDNET_USER}
+ExecStart=ffmpeg -loglevel 52 -ac 2 -f alsa -i ${REC_CARD} -acodec libmp3lame -b:a 320k -ac 2 -content_type 'audio/mpeg' -f mp3 icecast://source:${ICE_PWD}@localhost:8000/stream -re
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl enable --now livestream.service
+}
+
+install_avahi_aliases() {
+  if ! which avahi-publish &> /dev/null; then
+    echo "Installing avahi-utils"
+    apt install -y avahi-utils &> /dev/null
+  fi
+  echo "Installing avahi-alias service"
+  cat << 'EOF' > /etc/systemd/system/avahi-alias@.service
+[Unit]
+Description=Publish %I as alias for %H.local via mdns
+After=network.target network-online.target
+Requires=network-online.target
+
+[Service]
+Restart=always
+Type=simple
+ExecStart=/bin/bash -c "/usr/bin/avahi-publish -a -R %I $(avahi-resolve -4 -n %H.local | cut -f 2)"
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl enable --now avahi-alias@birdnetsystem.local.service
+  systemctl enable --now avahi-alias@birdlog.local.service
+  systemctl enable --now avahi-alias@extractionlog.local.service
+  systemctl enable --now avahi-alias@birdstats.local.service
 }
 
 get_PUSHED() {
@@ -292,6 +401,8 @@ install_gotty_logs() {
   if ! which gotty &> /dev/null;then
   wget -c ${gotty_url} -O - |  tar -xz -C /usr/local/bin/
   fi
+  ln -s $(dirname ${my_dir})/templates/.gotty \
+    $(cat /etc/passwd | grep "${BIRDNET_USER}" | cut -d":" -f6)
   cat << EOF > /etc/systemd/system/birdnet_log.service
 [Unit]
 Description=BirdNET Analysis Log
@@ -351,9 +462,7 @@ finish_installing_services() {
   ln -fs $(dirname ${my_dir})/birdnet.conf /etc/birdnet/birdnet.conf
   source /etc/birdnet/birdnet.conf
   
-  [ -d ${EXTRACTED} ] || mkdir -p ${EXTRACTED}
-  
-  install_gotty_logs
+  [ -d ${EXTRACTED} ] || sudo -u ${BIRDNET_USER} mkdir -p ${EXTRACTED}
   
   install_cleanup_cron
   
@@ -409,10 +518,42 @@ EOF
 
   if [ ! -z "${EXTRACTIONS_URL}" ];then
     [ -d /etc/caddy ] || mkdir /etc/caddy
+    cp $(dirname ${my_dir})/templates/index.html ${EXTRACTED}/
     cat << EOF > /etc/caddy/Caddyfile
 ${EXTRACTIONS_URL} {
-root * ${EXTRACTED}
-file_server browse
+  root * ${EXTRACTED}
+  file_server browse
+  basicauth /Processed* {
+    birdnet ${HASHWORD}
+  }
+  basicauth /stream {
+    birdnet ${HASHWORD}
+  }
+  reverse_proxy /stream localhost:8000
+}
+
+http://birdnetsystem.local {
+  root * ${EXTRACTED}
+  file_server browse
+  basicauth /Processed* {
+    birdnet ${HASHWORD}
+  }
+  basicauth /stream {
+    birdnet ${HASHWORD}
+  }
+  reverse_proxy /stream localhost:8000
+}
+
+http://birdlog.local {
+  reverse_proxy localhost:8080
+}
+
+http://extractionlog.local {
+  reverse_proxy localhost:8888
+}
+
+http://birdstats.local {
+  reverse_proxy localhost:9090
 }
 
 EOF
@@ -424,9 +565,8 @@ After=network.target network-online.target ${SYSTEMD_MOUNT}
 Requires=network-online.target ${SYSTEMD_MOUNT}
 EOF
       systemctl daemon-reload
-      systemctl restart caddy
-      systemctl enable caddy
     fi
+    systemctl restart caddy
  fi
 }
 

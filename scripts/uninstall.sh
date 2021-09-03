@@ -2,51 +2,68 @@
 # Uninstall script to remove everything
 # set -x # Uncomment to debug
 trap 'rm -f ${TMPFILE}' EXIT
-TMPFILE=$(mktemp)
-
 source /etc/birdnet/birdnet.conf &> /dev/null
-read -p "Be sure to run this script as the '${BIRDNET_USER}'"
-crontab -l | sed -e '/birdnet/,+1d' > "${TMPFILE}"
-crontab "${TMPFILE}"
+SCRIPTS=(/usr/local/bin/birdnet_analysis.sh
+/usr/local/bin/birdnet_recording.sh
+/usr/local/bin/birdnet_stats.sh
+/usr/local/bin/cleanup.sh
+/usr/local/bin/extract_new_birdsounds.sh
+/usr/local/bin/install_birdnet.sh
+/usr/local/bin/install_services.sh
+/usr/local/bin/reconfigure_birdnet.sh
+/usr/local/bin/species_notifier.sh
+/usr/local/bin/uninstall.sh
+/usr/local/bin/update_species.sh
+$(grep "${BIRDNET_USER}" /etc/passwd | cut -d":" -f6)/.gotty)
 
-sudo systemctl disable --now caddy
-if [ -d /etc/systemd/system/caddy.service.d ];then
-  sudo rm -drf /etc/systemd/system/caddy.service.d
-fi
-sudo rm -drf /etc/caddy
-if [ -f /etc/systemd/system/"${SYSTEMD_MOUNT}" ];then
-  sudo systemctl disable --now ${SYSTEMD_MOUNT}
-  sudo rm /etc/systemd/system/"${SYSTEMD_MOUNT}"
-fi
+SERVICES=(avahi-alias@birdlog.local.service
+avahi-alias@birdnetsystem.local.service
+avahi-alias@birdstats.local.service
+avahi-alias@extractionlog.local.service
+birdnet_analysis.service
+birdnet_log.service
+birdnet_recording.service
+birdstats.service
+caddy.service
+extraction_log.service
+extraction.service
+livestream.service)
 
-sudo systemctl disable --now birdnet_analysis.service
-sudo rm /etc/systemd/system/birdnet_analysis.service
+remove_services() {
+  for i in "${SERVICES[@]}"; do
+    if [ -L /etc/systemd/system/multi-user.target.wants/"${i}" ];then
+      sudo systemctl disable --now "${i}"
+    fi
+    if [ -f /etc/systemd/system/"${i}" ];then
+      sudo rm /etc/systemd/system/"${i}"
+    fi
+  done
+  remove_icecast
+  remove_crons
+}
 
-if [ -f /etc/systemd/system/birdnet_recording.service ];then
-  sudo systemctl disable --now birdnet_recording.service
-  sudo rm /etc/systemd/system/birdnet_recording.service
-fi
+remove_crons() {
+  TMPFILE=$(mktemp)
+  crontab -l | sed -e '/birdnet/,+1d' > "${TMPFILE}"
+  crontab "${TMPFILE}"
+}
 
-if [ -f /etc/systemd/system/extraction.service ];then
-  sudo rm /etc/systemd/system/extraction.service
-fi
+remove_icecast() {
+  if [ -f /etc/init.d/icecast2 ];then
+    sudo /etc/init.d/icecast2 stop
+    sudo systemctl disable --now icecast2
+  fi
+}
 
-sudo systemctl disable --now birdnet_log.service
-sudo rm /etc/systemd/system/birdnet_log.service
-sudo systemctl disable --now extraction_log.service
-sudo rm /etc/systemd/system/extraction_log.service
-sudo systemctl disable --now birdstats.service
-sudo rm /etc/systemd/system/birdstats.service
-sudo rm /usr/local/bin/birdnet_analysis.sh
-sudo rm /usr/local/bin/birdnet_recording.sh
-sudo rm /usr/local/bin/cleanup.sh
-sudo rm /usr/local/bin/extract_new_birdsounds.sh
-sudo rm /usr/local/bin/install_birdnet.sh
-sudo rm /usr/local/bin/install_services.sh
-sudo rm /usr/local/bin/reconfigure_birdnet.sh
-sudo rm /usr/local/bin/species_notifier.sh
-sudo rm /usr/local/bin/update_species.sh
-sudo rm /usr/local/bin/uninstall.sh
+remove_scripts() {
+  for i in "${SCRIPTS[@]}";do
+    if [ -L "${i}" ];then
+      sudo rm "${i}"
+    fi
+  done
+}
 
-sudo rm -drf /etc/birdnet
+remove_services
+remove_scripts
+if [ -d /etc/birdnet ];then sudo rm -drf /etc/birdnet;fi
 echo "Uninstall finished. Remove this directory with 'rm -drfv' to finish."
