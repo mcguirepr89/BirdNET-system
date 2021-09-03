@@ -4,9 +4,9 @@
 This project offers an installation script for BirdNET as a systemd service on arm64 (aarch64) Debian-based operating systems. The installation script offers to walk the user through setting up the '*birdnet.conf*' main configuration file interactively. A variety of configurations can be attained through this installation script.
 
 BirdNET-system can be configured with the following optional services:
-- A 24/7 recording script that can be easily configured to use any available sound card.
-- An extraction service that extracts the audio selections identified by BirdNET by date and species.
-- A Caddy instance that serves the extracted files via a configurable ${EXTRACTIONS_URL}.
+- A 24/7 recording script that can be easily configured to use any available sound card
+- An extraction service that extracts the audio selections identified by BirdNET by date and species
+- A Caddy instance that serves the extracted files and live audio stream (icecast2)
 - A species list updating and notification script supporting mobile notifications via Pushed.co
 
 Currently, there are three types of configurations that I've tried and that have worked for me. They include the following:
@@ -15,7 +15,7 @@ Currently, there are three types of configurations that I've tried and that have
      - Recording
      - BirdNET Analysis
      - Extraction of identified BirdNET selections
-     - Hosting extracted selections via Caddy at configurable ${EXTRACTIONS_URL}
+     - Hosting extracted selections and live audio stream
 1. Recorder/Analyzer
    - These work together accordingly:
      - Recorder
@@ -36,6 +36,7 @@ Currently, there are three types of configurations that I've tried and that have
 	- libblas-dev
 	- liblapack-dev
 	- caddy (for web access to extractions)
+	- icecast2 (live audio stream)
 	- alsa-utils (for recording)
 	- sshfs (to mount remote sound file directories)
 1. Creates ssh-key pairings as necessary.
