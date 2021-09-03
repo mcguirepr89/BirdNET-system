@@ -13,7 +13,7 @@ DAYS=(
 #   - {DIRECTORY}
 get_files() {
   echo "Starting get_files() for ${1}"
-  files=($( find ${1} -name '*wav' \
+  files=($( find ${1} -maxdepth 1 -name '*wav' \
   | sort \
   | awk -F "/" '{print $NF}' ))
   [ -n "${files[1]}" ] && echo "Files loaded"
@@ -69,7 +69,13 @@ run_birdnet() {
   run_analysis "${1}" "${2}"
 }
 
+if [ $(find ${RECS_DIR} -maxdepth 1 -name '*wav' | wc -l) -gt 0 ];then
+  run_birdnet "${RECS_DIR}" "today"
+fi
+
 for i in ${!DAYS[@]};do
   DIRECTORY="$RECS_DIR/$(date --date="${DAYS[$i]}" "+%B-%Y/%d-%A")"
-  run_birdnet "${DIRECTORY}" "${DAYS[$i]}"
+  if [ $(find ${DIRECTORY} -name '*wav' &> /dev/null | wc -l) -gt 0 ];then
+    run_birdnet "${DIRECTORY}" "${DAYS[$i]}"
+  fi
 done

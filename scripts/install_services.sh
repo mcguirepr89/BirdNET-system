@@ -148,6 +148,7 @@ EOF
 is_it_remote() {
   while true; do
     read -n1 -p "Are the recordings mounted on a remote file system?"
+    echo
     case $YN in
       [Yy] ) echo "Checking for SSHFS to mount remote filesystem"
         if ! which sshfs &> /dev/null ;then
@@ -401,7 +402,7 @@ install_gotty_logs() {
   if ! which gotty &> /dev/null;then
   wget -c ${gotty_url} -O - |  tar -xz -C /usr/local/bin/
   fi
-  ln -s $(dirname ${my_dir})/templates/.gotty \
+  ln -fs $(dirname ${my_dir})/templates/.gotty \
     $(cat /etc/passwd | grep "${BIRDNET_USER}" | cut -d":" -f6)
   cat << EOF > /etc/systemd/system/birdnet_log.service
 [Unit]
@@ -518,7 +519,8 @@ EOF
 
   if [ ! -z "${EXTRACTIONS_URL}" ];then
     [ -d /etc/caddy ] || mkdir /etc/caddy
-    cp $(dirname ${my_dir})/templates/index.html ${EXTRACTED}/
+    sudo -u ${BIRDNET_USER} ln -fs \
+      $(dirname ${my_dir})/templates/index.html ${EXTRACTED}/
     cat << EOF > /etc/caddy/Caddyfile
 ${EXTRACTIONS_URL} {
   root * ${EXTRACTED}
