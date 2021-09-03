@@ -69,7 +69,7 @@ run_birdnet() {
   run_analysis "${1}" "${2}"
 }
 
-if [ $(find ${RECS_DIR} -name '*wav' | wc -l) -gt 0 ];then
+if [ $(find ${RECS_DIR} -maxdepth 0 -name '*wav' | wc -l) -gt 0 ];then
   run_birdnet "${RECS_DIR}" "today"
 fi
 
