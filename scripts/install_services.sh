@@ -148,6 +148,7 @@ EOF
 is_it_remote() {
   while true; do
     read -n1 -p "Are the recordings mounted on a remote file system?"
+    echo
     case $YN in
       [Yy] ) echo "Checking for SSHFS to mount remote filesystem"
         if ! which sshfs &> /dev/null ;then
