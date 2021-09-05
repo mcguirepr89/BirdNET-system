@@ -27,6 +27,7 @@ birdstats.service
 caddy.service
 extraction_log.service
 extraction.service
+extraction.timer
 livestream.service)
 
 remove_services() {
