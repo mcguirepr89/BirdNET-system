@@ -27,6 +27,81 @@ LATITUDE=
 LONGITUDE=
 
 ################################################################################
+#-----------------------------  Recording Service  ----------------------------#
+
+#   Keep this EMPTY if you do not want this device to perform the recording.   #
+
+## RECORDER is simply a setting for enabling the 24/7 birdnet_recording.service.
+## Set this to Y or y to enable recording.
+
+RECORDER=
+
+################################################################################
+#-----------------  Mounting a remote directory with systemd  -----------------#
+#_______________The three variables below can be set to enable a_______________#
+#___________________systemd.mount for analysis, extraction,____________________#
+#______________________________or file-serving_________________________________#
+
+#            Leave these settings EMPTY if your data-set is local.             #
+
+## REMOTE_HOST is the IP address, hostname, or domain name SSH should use to 
+## connect for FUSE to mount its remote directories locally.
+
+REMOTE_HOST=
+
+## REMOTE_USER is the user SSH will use to connect to the REMOTE_HOST.
+
+REMOTE_USER=
+
+## REMOTE_RECS_DIR is the directory on the REMOTE_HOST which contains the
+## data-set SSHFS should mount to this system for local access. This is NOT the
+## directory where you will access the data on this machine. See RECS_DIR for
+## that.
+
+REMOTE_RECS_DIR=
+
+################################################################################
+#-----------------------  Web-hosting/Caddy File-server  ----------------------#
+
+#             Leave this EMPTY if you do not want web-access to your           #
+#                data-set, extractions, live-stream, nor logs.                 #
+
+## EXTRACTIONS_URL is the URL where the extractions, data-set, and live-stream
+## will be web-hosted. If you do not own a domain, or would just prefer to keep 
+## BirdNET-system on your local network, you can set this to http://localhost.
+
+EXTRACTIONS_URL=
+
+################################################################################
+#-------------------------  Live Audio Stream  --------------------------------#
+#_____________The two variables below configure the live audio_________________#
+#_________________________________stream.______________________________________#
+
+#         Keep these EMPTY if this machine is not doing the recording.         #
+
+## STREAM_PWD is the password you will use to access your live audio stream from
+## web browsers.
+
+STREAM_PWD=
+
+## ICE_PWD is the password that icecast2 will use to authenticate ffmpeg as a
+## trusted source for the stream. You will never need to enter this manually
+## anywhere other than here.
+
+ICE_PWD=
+
+################################################################################
+#-------------------  Mobile Notifications via Pushed.co  ---------------------#
+#____________The two variables below enable mobile notifications_______________#
+#_____________See https://pushed.co/quick-start-guide to get___________________#
+#_________________________these values for your app.___________________________#
+
+## Pushed.co App Key and App Secret
+
+PUSHED_APP_KEY=
+PUSHED_APP_SECRET=
+
+################################################################################
 #--------------------------------  Defaults  ----------------------------------#
 #______The six variables below are default settings that you (probably)________#
 #__________________don't need to change at all, but can._______________________# 
@@ -77,69 +152,6 @@ OVERLAP="0.0"
 ## Don't set this to 1.0 or you won't have any results.
 
 CONFIDENCE="0.7"
-
-################################################################################
-#-----------------  Mounting a remote directory with systemd  -----------------#
-#_______________The three variables below can be set to enable a_______________#
-#___________________systemd.mount for analysis, extraction,____________________#
-#______________________________or file-serving_________________________________#
-
-#            Leave these settings EMPTY if your data-set is local.             #
-
-## REMOTE_HOST is the IP address, hostname, or domain name SSH should use to 
-## connect for FUSE to mount its remote directories locally.
-
-REMOTE_HOST=
-
-## REMOTE_USER is the user SSH will use to connect to the REMOTE_HOST.
-
-REMOTE_USER=
-
-## REMOTE_RECS_DIR is the directory on the REMOTE_HOST which contains the
-## data-set SSHFS should mount to this system for local access. This is NOT the
-## directory where you will access the data on this machine. See RECS_DIR for
-## that.
-
-REMOTE_RECS_DIR=
-
-################################################################################
-#-----------------------  Web-hosting/Caddy File-server  ----------------------#
-
-#             Leave this EMPTY if you do not want web-access to your
-#                data-set, extractions, live-stream, nor logs
-
-## EXTRACTIONS_URL is the URL where the extractions, data-set, and live-stream
-## will be web-hosted. If you do not own a domain, or would just prefer to keep 
-## BirdNET-system on your local network, you can set this to http://localhost.
-
-EXTRACTIONS_URL=
-
-################################################################################
-#-------------------------  Live Audio Stream  --------------------------------#
-#_____________The two variables below configure the live audio_________________#
-#_________________________________stream_______________________________________#
-
-## STREAM_PWD is the password you will use to access your live audio stream from
-## web browsers. Keep this EMPTY if this device is not doing the recording.
-
-STREAM_PWD=
-
-## ICE_PWD is the password that icecast2 will use to authenticate ffmpeg as a
-## trusted source for the stream. You will never need to enter this manually
-## anywhere other than here.
-
-ICE_PWD=
-
-################################################################################
-#-------------------  Mobile Notifications via Pushed.co  ---------------------#
-#____________The two variables below enable mobile notifications_______________#
-#_____________See https://pushed.co/quick-start-guide to get___________________#
-#_________________________________this setup___________________________________#
-
-## Pushed.co App Key and App Secret
-
-PUSHED_APP_KEY=
-PUSHED_APP_SECRET=
 
 ################################################################################
 #------------------------------  Auto-Generated  ------------------------------#
