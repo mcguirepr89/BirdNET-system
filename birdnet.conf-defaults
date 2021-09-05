@@ -68,7 +68,7 @@ EXTRACTED=${RECS_DIR}/Extracted
 IDFILE=${HOME}/BirdNET-system/IdentifiedSoFar.txt
 
 ## OVERLAP is the value in seconds which BirdNET should use when analyzing
-## the data.
+## the data. The values must be between 0.0-2.9.
 
 OVERLAP="0.0"
 
@@ -105,7 +105,7 @@ REMOTE_RECS_DIR=
 ################################################################################
 #-----------------------  Web-hosting/Caddy File-server  ----------------------#
 
-#             Leave these EMPTY if you do not want web-access to your
+#             Leave this EMPTY if you do not want web-access to your
 #                data-set, extractions, live-stream, nor logs
 
 ## EXTRACTIONS_URL is the URL where the extractions, data-set, and live-stream
