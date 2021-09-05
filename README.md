@@ -77,7 +77,8 @@ and the BirdNET-system Statistics Report at
 
 ## How to reconfigure your setup
 At any time, you can reconfigure the settings you opted for during installation by running the '*uninstall.sh*' script, then running the '*reconfigure_birdnet.sh*' script with super user privileges.
-Just issue `/usr/local/bin/uninstall.sh && sudo ~/BirdNET-system/scripts/reconfigure_birdnet.sh` and that ought to do the trick.
+Issue `/usr/local/bin/uninstall.sh`
+Then, from the BirdNET-system directory, issue `sudo ./scripts/reconfigure_birdnet.sh` and that ought to do the trick.
 
 ## How to uninstall BirdNET-system
 To remove BirdNET-system, run the included '*uninstall.sh*' script as the ${BIRDNET_USER}.
