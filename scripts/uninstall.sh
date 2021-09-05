@@ -58,7 +58,7 @@ remove_icecast() {
 remove_scripts() {
   for i in "${SCRIPTS[@]}";do
     if [ -L "${i}" ];then
-      sudo rm "${i}"
+      sudo rm -v "${i}"
     fi
   done
 }

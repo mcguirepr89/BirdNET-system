@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Runs BirdNET in virtual environment
-# set -x
+#set -x
 source /etc/birdnet/birdnet.conf
 DAYS=(
 "2 days ago"

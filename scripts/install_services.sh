@@ -6,6 +6,7 @@ my_dir=$(realpath $(dirname $0))
 TMPFILE=$(mktemp)
 gotty_url="https://github.com/yudai/gotty/releases/download/v1.0.1/gotty_linux_arm.tar.gz"
 CONFIG_FILE="$(dirname ${my_dir})/Birders_Guide_Installer_Configuration.txt"
+if [ -f ${CONFIG_FILE} ];then source ${CONFIG_FILE};fi
 
 ln -sf ${my_dir}/* /usr/local/bin/
 
@@ -78,8 +79,10 @@ PUSHED_APP_KEY=${PUSHED_APP_KEY}
 PUSHED_APP_SECRET=${PUSHED_APP_SECRET}
 # Don't touch these
 SYSTEMD_MOUNT=$(echo ${RECS_DIR#/} | tr / -).mount
-VENV=$(dirname ${my_dir})/birdnet
+VENV=$(dirname ${my_dir})/miniforge/envs/birdnet
 EOF
+  [ -d /etc/birdnet ] || mkdir /etc/birdnet
+  ln -sf $(dirname ${my_dir})/birdnet.conf /etc/birdnet/birdnet.conf
 }
 
 get_BIRDNET_USER() {
@@ -207,6 +210,19 @@ ExecStart=/usr/local/bin/extract_new_birdsounds.sh
 [Install]
 WantedBy=multi-user.target
 EOF
+        cat << EOF > /etc/systemd/system/extraction.timer
+[Unit]
+Description=BirdNET BirdSound Extraction Timer
+Requires=extraction.service
+
+[Timer]
+Unit=extraction.service
+OnCalendar=*:0/10
+
+[Install]
+WantedBy=multi-user.target
+EOF
+        systemctl enable --now extraction.timer
         systemctl enable extraction.service
         echo "Adding the species_updater.cron"
         if ! crontab -u ${BIRDNET_USER} -l &> /dev/null;then
@@ -266,7 +282,6 @@ get_EXTRACTIONS_URL() {
 }
 
 get_STREAM_PWD() {
-  if [ -f ${CONFIG_FILE} ];then source ${CONFIG_FILE};fi
   if [ -z ${STREAM_PWD} ]; then
     read -p "Please set a password to protect your live stream: " STREAM_PWD
   fi
@@ -275,7 +290,6 @@ get_STREAM_PWD() {
 }
 
 get_ICE_PWD() {
-  if [ -f ${CONFIG_FILE} ];then source ${CONFIG_FILE};fi
   echo $ICE_PWD
   if [ -z $ICE_PWD ] ;then
     while true; do
@@ -401,7 +415,7 @@ install_gotty_logs() {
   if ! which gotty &> /dev/null;then
   wget -c ${gotty_url} -O - |  tar -xz -C /usr/local/bin/
   fi
-  sudo -u ${BIRDNET_USER} ln -s $(dirname ${my_dir})/templates/gotty \
+  sudo -u ${BIRDNET_USER} ln -sf $(dirname ${my_dir})/templates/gotty \
     $(cat /etc/passwd | grep "${BIRDNET_USER}" | cut -d":" -f6)/.gotty
   cat << EOF > /etc/systemd/system/birdnet_log.service
 [Unit]
@@ -568,6 +582,7 @@ EOF
     fi
     systemctl restart caddy
  fi
+ systemctl enable birdnet_analysis.service
 }
 
 interactive_config_question
