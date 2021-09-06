@@ -1,0 +1,11 @@
+[Unit]
+Description=BirdNET In-Secure Terminal Access
+[Service]
+Restart=on-failure
+RestartSec=3
+Type=simple
+User=${BIRDNET_USER}
+Environment=TERM=xterm-256color
+ExecStart=/usr/local/bin/gotty -p 9111 --title-format "BirdNET-system Web Terminal" sudo bash -c login
+[Install]
+WantedBy=multi-user.target
