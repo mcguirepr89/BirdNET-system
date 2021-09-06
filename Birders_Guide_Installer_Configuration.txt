@@ -1,6 +1,6 @@
 # Birders Guide Installer Configuration File
 #####NOTE: the '#' sign needs to precede the lines where they are currently
-#####      NO NOT DELETE ANY OF THEM!!!
+#####      DO NOT DELETE ANY OF THEM!!!
 
 ###########################################################################
 #          Fill this out in order to install BirdNET-system
