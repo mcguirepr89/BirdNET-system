@@ -2,6 +2,15 @@
 set -e
 my_dir=${HOME}/BirdNET-system
 
+if [ "$(uname -m)" != "aarch64" ];then
+  echo "BirdNET-system requires a 64-bit OS.
+It looks like your operating system is using $(uname -m), 
+but would need to be aarch64.
+Please take a look at https://birdnetwiki.pmcgui.xyz for more
+information"
+  exit 1
+fi
+
 stage_1() {
   echo "Welcome to the Birders Guide Installer script.
 This installer assumes that you have not updated the Raspberry Pi yet.
