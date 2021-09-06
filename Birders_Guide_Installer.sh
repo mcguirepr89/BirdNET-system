@@ -2,17 +2,14 @@
 set -e
 my_dir=${HOME}/BirdNET-system
 
-stage_1() {
-  echo "Welcome to the Birders Guide Installer script.
-This installer assumes that you have not updated the Raspberry Pi yet.
-
-This will run in two stages. The first stage will simply ensure your
-computer is updated properly.
-
-Installing stage 2 installation script now."
-  curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/BirdNET-system-for-raspi4/Birders_Guide_Installer.sh"
-  chmod +x Birders_Guide_Installer.sh
-  echo "Updating your system. This step will almost definitely take a little while."
+if [ "$(uname -m)" != "aarch64" ];then
+  echo "BirdNET-system requires a 64-bit OS.
+It looks like your operating system is using $(uname -m), 
+but would need to be aarch64.
+Please take a look at https://birdnetwiki.pmcgui.xyz for more
+information"
+  exit 1
+fi
   sudo apt update &> /dev/null && sudo apt -y upgrade &> /dev/null
   echo "Installing git"
   sudo apt install -y git &> /dev/null
@@ -53,7 +50,8 @@ fi
 
 if [ -f ${my_dir}/Birders_Guide_Installer_Configuration.txt ];then
   echo "Follow the instructions to fill out the ${LATITUDE} and ${LONGITUDE} variables
-Save the file after editing and then close the Mouse Pad editing window"
+and set the passwords for the live audio stream. Save the file after editing
+and then close the Mouse Pad editing window"
   mousepad ${my_dir}/Birders_Guide_Installer_Configuration.txt &> /dev/null
   while pgrep mouse &> /dev/null;do
     sleep 1
@@ -64,9 +62,9 @@ else
   exit 1
 fi
 
-if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE} ] ;then
+if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE} ] || [ -z ${STREAM_PWD} ] || [ -z ${ICE_PWD} ];then
   echo "It looks like you haven't filled out the Birders_Guide_Installer_Configuration.txt file
-
+completely.
 Open that file to edit it. (Go to the folder icon in the top left and look for the \"BirdNET-system\"
 folder and double-click the file called \"Birders_Guide_Installer_Configuration.txt\"
 Enter the latitude and longitude of where the BirdNET-system will be. 

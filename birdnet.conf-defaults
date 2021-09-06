@@ -27,14 +27,24 @@ LATITUDE=
 LONGITUDE=
 
 ################################################################################
+#------------------------------ Extraction Service  ---------------------------#
+
+#   Keep this EMPTY if you do not want this device to perform the extractions  #
+
+## DO_EXTRACTIONS is simply a setting for enabling the extraction.service.
+## Set this to Y or y to enable extractions.
+
+DO_EXTRACTIONS=
+
+################################################################################
 #-----------------------------  Recording Service  ----------------------------#
 
 #   Keep this EMPTY if you do not want this device to perform the recording.   #
 
-## RECORDER is simply a setting for enabling the 24/7 birdnet_recording.service.
+## DO_RECORDING is simply a setting for enabling the 24/7 birdnet_recording.service.
 ## Set this to Y or y to enable recording.
 
-RECORDER=
+DO_RECORDING=
 
 ################################################################################
 #-----------------  Mounting a remote directory with systemd  -----------------#
@@ -97,6 +107,8 @@ ICE_PWD=
 #_________________________these values for your app.___________________________#
 
 ## Pushed.co App Key and App Secret
+
+#            Keep these EMPTY if haven't setup a Pushed.co App yet.            #
 
 PUSHED_APP_KEY=
 PUSHED_APP_SECRET=
