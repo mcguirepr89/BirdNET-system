@@ -71,7 +71,7 @@ REMOTE_USER=
 REMOTE_RECS_DIR=
 
 ################################################################################
-#-----------------------  Web-hosting/Caddy File-server  ----------------------#
+#-------------  Web-hosting/Caddy File-server/Log Viewer ----------------------#
 
 #             Leave this EMPTY if you do not want web-access to your           #
 #                data-set, extractions, live-stream, nor logs.                 #
