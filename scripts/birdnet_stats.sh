@@ -30,7 +30,7 @@ while read -r line;do
   echo "    + $line"
 done < ${IDFILE}
 echo
-echo -n "Listening since $(passwd -S | awk '{print $3}')"
+echo -n "Listening since "${INSTALL_DATE}""
 sleep 180
 clear
 done

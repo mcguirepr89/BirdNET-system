@@ -53,6 +53,7 @@ LATITUDE="${LATITUDE}"
 LONGITUDE="${LONGITUDE}"
 STREAM_PWD=${STREAM_PWD}
 ICE_PWD=${ICE_PWD}
+INSTALL_DATE="$(date "+%D")"
 
 # Defaults
 REC_CARD=$(sudo -u ${BIRDNET_USER} aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head' -e 'PCH' | uniq)

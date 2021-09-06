@@ -13,5 +13,5 @@ WantedBy=multi-user.target
 What="${REMOTE_USER}"@"${REMOTE_HOST}":"${REMOTE_RECS_DIR}"
 Where="${RECS_DIR}"
 Type=fuse.sshfs
-Options=delay_connect,_netdev,allow_other,IdentityFile=/home/${BIRDNET_USER}/.ssh/id_ed25519,reconnect,ServerAliveInterval=30,ServerAliveCountMax=5,x-systemd.automount,uid=1000,gid=1000
+Options=delay_connect,_netdev,allow_other,IdentityFile=${HOME}/.ssh/id_ed25519,reconnect,ServerAliveInterval=30,ServerAliveCountMax=5,x-systemd.automount,uid=1000,gid=1000
 TimeoutSec=60
