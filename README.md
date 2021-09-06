@@ -65,7 +65,8 @@ Currently, there are three types of configurations that I've tried and that have
 
 ## How to reconfigure your setup
 At any time, you can reconfigure the settings you opted for during installation by running the '*uninstall.sh*' script, then running the '*reconfigure_birdnet.sh*' script with super user privileges.
-Just issue `/usr/local/bin/uninstall.sh && sudo ~/BirdNET-system/scripts/reconfigure_birdnet.sh` and that ought to do the trick.
+Issue `/usr/local/bin/uninstall.sh`
+Then, from the BirdNET-system directory, issue `sudo ./scripts/reconfigure_birdnet.sh` and that ought to do the trick.
 
 ## Access your BirdNET-system
 If you configured BirdNET-system with the Caddy webserver, you can access the extractions locally at
