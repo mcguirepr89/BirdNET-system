@@ -6,6 +6,15 @@ trap 'echo -e "\n\nExiting the installation. Goodbye!" && exit' SIGINT
 my_dir=$(realpath $(dirname $0))
 cd $my_dir || exit 1
 
+if [ "$(uname -m)" != "aarch64" ];then
+  echo "BirdNET-system requires a 64-bit OS.
+It looks like your operating system is using $(uname -m), 
+but would need to be aarch64.
+Please take a look at https://birdnetwiki.pmcgui.xyz for more
+information"
+  exit 1
+fi
+
 #Install/Configure /etc/birdnet/birdnet.conf
 sudo ./install_services.sh || exit 1
 source /etc/birdnet/birdnet.conf
