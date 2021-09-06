@@ -16,7 +16,8 @@ install_extraction_service() {
     mkdir -p /etc/systemd/system/extraction.service.d
     cat "$(dirname ${my_dir})"/templates/SYSTEMD_overrides.conf \
       > /etc/systemd/system/extraction.service.d/overrides.conf
-  fi  systemctl enable --now extraction.timer
+  fi  
+  systemctl enable --now extraction.timer
   echo "Adding the species_updater.cron"
   if ! crontab -u ${BIRDNET_USER} -l &> /dev/null;then
     crontab -u ${BIRDNET_USER} \
@@ -41,8 +42,6 @@ install_recording_service() {
   echo "Installing birdnet_recording.service"
   cat "$(dirname ${my_dir})/templates/birdnet_recording.service" \
     > /etc/systemd/system/birdnet_recording.service
-  # This allows recording on this device, but storing the info in
-  # the ${REMOTE_RECS_DIR}.
   if [ ! -z ${REMOTE_RECS_DIR} ];then
     echo "Installing the birdnet_recording.service.d/overrides.conf"
     mkdir -p /etc/systemd/system/birdnet_recording.service.d
