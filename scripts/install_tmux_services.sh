@@ -22,23 +22,36 @@ install_tmux() {
   )
 
   if which tmux &>/dev/null; then
-    sudo apt -qqqy purge tmux &> /dev/null
-    sudo rm -f $(which tmux)
+    echo "tmux is installed"
+  else
+
+    sudo apt update && sudo apt -y install "${DEPENDS[@]}"
+
+    cd ${HOME} && git clone https://github.com/tmux/tmux.git
+    cd tmux
+    sh autogen.sh
+    ./configure && make && sudo make install
+    cd && rm -drf ./tmux
+    sudo ln -sf "$(dirname ${my_dir})/templates/tmux.conf" /etc/tmux.conf
   fi
-
-  sudo apt update && sudo apt -y install "${DEPENDS[@]}"
-
-  cd ${HOME} && git clone https://github.com/tmux/tmux.git
-  cd tmux
-  sh autogen.sh
-  ./configure && make && sudo make install
-  cd && rm -drf ./tmux
-  sudo ln -sf "$(dirname ${my_dir})/templates/tmux.conf" /etc/tmux.conf
 }
 
 install_web_terminal() {
-  cat "$(dirname ${my_dir})/templates/birdterminal.service" \
-    | sudo tee /etc/systemd/system/birdterminal.service
+  cat << EOF | sudo tee /etc/systemd/system/birdterminal.service
+[Unit]
+Description=A BirdNET-system Web Terminal
+
+[Service]
+Restart=on-failure
+RestartSec=3
+Type=simple
+User=${BIRDNET_USER}
+Environment=TERM=xterm-256color
+ExecStart=/usr/local/bin/gotty -w --title-format "Login!" -p 9111 tmux new -A -s Login sudo bash -c login
+
+[Install]
+WantedBy=multi-user.target
+EOF
   HASHWORD="$(caddy hash-password -plaintext "${STREAM_PWD}")"
   cat << EOF | sudo tee -a /etc/caddy/Caddyfile
 http://birdterminal.local {
