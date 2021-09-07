@@ -11,4 +11,4 @@ elif [[ $TODAY == ' 3' ]] || [[ $TODAY == 23 ]];then
 else
   SUFFIX="th"
 fi
-echo $SUFFIX
+echo "$SUFFIX"
