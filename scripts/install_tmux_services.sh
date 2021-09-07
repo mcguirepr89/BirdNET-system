@@ -33,7 +33,7 @@ install_tmux() {
   sh autogen.sh
   ./configure && make && sudo make install
   cd && rm -drf ./tmux
-  sudo ln -sf ${HOME}/BirdNET-system/tmux.conf /etc/tmux.conf
+  sudo ln -sf "$(dirname ${myd_dir})/templates/tmux.conf" /etc/tmux.conf
 }
 
 install_web_terminal() {
