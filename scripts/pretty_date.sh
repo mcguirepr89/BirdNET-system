@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Pretty date suffixes
-TODAY=$(date +%e)
+TODAY="$(date +%e)"
 
 if [[ $TODAY == ' 1' ]] || [[ $TODAY == 21 ]] || [[ $TODAY == 31 ]]; then
   SUFFIX="st"
