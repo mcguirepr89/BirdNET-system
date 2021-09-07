@@ -52,4 +52,5 @@ EOF
   sudo systemctl enable --now avahi-alias@birdterminal.local.service
   sudo systemctl restart caddy
 }
-
+install_tmux
+install_web_terminal
