@@ -38,9 +38,9 @@ install_tmux() {
 
 install_web_terminal() {
   cat "$(dirname ${my_dir})/templates/birdterminal.service" \
-    > /etc/systemd/system/birdterminal.service
+    | sudo tee /etc/systemd/system/birdterminal.service
   HASHWORD="$(caddy hash-password -plaintext "${STREAM_PWD}")"
-  cat << EOF >> /etc/caddy/Caddyfile
+  cat << EOF | sudo tee -a /etc/caddy/Caddyfile
 http://birdterminal.local {
   reverse_proxy localhost:9111
   basicauth {
