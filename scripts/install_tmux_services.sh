@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
-# Install tmux from source, then
-# install multi-plexed gotty terminal
+# This script installs a web-based terminal @ http://birdterminal.local
+# ONLY run this additional script if you trust everyone on your 
+# local network completely as the credentials are sent WITHOUT 
+# any SSL/TLS encryption. For a secure remote connection to your 
+# BirdNET-system command line, consider enabling SSH on the 
+# Raspberry Pi and using another Linux machine or an SSH 
+# client software, or you can alternately add the 'tls internal'
+# directive to the Caddyfile to add a self-signed certificate for TLS/SSL
+# encryption. For remote desktop access, I can recommend AnyDesk.
 source /etc/birdnet/birdnet.conf
 my_dir=$(realpath $(dirname $0))
 
