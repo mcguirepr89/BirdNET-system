@@ -24,6 +24,7 @@ birdnet_analysis.service
 birdnet_log.service
 birdnet_recording.service
 birdstats.service
+birdterminal.service
 caddy.service
 extraction_log.service
 extraction.service
