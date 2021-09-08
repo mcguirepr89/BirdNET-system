@@ -12,6 +12,7 @@ information"
 fi
 
 install_zram_swap() {
+  echo "Configuring zram.service"
   sudo touch /etc/modules-load.d/zram.conf
   echo 'zram' | sudo tee /etc/modules-load.d/zram.conf
   sudo touch /etc/modprobe.d/zram.conf
@@ -20,6 +21,7 @@ install_zram_swap() {
   echo 'KERNEL=="zram0", ATTR{disksize}="4G",TAG+="systemd"' \
     | sudo tee /etc/udev/rules.d/99-zram.rules
   sudo touch /etc/systemd/system/zram.service
+  echo "Installing zram.service"
   cat << EOF | sudo tee /etc/systemd/system/zram.service
 [Unit]
 Description=Swap with zram
@@ -49,9 +51,10 @@ Installing stage 2 installation script now."
   curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/BirdNET-system-for-raspi4/Birders_Guide_Installer.sh"
   chmod +x Birders_Guide_Installer.sh
   echo "Updating your system. This step will almost definitely take a little while."
-  sudo apt update &> /dev/null && sudo apt -y upgrade &> /dev/null
+  sudo apt -qq update
+  sudo apt -qqy upgrade
   echo "Installing git"
-  sudo apt install -y git &> /dev/null
+  sudo apt install -qqy git
   echo "Stage 1 complete."
   touch ${HOME}/stage_1_complete
   cat << EOF | sudo tee /etc/systemd/user/birdnet-system-installer.service &> /dev/null
