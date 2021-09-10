@@ -26,6 +26,6 @@ http://birdlog.local {
 http://extractionlog.local {
   reverse_proxy localhost:8888
 }
-http://terminal.birdnetsystem.local {
+http://birdterminal.local {
   reverse_proxy localhost:9111
 }
