@@ -23,3 +23,4 @@ ExecStop=/sbin/swapoff /dev/zram0
 WantedBy=multi-user.target
 EOF
 sudo systemctl enable zram
+echo "You'll need to reboot for this to take effect."
