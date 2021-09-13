@@ -105,9 +105,9 @@ get_GEO() {
 
 get_REMOTE() {
   while true;do # Force a Yes or No
-    read -n1 -p "Is this device also doing the recording? " YN
+    read -n1 -p "Is this device also doing the recording? " RECORDING
     echo
-    case $YN in
+    case $RECORDING in
       [Yy] ) install_alsa;install_recording_service;break;;
       [Nn] ) is_it_remote;break;;
       * ) echo "Sorry! You have to say yes or no!";;
@@ -151,7 +151,7 @@ EOF
 
 is_it_remote() {
   while true; do
-    read -n1 -p "Are the recordings mounted on a remote file system?"
+    read -n1 -p "Are the recordings mounted on a remote file system?" YN
     case $YN in
       [Yy] ) echo "Checking for SSHFS to mount remote filesystem"
         if ! which sshfs &> /dev/null ;then
@@ -267,13 +267,13 @@ get_EXTRACTIONS_URL() {
           systemctl enable --now caddy &> /dev/null
           get_STREAM_PWD
           install_avahi_aliases
-	        install_gotty_logs
-	      else
+          install_gotty_logs
+      else
           echo "Caddy is installed"
           systemctl enable --now caddy &> /dev/null
           get_STREAM_PWD
           install_avahi_aliases
-	        install_gotty_logs
+          install_gotty_logs
         fi
         break;;
       [Nn] ) EXTRACTIONS_URL=;break;;
@@ -287,7 +287,10 @@ get_STREAM_PWD() {
     read -p "Please set a password to protect your live stream: " STREAM_PWD
   fi
   HASHWORD=$(caddy hash-password -plaintext ${STREAM_PWD})
-  get_ICE_PWD
+  case $RECORDING in
+    [Yy]) get_ICE_PWD;;
+    [Nn]) echo "Not installing the LiveStream service";;
+  esac
 }
 
 get_ICE_PWD() {

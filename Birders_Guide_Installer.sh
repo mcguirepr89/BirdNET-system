@@ -60,7 +60,7 @@ Installing stage 2 installation script now."
   cat << EOF | sudo tee /etc/systemd/user/birdnet-system-installer.service &> /dev/null
 [Unit]
 Description=A BirdNET-system Installation Script Service
-After=graphical.target
+After=graphical.target network-online.target
 
 [Service]
 Type=simple

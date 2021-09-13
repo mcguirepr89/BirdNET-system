@@ -94,7 +94,7 @@ install_birdnet() {
   pip install --upgrade pip wheel setuptools > /dev/null 
   echo "	Installing Librosa"
   pip install librosa > /dev/null 
-  echo "  Installing Theano"
+  echo "	Installing Theano"
   pip install -r "$THEON" > /dev/null 
   echo "	Installing Lasagne"
   pip install "$LASAG" > /dev/null 
@@ -125,9 +125,11 @@ birdnet_analysis.service, press ENTER to continue with the installation."
 [ -d ${RECS_DIR} ] || mkdir -p ${RECS_DIR} &> /dev/null
 
 install_deps
-install_birdnet & spinner
+if [ ! -d ${VENV} ];then
+  install_birdnet & spinner
+fi
 
-echo "	BirdNet is finished installing!!"
+echo "	BirdNet is installed!!"
 echo "	Enabling birdnet_analysis.service now"
 sudo systemctl enable birdnet_analysis.service
 echo "	BirdNET is enabled."
