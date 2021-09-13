@@ -95,9 +95,11 @@ echo
 
 [ -d ${RECS_DIR} ] || mkdir -p ${RECS_DIR} &> /dev/null
 install_deps & spinner
+if [ ! -d ${VENV} ];then
 installation & spinner
+fi
 
-echo "	BirdNet is finished installing!!"
+echo "	BirdNet is installed!!"
 echo "	Enabling birdnet_analysis.service now"
 sudo systemctl enable birdnet_analysis.service
 echo "	BirdNET is enabled."
