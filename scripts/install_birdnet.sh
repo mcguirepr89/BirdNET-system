@@ -126,7 +126,7 @@ birdnet_analysis.service, press ENTER to continue with the installation."
 
 install_deps
 if [ ! -d ${VENV} ];then
-  installation & spinner
+  install_birdnet & spinner
 fi
 
 echo "	BirdNet is installed!!"
