@@ -43,7 +43,7 @@ Currently, there are three types of configurations that I've tried and that have
 1. Creates and copies the appropriate systemd *.service* and/or *.mount* files.
 1. Installs any selected '*.cron*' jobs.
 1. Installs *miniforge* for the aarch64 architecture using the current release from https://github.com/conda-forge/miniforge
-1. Builds BirdNET in conda's *'birdnet'* virtual environment.
+1. Builds BirdNET in miniforge's *'birdnet'* virtual environment.
 1. Enables (but does not start) birdnet_analysis.service
 
 ## What you should know before beginning the installation
