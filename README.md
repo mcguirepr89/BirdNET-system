@@ -75,6 +75,13 @@ You can also view the log output for the <code>birdnet_analysis.service</code> a
 and the BirdNET-system Statistics Report at
 - http://birdstats.local
 
+## Examples
+These are examples of my personal instance of the BirdNET-system on a Raspberry Pi 4B.
+ - https://birdsounds.pmcgui.xyz  -- My BirdNET-system Extractions page
+ - https://birdlog.pmcgui.xyz  --  My 'birdlog' birdnet_analysis.service log
+ - https://extraction.pmcgui.xyz  --  My 'extractionlog' extraction.service log
+ - https://birdstats.pmcgui.xyz  -- My 'birdstats' BirdNET-system Report
+
 ## How to reconfigure your setup
 At any time, you can reconfigure the settings you opted for during installation by running the '*uninstall.sh*' script, then running the '*reconfigure_birdnet.sh*' script with super user privileges.
 1. Issue `/usr/local/bin/uninstall.sh`
