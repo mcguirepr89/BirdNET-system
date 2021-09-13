@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Creates and installs the systemd scripts and birdnet configuration file
-#set -x # Uncomment to enable debugging
+set -x # Uncomment to enable debugging
 trap 'rm -f ${TMPFILE}' EXIT
 my_dir=$(realpath $(dirname $0))
 TMPFILE=$(mktemp)
@@ -101,9 +101,9 @@ get_GEO() {
 
 get_REMOTE() {
   while true;do # Force a Yes or No
-    read -n1 -p "Is this device also doing the recording? " YN
+    read -n1 -p "Is this device also doing the recording? " RECORDING
     echo
-    case $YN in
+    case $RECORDING in
       [Yy] ) install_alsa;install_recording_service;break;;
       [Nn] ) is_it_remote;break;;
       * ) echo "Sorry! You have to say yes or no!";;
@@ -147,7 +147,7 @@ EOF
 
 is_it_remote() {
   while true; do
-    read -n1 -p "Are the recordings mounted on a remote file system?"
+    read -n1 -p "Are the recordings mounted on a remote file system?" YN
     echo
     case $YN in
       [Yy] ) echo "Checking for SSHFS to mount remote filesystem"
@@ -272,7 +272,11 @@ get_STREAM_PWD() {
     read -p "Please set a password to protect your live stream: " STREAM_PWD
   fi
   HASHWORD=$(caddy hash-password -plaintext ${STREAM_PWD})
-  get_ICE_PWD
+  case $RECORDING in
+    [Yy]) get_ICE_PWD;;
+    [Nn]) echo "Not installing the livestream";;
+  esac
+  
 }
 
 get_ICE_PWD() {
