@@ -20,6 +20,7 @@ SERVICES=(avahi-alias@birdlog.local.service
 avahi-alias@birdnetsystem.local.service
 avahi-alias@birdstats.local.service
 avahi-alias@extractionlog.local.service
+avahi-alias@birdterminal.local.service
 birdnet_analysis.service
 birdnet_log.service
 birdnet_recording.service
