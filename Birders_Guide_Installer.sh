@@ -82,32 +82,35 @@ stage_2() {
   sudo rm /etc/systemd/user/birdnet-system-installer.service
   rm ${HOME}/stage_1_complete
   export DISPLAY=:0
-  echo "Welcome back! Press enter to continue the BirdNET-system installation"
-  read
-if [ ! -d ${my_dir} ];then
-  cd ~ || exit 1
-  echo "Cloning the BirdNET-system repository in your home directory"
-  git clone https://github.com/mcguirepr89/BirdNET-system.git
-  echo "Switching to the BirdNET-system-for-raspi4 branch"
-  cd BirdNET-system && git checkout BirdNET-system-for-raspi4 > /dev/null
-fi
-
-if [ -f ${my_dir}/Birders_Guide_Installer_Configuration.txt ];then
-  echo "Follow the instructions to fill out the ${LATITUDE} and ${LONGITUDE} variables
-and set the passwords for the live audio stream. Save the file after editing
-and then close the Mouse Pad editing window"
-  mousepad ${my_dir}/Birders_Guide_Installer_Configuration.txt &> /dev/null
-  while pgrep mouse &> /dev/null;do
+  echo "Welcome back! Waiting for an internet connection to continue"
+  until ping -c 1 google.com &> /dev/null; do
     sleep 1
   done
-  source ${my_dir}/Birders_Guide_Installer_Configuration.txt
-else
-  echo "Something went wrong. I can't find the configuration file."
-  exit 1
-fi
+  echo "Connected!"
+  if [ ! -d ${my_dir} ];then
+    cd ~ || exit 1
+    echo "Cloning the BirdNET-system repository in your home directory"
+    git clone https://github.com/mcguirepr89/BirdNET-system.git
+    echo "Switching to the BirdNET-system-for-raspi4 branch"
+    cd BirdNET-system && git checkout BirdNET-system-for-raspi4 > /dev/null
+  fi
 
-if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE} ] || [ -z ${STREAM_PWD} ] || [ -z ${ICE_PWD} ];then
-  echo "It looks like you haven't filled out the Birders_Guide_Installer_Configuration.txt file
+  if [ -f ${my_dir}/Birders_Guide_Installer_Configuration.txt ];then
+    echo "Follow the instructions to fill out the ${LATITUDE} and ${LONGITUDE} variable
+and set the passwords for the live audio stream. Save the file after editing
+and then close the Mouse Pad editing window"
+    mousepad ${my_dir}/Birders_Guide_Installer_Configuration.txt &> /dev/null
+    while pgrep mouse &> /dev/null;do
+      sleep 1
+    done
+    source ${my_dir}/Birders_Guide_Installer_Configuration.txt
+  else
+    echo "Something went wrong. I can't find the configuration file."
+    exit 1
+  fi
+
+  if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE} ] || [ -z ${STREAM_PWD} ] || [ -z ${ICE_PWD} ];then
+    echo "It looks like you haven't filled out the Birders_Guide_Installer_Configuration.txt file
 completely.
 Open that file to edit it. (Go to the folder icon in the top left and look for the \"BirdNET-system\"
 folder and double-click the file called \"Birders_Guide_Installer_Configuration.txt\"
@@ -119,11 +122,11 @@ After you have filled out the configuration file, you can re-run this script. Ju
 same things you did to start this (copying and pasting from the Wiki) to try again.
 
 Good luck!"
-  exit 1
-fi
+    exit 1
+  fi
 
-if [ -z ${PUSHED_APP_SECRET} ] || [ -z ${PUSHED_APP_KEY} ];then
-  ${my_dir}/scripts/install_birdnet.sh << EOF
+  if [ -z ${PUSHED_APP_SECRET} ] || [ -z ${PUSHED_APP_KEY} ];then
+    ${my_dir}/scripts/install_birdnet.sh << EOF
 ypi
 /home/pi/BirdSongs
 ${LATITUDE}
@@ -132,8 +135,8 @@ yyyhttp://raspberrypi.local
 n
 n
 EOF
-else
-  ${my_dir}/scripts/install_birdnet.sh << EOF
+  else
+    ${my_dir}/scripts/install_birdnet.sh << EOF
 ypi
 /home/pi/BirdSongs
 ${LATITUDE}
@@ -143,12 +146,12 @@ y${PUSHED_APP_SECRET}
 ${PUSHED_APP_KEY}
 n
 EOF
-fi
-echo "Thanks for installing BirdNET-system!!! The next time you power on the raspberry pi,
+  fi
+  echo "Thanks for installing BirdNET-system!!! The next time you power on the raspberry pi,
 all of the services will start up automatically. 
 
 The installation has finished. Press Enter to close this window."
-read
+  read
 }
 
 if [ ! -f ${HOME}/stage_1_complete ] ;then
