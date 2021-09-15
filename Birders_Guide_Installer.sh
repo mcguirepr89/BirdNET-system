@@ -61,6 +61,7 @@ Installing stage 2 installation script now."
 [Unit]
 Description=A BirdNET-system Installation Script Service
 After=graphical.target network-online.target
+Requires=network-online.target
 
 [Service]
 Type=simple
