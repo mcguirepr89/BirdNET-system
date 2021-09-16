@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -xe
+set -e
 my_dir=${HOME}/BirdNET-system
 
 if [ "$(uname -m)" != "aarch64" ];then
@@ -22,7 +22,7 @@ install_zram_swap() {
     | sudo tee /etc/udev/rules.d/99-zram.rules
   sudo touch /etc/systemd/system/zram.service
   echo "Installing zram.service"
-  cat << EOF | sudo tee /etc/systemd/system/zram.service
+  cat << EOF | sudo tee /etc/systemd/system/zram.service &> /dev/null
 [Unit]
 Description=Swap with zram
 After=multi-user.target
@@ -41,15 +41,18 @@ EOF
 }
 
 stage_1() {
-  echo "Welcome to the Birders Guide Installer script.
+  echo "Welcome to the Birders Guide Installer script!
 This installer assumes that you have not updated the Raspberry Pi yet.
 
-This will run in two stages. The first stage will simply ensure your
-computer is updated properly."
-
-  echo "Updating your system. This step will almost definitely take a little while."
+The installer runs in two stages, with a reboot between stages:
+Stage 1 simply ensures the system is up to date.
+Stage 2 guides you through configuring the essentials and installs the full BirdNET-system."
+  echo
+  echo "Beginning Stage 1"
+  echo "Updating your system. This step will almost definitely take a while."
   sudo apt -qq update
-  sudo apt -qqy upgrade
+  sudo apt -qqy full-upgrade
+  echo "System Updated!"
   echo "Installing git"
   sudo apt install -qqy git
   echo "Stage 1 complete."
@@ -73,14 +76,13 @@ WantedBy=default.target
 EOF
   systemctl --user enable birdnet-system-installer.service
   install_zram_swap
+  echo "Rebooting the system in 5 seconds"
+  sleep 5
   sudo reboot
 }
 
 stage_2() {
-  systemctl --user disable birdnet-system-installer.service &> /dev/null
-  sudo rm /etc/systemd/user/birdnet-system-installer.service
-  rm ${HOME}/stage_1_complete
-  export DISPLAY=:0
+
   echo "Welcome back! Waiting for an internet connection to continue"
   until ping -c 1 google.com &> /dev/null; do
     sleep 1
@@ -124,12 +126,13 @@ Good luck!"
     read
     exit 1
   fi
-
+  echo "Installing the BirdNET-system configuration file."
   install_birdnet_config || exit 1
-  ${my_dir}/scripts/new_install_birdnet.sh || exit 1
+  echo "Installing the BirdNET-system"
+  if ${my_dir}/scripts/new_install_birdnet.sh;then
+    echo "Thanks for installing BirdNET-system!!! 
 
-  echo "Thanks for installing BirdNET-system!!! The next time you power on the raspberry pi,
-all of the services will start up automatically. 
+The next time you power on the raspberry pi, all of the services will start up automatically. 
 
 The installation has finished. Press Enter to close this window."
   read
