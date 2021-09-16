@@ -130,12 +130,15 @@ Good luck!"
   install_birdnet_config || exit 1
   echo "Installing the BirdNET-system"
   if ${my_dir}/scripts/new_install_birdnet.sh;then
-    echo "Thanks for installing BirdNET-system\!\!\! 
+    echo "Thanks for installing BirdNET-system!!! 
 
 The next time you power on the raspberry pi, all of the services will start up automatically. 
 
 The installation has finished. Press Enter to close this window."
-  read
+    read
+  else
+    echo "Something went wrong during installation. Open a github issue or email mcguirepr89@gmail.com"
+  fi
 }
 
 install_birdnet_config() {
