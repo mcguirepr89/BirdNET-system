@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # BirdNET Stats Page
+trap 'setterm --cursor on' EXIT
 source /etc/birdnet/birdnet.conf
 setterm --cursor off
 

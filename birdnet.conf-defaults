@@ -48,11 +48,17 @@ DO_RECORDING=
 
 ################################################################################
 #-----------------  Mounting a remote directory with systemd  -----------------#
-#_______________The three variables below can be set to enable a_______________#
+#_______________The four variables below can be set to enable a_______________#
 #___________________systemd.mount for analysis, extraction,____________________#
 #______________________________or file-serving_________________________________#
 
 #            Leave these settings EMPTY if your data-set is local.             #
+
+## REMOTE is simply a setting for enabling the systemd.mount to use a remote 
+## filesystem for the data storage and service.
+## Set this to Y or y to enable the systemd.mount. 
+
+REMOTE=
 
 ## REMOTE_HOST is the IP address, hostname, or domain name SSH should use to 
 ## connect for FUSE to mount its remote directories locally.
@@ -71,28 +77,34 @@ REMOTE_USER=
 REMOTE_RECS_DIR=
 
 ################################################################################
-#-------------  Web-hosting/Caddy File-server/Log Viewer ----------------------#
+#-----------------------  Web-hosting/Caddy File-server -----------------------#
+#__________The two variables below can be set to enable web access_____________#
+#____________to your data,(e.g., extractions, raw data, live___________________#
+#______________audio stream, BirdNET.selection.txt files)______________________#
 
-#             Leave this EMPTY if you do not want web-access to your           #
-#                data-set, extractions, live-stream, nor logs.                 #
+#         Leave these EMPTY if you do not want to enable web access            #
 
 ## EXTRACTIONS_URL is the URL where the extractions, data-set, and live-stream
 ## will be web-hosted. If you do not own a domain, or would just prefer to keep 
 ## BirdNET-system on your local network, you can set this to http://localhost.
+## Setting this (even to http://localhost) will also allow you to enable the   
+## GoTTY web logging features below.
 
 EXTRACTIONS_URL=
 
+## CADDY_PWD is the plaintext password (that will be hashed) and used to access
+## the "Processed" directory and live audio stream. This MUST be set if you
+## choose to enable this feature.
+
+CADDY_PWD=
+
 ################################################################################
 #-------------------------  Live Audio Stream  --------------------------------#
-#_____________The two variables below configure the live audio_________________#
-#_________________________________stream.______________________________________#
+#_____________The variable below configures/enables the live___________________# 
+#_____________________________audio stream.____________________________________#
 
-#         Keep these EMPTY if this machine is not doing the recording.         #
-
-## STREAM_PWD is the password you will use to access your live audio stream from
-## web browsers.
-
-STREAM_PWD=
+#         Keep this EMPTY if you do not wish to enable the live stream         #
+#                or if this device is not doing the recording                  #
 
 ## ICE_PWD is the password that icecast2 will use to authenticate ffmpeg as a
 ## trusted source for the stream. You will never need to enter this manually
@@ -106,9 +118,9 @@ ICE_PWD=
 #_____________See https://pushed.co/quick-start-guide to get___________________#
 #_________________________these values for your app.___________________________#
 
-## Pushed.co App Key and App Secret
-
 #            Keep these EMPTY if haven't setup a Pushed.co App yet.            #
+
+## Pushed.co App Key and App Secret
 
 PUSHED_APP_KEY=
 PUSHED_APP_SECRET=

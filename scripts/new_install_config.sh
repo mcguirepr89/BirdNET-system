@@ -1,141 +1,143 @@
 #!/usr/bin/env bash
-set -e
-my_dir=${HOME}/BirdNET-system
+# Creates and installs the /etc/birdnet/birdnet.conf file
+#set -x # Uncomment to enable debugging
+my_dir=$(realpath $(dirname $0))
+BIRDNET_CONF="$(dirname ${my_dir})/birdnet.conf"
 
-if [ "$(uname -m)" != "aarch64" ];then
-  echo "BirdNET-system requires a 64-bit OS.
-It looks like your operating system is using $(uname -m), 
-but would need to be aarch64.
-Please take a look at https://birdnetwiki.pmcgui.xyz for more
-information"
-  exit 1
-fi
-
-install_zram_swap() {
-  echo "Configuring zram.service"
-  sudo touch /etc/modules-load.d/zram.conf
-  echo 'zram' | sudo tee /etc/modules-load.d/zram.conf
-  sudo touch /etc/modprobe.d/zram.conf
-  echo 'options zram num_devices=1' | sudo tee /etc/modprobe.d/zram.conf
-  sudo touch /etc/udev/rules.d/99-zram.rules
-  echo 'KERNEL=="zram0", ATTR{disksize}="4G",TAG+="systemd"' \
-    | sudo tee /etc/udev/rules.d/99-zram.rules
-  sudo touch /etc/systemd/system/zram.service
-  echo "Installing zram.service"
-  cat << EOF | sudo tee /etc/systemd/system/zram.service
-[Unit]
-Description=Swap with zram
-After=multi-user.target
-
-[Service]
-Type=oneshot 
-RemainAfterExit=true
-ExecStartPre=/sbin/mkswap /dev/zram0
-ExecStart=/sbin/swapon /dev/zram0
-ExecStop=/sbin/swapoff /dev/zram0
-
-[Install]
-WantedBy=multi-user.target
-EOF
-  sudo systemctl enable zram
+get_RECS_DIR() {
+  read -p "What is the full path to your recordings directory (locally)? " RECS_DIR
 }
 
-stage_1() {
-  echo "Welcome to the Birders Guide Installer script.
-This installer assumes that you have not updated the Raspberry Pi yet.
-
-This will run in two stages. The first stage will simply ensure your
-computer is updated properly."
-
-  echo "Updating your system. This step will almost definitely take a little while."
-  sudo apt -qq update
-  sudo apt -qqy upgrade
-  echo "Installing git"
-  sudo apt install -qqy git
-  echo "Stage 1 complete."
-  echo "Installing stage 2 installation script now."
-  curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/rpitesting/Birders_Guide_Installer.sh"
-  chmod +x Birders_Guide_Installer.sh
-  touch ${HOME}/stage_1_complete
-  cat << EOF | sudo tee /etc/systemd/user/birdnet-system-installer.service &> /dev/null
-[Unit]
-Description=A BirdNET-system Installation Script Service
-After=graphical.target network-online.target
-
-[Service]
-Type=simple
-Restart=on-failure
-RestartSec=3s
-ExecStart=lxterminal -e /home/pi/Birders_Guide_Installer.sh
-
-[Install]
-WantedBy=default.target
-EOF
-  systemctl --user enable birdnet-system-installer.service
-  install_zram_swap
-  sudo reboot
+get_LATITUDE() {
+  read -p "What is the latitude where the recordings were made? " LATITUDE
 }
 
-stage_2() {
-  systemctl --user disable birdnet-system-installer.service &> /dev/null
-  sudo rm /etc/systemd/user/birdnet-system-installer.service
-  rm ${HOME}/stage_1_complete
-  export DISPLAY=:0
-  echo "Welcome back! Waiting for an internet connection to continue"
-  until ping -c 1 google.com &> /dev/null; do
-    sleep 1
+get_LONGITUDE() {
+  read -p "What is the longitude where the recordings were made? " LONGITUDE
+}
+
+get_DO_EXTRACTIONS() {
+  while true; do
+    read -n1 -p "Do you want this device to perform the extractions? " DO_EXTRACTIONS
+    case $DO_EXTRACTIONS in
+      [Yy] ) break;;
+      [Nn] ) break;;
+      * ) echo "You must answer with Yes or No (y or n)";;
+    esac
   done
-  echo "Connected!"
-  if [ ! -d ${my_dir} ];then
-    cd ~ || exit 1
-    echo "Cloning the BirdNET-system repository in your home directory"
-    git clone https://github.com/mcguirepr89/BirdNET-system.git
-    echo "Switching to the rpitesting branch"
-    cd BirdNET-system && git checkout rpitesting > /dev/null
-  fi
-
-  if [ -f ${my_dir}/Birders_Guide_Installer_Configuration.txt ];then
-    echo "Follow the instructions to fill out the ${LATITUDE} and ${LONGITUDE} variable
-and set the passwords for the live audio stream. Save the file after editing
-and then close the Mouse Pad editing window to continue."
-    mousepad ${my_dir}/Birders_Guide_Installer_Configuration.txt &> /dev/null
-    while pgrep mouse &> /dev/null;do
-      sleep 1
-    done
-    source ${my_dir}/Birders_Guide_Installer_Configuration.txt
-  else
-    echo "Something went wrong. I can't find the configuration file."
-    exit 1
-  fi
-
-  if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE} ] || [ -z ${STREAM_PWD} ] || [ -z ${ICE_PWD} ];then
-    echo "It looks like you haven't filled out the Birders_Guide_Installer_Configuration.txt file
-completely.
-Open that file to edit it. (Go to the folder icon in the top left and look for the \"BirdNET-system\"
-folder and double-click the file called \"Birders_Guide_Installer_Configuration.txt\"
-Enter the latitude and longitude of where the BirdNET-system will be. 
-You can find this information at https://maps.google.com
-
-Find your location on the map and right click to find your coordinates.
-After you have filled out the configuration file, you can re-run this script. Just do the exact
-same things you did to start this (copying and pasting from the Wiki) to try again.
-
-Good luck!"
-    exit 1
-  fi
-
-  install_birdnet_config || exit 1
-  ${my_dir}/scripts/new_install_birdnet.sh || exit 1
-
-  echo "Thanks for installing BirdNET-system!!! The next time you power on the raspberry pi,
-all of the services will start up automatically. 
-
-The installation has finished. Press Enter to close this window."
-  read
 }
 
-install_birdnet_config() {
-  cat << EOF > ${my_dir}/birdnet.conf
+get_DO_RECORDING() {
+  while true; do
+    read -n1 -p "Is this device also doing the recording? " DO_RECORDING
+    case $DO_RECORDING in
+      [Yy] ) break;;
+      [Nn] ) break;;
+      * ) echo "You must answer with Yes or No (y or n)";;
+    esac
+  done
+}
+
+get_REMOTE() {
+  while true; do
+    read -n1 -p "Are the recordings mounted on a remote file system?" REMOTE
+    case $REMOTE in
+      [Yy] ) 
+        read -p "What is the remote hostname or IP address for the recorder? " REMOTE_HOST
+        read -p "Who is the remote user? " REMOTE_USER
+        read -p "What is the absolute path of the recordings directory on the remote host? " REMOTE_RECS_DIR
+        break;;
+      [Nn] ) break;;
+      * ) echo "Please answer Yes or No";;
+    esac
+  done
+}
+
+get_EXTRACTIONS_URL() {
+  while true;do
+    read -n1 -p "Would you like to access the extractions via a web browser?
+
+    *Note: It is recommended, (but not required), that you run the web
+    server on the same host that does the extractions. If the extraction
+    service and web server are on different hosts, the \"By_Species\" and
+    \"Processed\" symbolic links won't work. The \"By-Date\" extractions,
+    however, will work as expected." CADDY_SERVICE
+    echo
+    case $CADDY_SERVICE in
+      [Yy] ) read -p "What URL would you like to publish the extractions to?
+        *Note: Set this to http://localhost if you do not want to make the
+        extractions publically available: " EXTRACTIONS_URL
+        get_CADDY_PWD
+        get_ICE_PWD
+        break;;
+      [Nn] ) EXTRACTIONS_URL= CADDY_PWD= ICE_PWD=;break;;
+      * ) echo "Please answer Yes or No";;
+    esac
+  done
+}
+
+get_CADDY_PWD() {
+  if [ -z ${CADDY_PWD} ]; then
+    while true; do
+      read -p "Please set a password to protect your data: " CADDY_PWD
+      case $CADDY_PWD in
+        "" ) echo "The password cannot be empty. Please try again.";;
+        * ) break;;
+      esac
+    done
+  fi
+}
+
+get_ICE_PWD() {
+  if [ ! -z ${CADDY_PWD} ] && [[ ${DO_RECORDING} =~ [Yy] ]];then
+    while true; do
+      read -n1 -p "Would you like to enable the live audio streaming service?" LIVE_STREAM
+      echo
+      case $LIVE_STREAM in
+        [Yy] )
+          read -p "Please set the icecast password. Use only alphanumeric characters." ICE_PWD
+          echo
+          case ${ICE_PWD} in
+            "" ) echo "The password cannot be empty. Please try again.";;
+            *) break;;
+          esac
+          break;;
+        [Nn] ) break;;
+        * ) echo "You must answer Yes or No (y or n).";;
+      esac
+    done
+  fi
+}
+
+get_PUSHED() {
+  while true; do
+    read -n1 -p "Do you have a free App key to receive mobile notifications via Pushed.co?" YN
+    echo
+    case $YN in
+      [Yy] ) read -p "Enter your Pushed.co App Key: " PUSHED_APP_KEY
+        read -p "Enter your Pushed.co App Key Secret: " PUSHED_APP_SECRET
+        break;;
+      [Nn] ) PUSHED_APP_KEY=
+        PUSHED_APP_SECRET=
+        break;;
+      * ) echo "A simple Yea or Nay will do";;
+    esac
+  done
+}
+
+configure() {
+  get_RECS_DIR
+  get_LATITUDE
+  get_LONGITUDE
+  get_DO_EXTRACTIONS
+  get_DO_RECORDING
+  get_REMOTE
+  get_EXTRACTIONS_URL
+  get_PUSHED
+}
+
+install_birdnet_conf() {
+  cat << EOF > $(dirname ${my_dir})/birdnet.conf
 ################################################################################
 #                 Configuration settings for BirdNET as a service              #
 ################################################################################
@@ -145,7 +147,7 @@ install_birdnet_config() {
 ## BIRDNET_USER should be the non-root user systemd should use to execute each 
 ## service.
 
-BIRDNET_USER=pi
+BIRDNET_USER=${USER}
 
 ## RECS_DIR is the location birdnet_analysis.service will look for the data-set
 ## it needs to analyze. Be sure this directory is readable and writable for
@@ -153,7 +155,7 @@ BIRDNET_USER=pi
 ## still need to set this, as this will be where the remote directory gets
 ## mounted locally. See REMOTE_RECS_DIR below for mounting remote data-sets.
 
-RECS_DIR=${HOME}/BirdSongs
+RECS_DIR=${RECS_DIR}
 
 ## LATITUDE and LONGITUDE are self-explanatroy. Find them easily at
 ## maps.google.com. Only go to the thousanths place for these variables
@@ -172,7 +174,7 @@ LONGITUDE="${LONGITUDE}"
 ## DO_EXTRACTIONS is simply a setting for enabling the extraction.service.
 ## Set this to Y or y to enable extractions.
 
-DO_EXTRACTIONS=y
+DO_EXTRACTIONS=${DO_EXTRACTIONS}
 
 ################################################################################
 #-----------------------------  Recording Service  ----------------------------#
@@ -182,7 +184,7 @@ DO_EXTRACTIONS=y
 ## DO_RECORDING is simply a setting for enabling the 24/7 birdnet_recording.service.
 ## Set this to Y or y to enable recording.
 
-DO_RECORDING=y
+DO_RECORDING=${DO_RECORDING}
 
 ################################################################################
 #-----------------  Mounting a remote directory with systemd  -----------------#
@@ -196,23 +198,23 @@ DO_RECORDING=y
 ## filesystem for the data storage and service.
 ## Set this to Y or y to enable the systemd.mount. 
 
-REMOTE=
+REMOTE=${REMOTE}
 
 ## REMOTE_HOST is the IP address, hostname, or domain name SSH should use to 
 ## connect for FUSE to mount its remote directories locally.
 
-REMOTE_HOST=
+REMOTE_HOST=${REMOTE_HOST}
 
 ## REMOTE_USER is the user SSH will use to connect to the REMOTE_HOST.
 
-REMOTE_USER=
+REMOTE_USER=${REMOTE_USER}
 
 ## REMOTE_RECS_DIR is the directory on the REMOTE_HOST which contains the
 ## data-set SSHFS should mount to this system for local access. This is NOT the
 ## directory where you will access the data on this machine. See RECS_DIR for
 ## that.
 
-REMOTE_RECS_DIR=
+REMOTE_RECS_DIR=${REMOTE_RECS_DIR}
 
 ################################################################################
 #-----------------------  Web-hosting/Caddy File-server -----------------------#
@@ -228,7 +230,7 @@ REMOTE_RECS_DIR=
 ## Setting this (even to http://localhost) will also allow you to enable the   
 ## GoTTY web logging features below.
 
-EXTRACTIONS_URL=http://localhost
+EXTRACTIONS_URL=${EXTRACTIONS_URL}
 
 ## CADDY_PWD is the plaintext password (that will be hashed) and used to access
 ## the "Processed" directory and live audio stream. This MUST be set if you
@@ -338,16 +340,18 @@ SYSTEMD_MOUNT=$(echo ${RECS_DIR#/} | tr / -).mount
 ## VENV is the virtual environment where the the BirdNET python build is found,
 ## i.e, VENV is the virtual environment miniforge built for BirdNET.
 
-VENV=${my_dir}/miniforge/envs/birdnet
+VENV=$(dirname ${my_dir})/miniforge/envs/birdnet
 EOF
   [ -d /etc/birdnet ] || sudo mkdir /etc/birdnet
-  sudo ln -sf ${my_dir}/birdnet.conf /etc/birdnet/birdnet.conf
+  sudo ln -sf $(dirname ${my_dir})/birdnet.conf /etc/birdnet/birdnet.conf
 }
 
-if [ ! -f ${HOME}/stage_1_complete ] ;then
-  stage_1
+# Checks for a birdnet.conf file in the BirdNET-system directory for a 
+# non-interactive installation. Otherwise,the installation is interactive.
+if [ -f ${BIRDNET_CONF} ];then
+  source ${BIRDNET_CONF}
+  install_birdnet_conf
 else
-  stage_2
-  rm ${HOME}/Birders_Guide_Installer.sh
-fi  
-
+  configure
+  install_birdnet_conf
+fi
