@@ -2,6 +2,7 @@
 # This installs the services that have been selected
 #set -x # Uncomment to enable debugging
 trap 'rm -f ${TMPFILE}' EXIT
+trap 'exit 1' SIGINT SIGHUP
 my_dir=$(realpath $(dirname $0))
 TMPFILE=$(mktemp)
 gotty_url="https://github.com/yudai/gotty/releases/download/v1.0.1/gotty_linux_arm.tar.gz"
