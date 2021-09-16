@@ -175,7 +175,7 @@ install_Caddyfile() {
 ${EXTRACTIONS_URL} {
   root * ${EXTRACTED}
   file_server browse
-  basicauth ${PROCESSED}* {
+  basicauth /Processed* {
     birdnet ${HASHWORD}
   }
   basicauth /stream {
@@ -187,7 +187,7 @@ ${EXTRACTIONS_URL} {
 http://birdnetsystem.local {
   root * ${EXTRACTED}
   file_server browse
-  basicauth ${PROCESSED}* {
+  basicauth /Processed* {
     birdnet ${HASHWORD}
   }
   basicauth /stream {
