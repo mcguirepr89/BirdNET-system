@@ -2,6 +2,7 @@
 # Creates and installs the /etc/birdnet/birdnet.conf file
 #set -x # Uncomment to enable debugging
 set -e
+trap 'exit 1' SIGINT SIGHUP
 # Keep track of the last executed command
 trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 # Echo an error message before exiting
