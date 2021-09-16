@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -xe
 my_dir=${HOME}/BirdNET-system
 
 if [ "$(uname -m)" != "aarch64" ];then
@@ -102,7 +102,7 @@ and then close the Mouse Pad editing window to continue."
     while pgrep mouse &> /dev/null;do
       sleep 1
     done
-    source ${my_dir}/Birders_Guide_Installer_Configuration.txt
+    source ${my_dir}/Birders_Guide_Installer_Configuration.txt || exit 1
   else
     echo "Something went wrong. I can't find the configuration file."
     exit 1
