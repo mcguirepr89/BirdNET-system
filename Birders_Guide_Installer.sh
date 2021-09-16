@@ -108,7 +108,7 @@ and then close the Mouse Pad editing window to continue."
     exit 1
   fi
 
-  if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE} ] || [ -z ${STREAM_PWD} ] || [ -z ${ICE_PWD} ];then
+  if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE} ] || [ -z ${CADDY_PWD} ] || [ -z ${ICE_PWD} ];then
     echo "It looks like you haven't filled out the Birders_Guide_Installer_Configuration.txt file
 completely.
 Open that file to edit it. (Go to the folder icon in the top left and look for the \"BirdNET-system\"
@@ -119,8 +119,9 @@ You can find this information at https://maps.google.com
 Find your location on the map and right click to find your coordinates.
 After you have filled out the configuration file, you can re-run this script. Just do the exact
 same things you did to start this (copying and pasting from the Wiki) to try again.
-
+Press Enter to close this window.
 Good luck!"
+    read
     exit 1
   fi
 
