@@ -144,7 +144,7 @@ install_birdnet_conf() {
 ################################################################################
 #                 Configuration settings for BirdNET as a service              #
 ################################################################################
-
+INSTALL_DATE="$(date "+%D")"
 #___________The four variables below are the only that are required.___________#
 
 ## BIRDNET_USER should be the non-root user systemd should use to execute each 
