@@ -56,6 +56,7 @@ OnCalendar=*:0/10
 [Install]
 WantedBy=multi-user.target
 EOF
+  systemctl enable extraction.timer
   systemctl enable extraction.service
   echo "Adding the species_updater.cron"
   if ! crontab -u ${USER} -l &> /dev/null;then
