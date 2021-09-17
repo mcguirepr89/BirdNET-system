@@ -145,5 +145,5 @@ case $YN in
   [Yy] ) sudo systemctl start birdnet_analysis.service \
     && journalctl -fu birdnet_analysis;;
 * ) echo "  Thanks for installing BirdNET-system!!
-  I hope it was helpful!"; exit;;
+  I hope it was helpful!";;
 esac
