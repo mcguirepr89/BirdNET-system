@@ -28,6 +28,7 @@ ExecStart=/usr/local/bin/birdnet_analysis.sh
 [Install]
 WantedBy=multi-user.target
 EOF
+  systemctl enable birdnet_analysis.service
 }
 
 install_extraction_service() {
