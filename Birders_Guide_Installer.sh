@@ -355,10 +355,10 @@ EOF
 if [ ! -f ${HOME}/stage_1_complete ] ;then
   stage_1
 else
-  stage_2
-  rm ${HOME}/Birders_Guide_Installer.sh
   systemctl --user disable --now birdnet-system-installer.service
   sudo rm -f /etc/systemd/user/birdnet-system-installer.service
+  stage_2
+  rm ${HOME}/Birders_Guide_Installer.sh
   rm ${HOME}/stage_1_complete
 fi  
 
