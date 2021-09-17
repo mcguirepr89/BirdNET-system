@@ -26,16 +26,21 @@ avahi-alias@birdnetsystem.local.service
 avahi-alias@birdstats.local.service
 avahi-alias@extractionlog.local.service
 avahi-alias@birdterminal.local.service
+birdnet_analysis.d
 birdnet_analysis.service
 birdnet_log.service
+birdnet_recording.d
 birdnet_recording.service
 birdstats.service
 birdterminal.service
+caddy.d
 caddy.service
 extraction_log.service
+extraction.d
 extraction.service
 extraction.timer
-livestream.service)
+livestream.service
+${SYSTEMD_MOUNT})
 
 remove_services() {
   for i in "${SERVICES[@]}"; do
