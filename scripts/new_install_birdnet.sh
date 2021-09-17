@@ -119,27 +119,24 @@ if [ ! -d ${VENV} ];then
   install_birdnet 
 fi
 
-echo "	BirdNet is installed!!"
-echo "	Enabling birdnet_analysis.service now"
-sudo systemctl enable birdnet_analysis.service
-echo "	BirdNET is enabled."
-echo
-echo "	To start the service manually, issue:
-            'sudo systemctl start birdnet_analysis'
-        To monitor the service logs, issue: 
-            'journalctl -fu birdnet_analysis'
-        To stop the service manually, issue: 
-            'sudo systemctl stop birdnet_analysis'
-        To stop and disable the service, issue: 
-            'sudo systemctl disable --now birdnet_analysis.service'
+echo "	BirdNet is installed!!
 
-      Visit
-      http://birdnetsystem.local to see your extractions,
-      http://birdlog.local to see the log output of the birdnet_analysis.service,
-      http://extractionlog.local to see the log output of the extraction.service, and
-      http://birdstats.local to see the BirdNET-system Report"
+  To start the service manually, issue:
+     'sudo systemctl start birdnet_analysis'
+  To monitor the service logs, issue: 
+     'journalctl -fu birdnet_analysis'
+  To stop the service manually, issue: 
+     'sudo systemctl stop birdnet_analysis'
+  To stop and disable the service, issue: 
+     'sudo systemctl disable --now birdnet_analysis.service'
+
+  Visit
+  http://birdnetsystem.local to see your extractions,
+  http://birdlog.local to see the log output of the birdnet_analysis.service,
+  http://extractionlog.local to see the log output of the extraction.service, and
+  http://birdstats.local to see the BirdNET-system Report"
 echo
-read -n1 -p "  Would you like to run the BirdNET service now?" YN
+read -n1 -p "  Would you like to run the birdnet_analysis.service now?" YN
 echo
 case $YN in
   [Yy] ) sudo systemctl start birdnet_analysis.service \
