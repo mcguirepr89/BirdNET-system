@@ -351,7 +351,8 @@ EOF
 
 install_systemd_overrides() {
   for i in caddy birdnet_analysis extraction birdnet_recording;do
-    if [ -f /etc/systemd/sytem/${i}.service ];then
+    if [ -f /etc/systemd/system/${i}.service ];then
+      [ -d /etc/systemd/system/${i}.d ] || mkdir /etc/systemd/system/${i}.d
       echo "Installing the systemd overrides.conf for the ${i}.service"
       cat << EOF > /etc/systemd/system/${i}.d/overrides.conf
 [Unit]
