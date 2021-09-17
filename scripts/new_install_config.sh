@@ -22,6 +22,7 @@ get_LONGITUDE() {
 get_DO_EXTRACTIONS() {
   while true; do
     read -n1 -p "Do you want this device to perform the extractions? " DO_EXTRACTIONS
+    echo
     case $DO_EXTRACTIONS in
       [Yy] ) break;;
       [Nn] ) break;;
@@ -33,6 +34,7 @@ get_DO_EXTRACTIONS() {
 get_DO_RECORDING() {
   while true; do
     read -n1 -p "Is this device also doing the recording? " DO_RECORDING
+    echo
     case $DO_RECORDING in
       [Yy] ) break;;
       [Nn] ) break;;
@@ -44,6 +46,7 @@ get_DO_RECORDING() {
 get_REMOTE() {
   while true; do
     read -n1 -p "Are the recordings mounted on a remote file system?" REMOTE
+    echo
     case $REMOTE in
       [Yy] ) 
         read -p "What is the remote hostname or IP address for the recorder? " REMOTE_HOST
@@ -51,7 +54,7 @@ get_REMOTE() {
         read -p "What is the absolute path of the recordings directory on the remote host? " REMOTE_RECS_DIR
         break;;
       [Nn] ) break;;
-      * ) echo "Please answer Yes or No";;
+      * ) echo "Please answer Yes or No (y or n)";;
     esac
   done
 }
