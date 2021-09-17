@@ -45,7 +45,8 @@ stage_1() {
 This installer assumes that you have not updated the Raspberry Pi yet.
 
 The installer runs in two stages, with a reboot between stages:
-Stage 1 simply ensures the system is up to date.
+Stage 1 configures and enables the zRAM kernel module and allocates 4G to its swapping size. 
+Stage 1 also ensures the system is up to date.
 Stage 2 guides you through configuring the essentials and installs the full BirdNET-system."
   echo
   echo "Beginning Stage 1"
