@@ -129,7 +129,10 @@ Good luck!"
   echo "Installing the BirdNET-system configuration file."
   install_birdnet_config || exit 1
   echo "Installing the BirdNET-system"
-  if ${my_dir}/scripts/new_install_birdnet.sh;then
+  if ${my_dir}/scripts/new_install_birdnet.sh << EOF; then
+
+n
+EOF
     echo "Thanks for installing BirdNET-system!!! 
 
 The next time you power on the raspberry pi, all of the services will start up automatically. 
