@@ -133,9 +133,7 @@ Good luck!"
 
 n
 EOF
-    echo "Thanks for installing BirdNET-system!!! 
-
-The next time you power on the raspberry pi, all of the services will start up automatically. 
+echo "The next time you power on the raspberry pi, all of the services will start up automatically. 
 
 The installation has finished. Press Enter to close this window."
     read
