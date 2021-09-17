@@ -48,7 +48,10 @@ remove_services() {
       sudo systemctl disable --now "${i}"
     fi
     if [ -f /etc/systemd/system/"${i}" ];then
-      sudo rm -drfv /etc/systemd/system/"${i}"
+      sudo rm /etc/systemd/system/"${i}"
+    fi
+    if [ -d /etc/systemd/system/"${i}" ];then
+      sudo rm -drf /etc/systemd/system/"${i}"
     fi
   done
   remove_icecast
