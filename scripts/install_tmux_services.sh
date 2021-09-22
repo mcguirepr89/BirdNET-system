@@ -59,7 +59,7 @@ ExecStart=/usr/local/bin/gotty -w --title-format "Login!" -p 9111 tmux new -A -s
 [Install]
 WantedBy=multi-user.target
 EOF
-  HASHWORD="$(caddy hash-password -plaintext "${STREAM_PWD}")"
+  HASHWORD="$(caddy hash-password -plaintext "${CADDY_PWD}")"
   cat << EOF | sudo tee -a /etc/caddy/Caddyfile
 http://birdterminal.local {
   reverse_proxy localhost:9111
