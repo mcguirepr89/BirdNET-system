@@ -72,6 +72,9 @@ EOF
 create_necessary_dirs() {
   echo "Creating necessary directories"
   [ -d ${EXTRACTED} ] || sudo -u ${USER} mkdir -p ${EXTRACTED}
+  [ -d ${EXTRACTED}/By_Date ] || sudo -u ${USER} mkdir -p ${EXTRACTED}/By_Date
+  [ -d ${EXTRACTED}/By_Species ] || sudo -u ${USER} mkdir -p ${EXTRACTED}/By_Species
+  [ -d ${PROCESSED} ] || sudo -u ${USER} mkdir -p ${PROCESSED}
 }
  
 install_alsa() {
