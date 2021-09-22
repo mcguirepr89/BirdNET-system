@@ -82,4 +82,5 @@ remove_scripts() {
 remove_services
 remove_scripts
 if [ -d /etc/birdnet ];then sudo rm -drf /etc/birdnet;fi
+if [ -f ${HOME}/BirdNET-system/birdnet.conf ];then sudo rm -f ${HOME}/BirdNET-system/birdnet.conf;fi
 echo "Uninstall finished. Remove this directory with 'rm -drfv' to finish."
