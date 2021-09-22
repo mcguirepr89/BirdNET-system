@@ -86,7 +86,7 @@ These are examples of my personal instance of the BirdNET-system on a Raspberry 
 At any time, you can completely reconfigure the system to select or remove features. To reconfigure the system, simply run the included "reconfigure_birdnet.sh" script (as the regular user) and follow the prompts to create a new birdnet.conf file and install new services: `~/BirdNET-system/scripts/reconfigure_birdnet.sh`
 
 ## How to uninstall BirdNET-system
-To remove BirdNET-system, run the included '*uninstall.sh*' script as the ${BIRDNET_USER}.
+To remove BirdNET-system, run the included '*uninstall.sh*' script as the regular user.
 1. Issue `/usr/local/bin/uninstall.sh && cd ~ && rm -drf BirdNET-system`
 
 ### TODO & Notes:
