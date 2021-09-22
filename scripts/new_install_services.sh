@@ -214,6 +214,7 @@ http://birdstats.local {
   reverse_proxy localhost:9090
 }
 EOF
+  systemctl reload caddy
 }
 
 install_avahi_aliases() {
