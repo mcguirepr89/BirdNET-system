@@ -1,13 +1,19 @@
 # BirdNET-system for arm64/aarch64 (Raspberry Pi 4)
 ### Built on https://github.com/kahst/BirdNET -- checkout the Wiki at [BirdNETWiki.pmcgui.xyz](https://birdnetwiki.pmcgui.xyz)
 
-This project offers an installation script for BirdNET as a systemd service on arm64 (aarch64) Debian-based operating systems. The installation script offers to walk the user through setting up the '*birdnet.conf*' main configuration file interactively, or can read from an existing '*birdnet.conf*'. A variety of configurations can be attained through this installation script.
+This project offers an installation script for BirdNET as a systemd service on arm64 (aarch64) Debian-based operating systems, namely RaspiOS. The installation script offers to walk the user through setting up the '*birdnet.conf*' main configuration file interactively, or can read from an existing '*birdnet.conf*'. A variety of configurations can be attained through this installation script.
 
 BirdNET-system can be configured with the following optional services:
 - A 24/7 recording script that can be easily configured to use any available sound card
 - An extraction service that extracts the audio selections identified by BirdNET by date and species
 - A Caddy instance that serves the extracted files and live audio stream (icecast2) (requires dsnoop capable mic)
-- A species list updating and notification script supporting mobile notifications via Pushed.co
+- A species list updating and notification script supporting mobile notifications via Pushed.co (sorry, Android users, Pushed.co doesn't seem to work for you)
+
+An installation one-liner is available [HERE](https://birdnetwiki.pmcgui.xyz/wiki/Birder%27s_Guide_to_BirdNET-system#Install_BirdNET-system). 
+- Prerequisites:
+  - An updated RaspiOS for AArch64 that has locale, WiFi, time-zone, and pi user password set. A guide is available [here](https://birdnetwiki.pmcgui.xyz/wiki/Birder%27s_Guide_to_BirdNET-system#Install_the_base_operating_system_.28OS.29)
+  - A USB microphone (dsnoop capable to enable live audio stream).
+
 
 ## What the installation does
 1. Looks for a *'birdnet.conf'* file in the *BirdNET-system* main directory
@@ -35,8 +41,10 @@ BirdNET-system can be configured with the following optional services:
 1. If mounting the recordings directory from a remote host, you need to know the *remote* username to connect to via SSH, as well as the absolute path of the recordings on the remote host.
 1. In order for the live audio stream to work at the same time as the birdnet_recording.service, the microphone needs to be dsnoop capable. If you are wondering whether your mic supports creating the dsnoop device, you can use `aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head' -e 'PCH' | uniq` to check. (No output means your microphone does not support creating a dsnoop device and therefore cannot also provide an audio stream while recording. The birdnet_recording.service, however, should not be affected by this.)
 1. If you are using a special microphone or have multiple sound cards and would like to specify which to use for recording, you can edit the `/etc/birdnet/birdnet.conf` file when the installation is complete and set ${REC_CARD} to the sound card of your choice. Copy your desired sound card line from the output of ` aplay -L | awk -F, '/^hw:/ { print $1 }'`. 
-1. If you would like to take advantage of Caddy's automatic handling of SSL certificates to be able to host a public website where your friends can hear your bird sounds, forward ports 80 and 443 to the host you want to serve the files. You may also want to purchase a domain name. (*Note: If you're just keeping this on your local network, be sure to set your extraction URL to something 'http://', [on RaspiOS, I recommend http://raspberrypi.local] to disable Caddy's automatic HTTPS. Alternatively, you may edit the `/etc/caddy/Caddyfile` after installation and add the `tls internal` directive to the site block to have Caddy issue a self-signed certificate for an HTTPS connection.*)
-1. If you would like to take advantage of BirdNET-system's ability to send New Species mobile notifications, you can easily setup a Pushed.co notification app (see the #TODOs at the bottom for more info). After setting up your application, make note of your App Key and App Secret -- you will need these to enable mobile notifications for new species. Note for Android users: it seems that the Pushed.co Mobile App does not work for Android devices, which is a huge bummer. If anyone knows of an Android alternative, or if anyone might be able to come up with a home-spun notification system, please let me know.
+1. If you would like to take advantage of Caddy's automatic handling of SSL certificates to be able to host a public website where your friends can hear your bird sounds, forward ports 80 and 443 to the host you want to serve the files. You may also want to purchase a domain name.
+   - *Note: If you're just keeping this on your local network, be sure to set your extraction URL to something 'http://', [on RaspiOS, I recommend http://raspberrypi.local] to disable Caddy's automatic HTTPS. Alternatively, you may edit the `/etc/caddy/Caddyfile` after installation and add the `tls internal` directive to the site block to have Caddy issue a self-signed certificate for an HTTPS connection.*
+1. If you would like to take advantage of BirdNET-system's ability to send New Species mobile notifications, you can easily setup a Pushed.co notification app (see the #TODOs at the bottom for more info). After setting up your application, make note of your App Key and App Secret -- you will need these to enable mobile notifications for new species. 
+   - Note for Android users: it seems that the Pushed.co Mobile App does not work for Android devices, which is a huge bummer. If anyone knows of an Android alternative, or if anyone might be able to come up with a home-spun notification system, please let me know.
 
 ## How to install
 #### Option 1 -- Pre-fill birdnet.conf
