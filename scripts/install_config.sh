@@ -1,3 +1,149 @@
+#!/usr/bin/env bash
+# Creates and installs the /etc/birdnet/birdnet.conf file
+#set -x # Uncomment to enable debugging
+set -e
+trap 'exit 1' SIGINT SIGHUP
+
+my_dir=$(realpath $(dirname $0))
+BIRDNET_CONF="$(dirname ${my_dir})/birdnet.conf"
+
+get_RECS_DIR() {
+  read -p "What is the full path to your recordings directory (locally)? " RECS_DIR
+}
+
+get_LATITUDE() {
+  read -p "What is the latitude where the recordings were made? " LATITUDE
+}
+
+get_LONGITUDE() {
+  read -p "What is the longitude where the recordings were made? " LONGITUDE
+}
+
+get_DO_EXTRACTIONS() {
+  while true; do
+    read -n1 -p "Do you want this device to perform the extractions? " DO_EXTRACTIONS
+    echo
+    case $DO_EXTRACTIONS in
+      [Yy] ) break;;
+      [Nn] ) break;;
+      * ) echo "You must answer with Yes or No (y or n)";;
+    esac
+  done
+}
+
+get_DO_RECORDING() {
+  while true; do
+    read -n1 -p "Is this device also doing the recording? " DO_RECORDING
+    echo
+    case $DO_RECORDING in
+      [Yy] ) break;;
+      [Nn] ) break;;
+      * ) echo "You must answer with Yes or No (y or n)";;
+    esac
+  done
+}
+
+get_REMOTE() {
+  while true; do
+    read -n1 -p "Are the recordings mounted on a remote file system?" REMOTE
+    echo
+    case $REMOTE in
+      [Yy] ) 
+        read -p "What is the remote hostname or IP address for the recorder? " REMOTE_HOST
+        read -p "Who is the remote user? " REMOTE_USER
+        read -p "What is the absolute path of the recordings directory on the remote host? " REMOTE_RECS_DIR
+        break;;
+      [Nn] ) break;;
+      * ) echo "Please answer Yes or No (y or n)";;
+    esac
+  done
+}
+
+get_EXTRACTIONS_URL() {
+  while true;do
+    read -n1 -p "Would you like to access the extractions via a web browser?
+
+    *Note: It is recommended, (but not required), that you run the web
+    server on the same host that does the extractions. If the extraction
+    service and web server are on different hosts, the \"By_Species\" and
+    \"Processed\" symbolic links won't work. The \"By-Date\" extractions,
+    however, will work as expected." CADDY_SERVICE
+    echo
+    case $CADDY_SERVICE in
+      [Yy] ) read -p "What URL would you like to publish the extractions to?
+        *Note: Set this to http://localhost if you do not want to make the
+        extractions publically available: " EXTRACTIONS_URL
+        get_CADDY_PWD
+        get_ICE_PWD
+        break;;
+      [Nn] ) EXTRACTIONS_URL= CADDY_PWD= ICE_PWD=;break;;
+      * ) echo "Please answer Yes or No";;
+    esac
+  done
+}
+
+get_CADDY_PWD() {
+  if [ -z ${CADDY_PWD} ]; then
+    while true; do
+      read -p "Please set a password to protect your data: " CADDY_PWD
+      case $CADDY_PWD in
+        "" ) echo "The password cannot be empty. Please try again.";;
+        * ) break;;
+      esac
+    done
+  fi
+}
+
+get_ICE_PWD() {
+  if [ ! -z ${CADDY_PWD} ] && [[ ${DO_RECORDING} =~ [Yy] ]];then
+    while true; do
+      read -n1 -p "Would you like to enable the live audio streaming service?" LIVE_STREAM
+      echo
+      case $LIVE_STREAM in
+        [Yy] )
+          read -p "Please set the icecast password. Use only alphanumeric characters." ICE_PWD
+          echo
+          case ${ICE_PWD} in
+            "" ) echo "The password cannot be empty. Please try again.";;
+            *) break;;
+          esac
+          break;;
+        [Nn] ) break;;
+        * ) echo "You must answer Yes or No (y or n).";;
+      esac
+    done
+  fi
+}
+
+get_PUSHED() {
+  while true; do
+    read -n1 -p "Do you have a free App key to receive mobile notifications via Pushed.co?" YN
+    echo
+    case $YN in
+      [Yy] ) read -p "Enter your Pushed.co App Key: " PUSHED_APP_KEY
+        read -p "Enter your Pushed.co App Key Secret: " PUSHED_APP_SECRET
+        break;;
+      [Nn] ) PUSHED_APP_KEY=
+        PUSHED_APP_SECRET=
+        break;;
+      * ) echo "A simple Yea or Nay will do";;
+    esac
+  done
+}
+
+configure() {
+  get_RECS_DIR
+  get_LATITUDE
+  get_LONGITUDE
+  get_DO_EXTRACTIONS
+  get_DO_RECORDING
+  get_REMOTE
+  get_EXTRACTIONS_URL
+  get_PUSHED
+}
+
+install_birdnet_conf() {
+  cat << EOF > $(dirname ${my_dir})/birdnet.conf
 ################################################################################
 #                 Configuration settings for BirdNET as a service              #
 ################################################################################
@@ -7,7 +153,7 @@ INSTALL_DATE="$(date "+%D")"
 ## BIRDNET_USER should be the non-root user systemd should use to execute each 
 ## service.
 
-BIRDNET_USER=
+BIRDNET_USER=${USER}
 
 ## RECS_DIR is the location birdnet_analysis.service will look for the data-set
 ## it needs to analyze. Be sure this directory is readable and writable for
@@ -15,7 +161,7 @@ BIRDNET_USER=
 ## still need to set this, as this will be where the remote directory gets
 ## mounted locally. See REMOTE_RECS_DIR below for mounting remote data-sets.
 
-RECS_DIR=
+RECS_DIR=${RECS_DIR}
 
 ## LATITUDE and LONGITUDE are self-explanatroy. Find them easily at
 ## maps.google.com. Only go to the thousanths place for these variables
@@ -23,8 +169,8 @@ RECS_DIR=
 ##  LATITUDE=48.858
 ##  LONGITUDE=2.294
 
-LATITUDE=
-LONGITUDE=
+LATITUDE="${LATITUDE}"
+LONGITUDE="${LONGITUDE}"
 
 ################################################################################
 #------------------------------ Extraction Service  ---------------------------#
@@ -34,7 +180,7 @@ LONGITUDE=
 ## DO_EXTRACTIONS is simply a setting for enabling the extraction.service.
 ## Set this to Y or y to enable extractions.
 
-DO_EXTRACTIONS=
+DO_EXTRACTIONS=${DO_EXTRACTIONS}
 
 ################################################################################
 #-----------------------------  Recording Service  ----------------------------#
@@ -44,7 +190,7 @@ DO_EXTRACTIONS=
 ## DO_RECORDING is simply a setting for enabling the 24/7 birdnet_recording.service.
 ## Set this to Y or y to enable recording.
 
-DO_RECORDING=
+DO_RECORDING=${DO_RECORDING}
 
 ################################################################################
 #-----------------  Mounting a remote directory with systemd  -----------------#
@@ -58,23 +204,23 @@ DO_RECORDING=
 ## filesystem for the data storage and service.
 ## Set this to Y or y to enable the systemd.mount. 
 
-REMOTE=
+REMOTE=${REMOTE}
 
 ## REMOTE_HOST is the IP address, hostname, or domain name SSH should use to 
 ## connect for FUSE to mount its remote directories locally.
 
-REMOTE_HOST=
+REMOTE_HOST=${REMOTE_HOST}
 
 ## REMOTE_USER is the user SSH will use to connect to the REMOTE_HOST.
 
-REMOTE_USER=
+REMOTE_USER=${REMOTE_USER}
 
 ## REMOTE_RECS_DIR is the directory on the REMOTE_HOST which contains the
 ## data-set SSHFS should mount to this system for local access. This is NOT the
 ## directory where you will access the data on this machine. See RECS_DIR for
 ## that.
 
-REMOTE_RECS_DIR=
+REMOTE_RECS_DIR=${REMOTE_RECS_DIR}
 
 ################################################################################
 #-----------------------  Web-hosting/Caddy File-server -----------------------#
@@ -90,13 +236,13 @@ REMOTE_RECS_DIR=
 ## Setting this (even to http://localhost) will also allow you to enable the   
 ## GoTTY web logging features below.
 
-EXTRACTIONS_URL=
+EXTRACTIONS_URL=${EXTRACTIONS_URL}
 
 ## CADDY_PWD is the plaintext password (that will be hashed) and used to access
 ## the "Processed" directory and live audio stream. This MUST be set if you
 ## choose to enable this feature.
 
-CADDY_PWD=
+CADDY_PWD=${CADDY_PWD}
 
 ################################################################################
 #-------------------------  Live Audio Stream  --------------------------------#
@@ -110,7 +256,7 @@ CADDY_PWD=
 ## trusted source for the stream. You will never need to enter this manually
 ## anywhere other than here.
 
-ICE_PWD=
+ICE_PWD=${ICE_PWD}
 
 ################################################################################
 #-------------------  Mobile Notifications via Pushed.co  ---------------------#
@@ -122,8 +268,8 @@ ICE_PWD=
 
 ## Pushed.co App Key and App Secret
 
-PUSHED_APP_KEY=
-PUSHED_APP_SECRET=
+PUSHED_APP_KEY=${PUSHED_APP_KEY}
+PUSHED_APP_SECRET=${PUSHED_APP_SECRET}
 
 ################################################################################
 #--------------------------------  Defaults  ----------------------------------#
@@ -140,7 +286,7 @@ PUSHED_APP_SECRET=
 ## dsnoop device, you can set this explicitly from a list of the available
 ## devices from the output of running 'aplay -L'
 
-REC_CARD="$(sudo -u ${BIRDNET_USER} aplay -L \
+REC_CARD="\$(sudo -u ${USER} aplay -L \
   | awk -F, '/dsn/ {print $1}' \
   | grep -ve 'vc4' -e 'Head' -e 'PCH' \
   | uniq)"
@@ -201,3 +347,17 @@ SYSTEMD_MOUNT=$(echo ${RECS_DIR#/} | tr / -).mount
 ## i.e, VENV is the virtual environment miniforge built for BirdNET.
 
 VENV=$(dirname ${my_dir})/miniforge/envs/birdnet
+EOF
+  [ -d /etc/birdnet ] || sudo mkdir /etc/birdnet
+  sudo ln -sf $(dirname ${my_dir})/birdnet.conf /etc/birdnet/birdnet.conf
+}
+
+# Checks for a birdnet.conf file in the BirdNET-system directory for a 
+# non-interactive installation. Otherwise,the installation is interactive.
+if [ -f ${BIRDNET_CONF} ];then
+  source ${BIRDNET_CONF}
+  install_birdnet_conf
+else
+  configure
+  install_birdnet_conf
+fi

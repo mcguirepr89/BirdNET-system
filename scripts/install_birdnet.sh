@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Install BirdNET script
-#set -x # debuggings
+#set -x # debugging
 set -e # exit installation if anything fails
-trap 'echo -e "\n\nExiting the installation. Goodbye!" && exit' SIGINT
+trap 'echo -e "\n\nExiting the installation. Goodbye!" && exit 1' SIGINT
 my_dir=$(realpath $(dirname $0))
 cd $my_dir || exit 1
 
@@ -16,6 +16,7 @@ information"
 fi
 
 #Install/Configure /etc/birdnet/birdnet.conf
+./install_config.sh || exit 1
 sudo ./install_services.sh || exit 1
 source /etc/birdnet/birdnet.conf
 
@@ -24,18 +25,6 @@ THEON="https://raw.githubusercontent.com/Lasagne/Lasagne/master/requirements.txt
 CONDA="https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-aarch64.sh"
 APT_DEPS=(ffmpeg wget)
 LIBS_MODULES=(libblas-dev liblapack-dev llvm-9)
-
-spinner() {
-  pid=$! # Process Id of the previous running command
-  spin='-\|/'
-  i=0
-
-  while kill -0 $pid 2>/dev/null;do
-    i=$(( (i+1) %4 ))
-    printf "\r${spin:$i:1}"
-    sleep .1
-  done
-}
 
 install_deps() {
   echo "	Checking dependencies"
@@ -120,38 +109,38 @@ available in the BirdNET-system directory as "LICENSE"
 If you DO NOT want to install BirdNET and the birdnet_analysis.service, 
 press Ctrl+C to cancel. If you DO wish to install BirdNET and the 
 birdnet_analysis.service, press ENTER to continue with the installation."
-
+echo
+echo
 
 [ -d ${RECS_DIR} ] || mkdir -p ${RECS_DIR} &> /dev/null
 
 install_deps
 if [ ! -d ${VENV} ];then
-  install_birdnet & spinner
+  install_birdnet 
 fi
 
-echo "	BirdNet is installed!!"
-echo "	Enabling birdnet_analysis.service now"
-sudo systemctl enable birdnet_analysis.service
-echo "	BirdNET is enabled."
-echo
-echo "	To start the service manually, issue:
-    'sudo systemctl start birdnet_analysis'
-To monitor the service logs, issue: 
-    'journalctl -fu birdnet_analysis'
-To stop the service manually, issue: 
-    'sudo systemctl stop birdnet_analysis'
-To stop and disable the service, issue: 
-    'sudo systemctl disable --now birdnet_analysis.service'
+echo "	BirdNet is installed!!
 
-Visit http://birdnetsystem.local to see your extractions,
-      http://birdlog.local to see the log output of the birdnet_analysis.service,
-      http://extractionlog.local to see the log output of the extraction.service, and
-      http://birdstats.local to see the BirdNET-system Report"
+  To start the service manually, issue:
+     'sudo systemctl start birdnet_analysis'
+  To monitor the service logs, issue: 
+     'journalctl -fu birdnet_analysis'
+  To stop the service manually, issue: 
+     'sudo systemctl stop birdnet_analysis'
+  To stop and disable the service, issue: 
+     'sudo systemctl disable --now birdnet_analysis.service'
+
+  Visit
+  http://birdnetsystem.local to see your extractions,
+  http://birdlog.local to see the log output of the birdnet_analysis.service,
+  http://extractionlog.local to see the log output of the extraction.service, and
+  http://birdstats.local to see the BirdNET-system Report"
 echo
-read -n1 -p "Would you like to run the BirdNET service now?" YN
+read -n1 -p "  Would you like to run the birdnet_analysis.service now?" YN
+echo
 case $YN in
   [Yy] ) sudo systemctl start birdnet_analysis.service \
     && journalctl -fu birdnet_analysis;;
-* ) echo "	Thanks for installing BirdNET-system!!
-  I hope it was helpful!"; exit;;
+* ) echo "  Thanks for installing BirdNET-system!!
+  I hope it was helpful!";;
 esac
