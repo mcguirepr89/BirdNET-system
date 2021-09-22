@@ -16,8 +16,8 @@ information"
 fi
 
 #Install/Configure /etc/birdnet/birdnet.conf
-./new_install_config.sh || exit 1
-sudo ./new_install_services.sh || exit 1
+./install_config.sh || exit 1
+sudo ./install_services.sh || exit 1
 source /etc/birdnet/birdnet.conf
 
 LASAG="https://github.com/Lasagne/Lasagne/archive/master.zip"
