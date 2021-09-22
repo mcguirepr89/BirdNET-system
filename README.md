@@ -35,24 +35,24 @@ BirdNET-system can be configured with the following optional services:
 1. If mounting the recordings directory from a remote host, you need to know the *remote* username to connect to via SSH, as well as the absolute path of the recordings on the remote host.
 1. In order for the live audio stream to work at the same time as the birdnet_recording.service, the microphone needs to be dsnoop capable. If you are wondering whether your mic supports creating the dsnoop device, you can use `aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head' -e 'PCH' | uniq` to check. (No output means your microphone does not support creating a dsnoop device and therefore cannot also provide an audio stream while recording. The birdnet_recording.service, however, should not be affected by this.)
 1. If you are using a special microphone or have multiple sound cards and would like to specify which to use for recording, you can edit the `/etc/birdnet/birdnet.conf` file when the installation is complete and set ${REC_CARD} to the sound card of your choice. Copy your desired sound card line from the output of ` aplay -L | awk -F, '/^hw:/ { print $1 }'`. 
-1. If you would like to take advantage of Caddy's automatic handling of SSL certificates to be able to host a public website where your friends can hear your bird sounds, forward ports 80 and 443 to the host you want to serve the files. You may also want to purchase a domain name. (*Note: If you're just keeping this on your local network, be sure to set your extraction URL to something 'http://', [I recommend http://localhost] to disable Caddy's automatic HTTPS. Alternatively, you may edit the `/etc/caddy/Caddyfile` after installation and add the `tls internal` directive to the site block to have Caddy issue a self-signed certificate for an HTTPS connection.*)
+1. If you would like to take advantage of Caddy's automatic handling of SSL certificates to be able to host a public website where your friends can hear your bird sounds, forward ports 80 and 443 to the host you want to serve the files. You may also want to purchase a domain name. (*Note: If you're just keeping this on your local network, be sure to set your extraction URL to something 'http://', [on RaspiOS, I recommend http://raspberrypi.local] to disable Caddy's automatic HTTPS. Alternatively, you may edit the `/etc/caddy/Caddyfile` after installation and add the `tls internal` directive to the site block to have Caddy issue a self-signed certificate for an HTTPS connection.*)
 1. If you would like to take advantage of BirdNET-system's ability to send New Species mobile notifications, you can easily setup a Pushed.co notification app (see the #TODOs at the bottom for more info). After setting up your application, make note of your App Key and App Secret -- you will need these to enable mobile notifications for new species. Note for Android users: it seems that the Pushed.co Mobile App does not work for Android devices, which is a huge bummer. If anyone knows of an Android alternative, or if anyone might be able to come up with a home-spun notification system, please let me know.
 
 ## How to install
 #### Option 1 -- Pre-fill birdnet.conf
+1. In the terminal run `cd ~ && git clone https://github.com/mcguirepr89/BirdNET-system.git`
+1. **Switch to this branch, BirdNET-system-for-raspi4** `cd ~/BirdNET-system && git checkout BirdNET-system-for-raspi4`
 1. You can copy the included *'birdnet.conf-defaults'* template to create and configure the BirdNET-system
    to your needs before running the installer. Issue `cp ${HOME}/BirdNET-system/birdnet.conf-defaults ${HOME}/BirdNET-system/birdnet.conf`.
    Edit the new *'birdnet.conf'* file to suit your needs and save it.
    If you choose this method, the installation will be (nearly) non-interactive.
-1. In the terminal run `cd ~ && git clone https://github.com/mcguirepr89/BirdNET-system.git`
-1. **Switch to this branch, BirdNET-system-for-raspi4** `cd ~/BirdNET-system && git checkout BirdNET-system-for-raspi4`
 1. Run `~/BirdNET-system/scripts/install_birdnet.sh`
 #### Option 2 -- Interactive Installation
 1. In the terminal run `cd ~ && git clone https://github.com/mcguirepr89/BirdNET-system.git`
 1. **Switch to this branch, BirdNET-system-for-raspi4** `cd ~/BirdNET-system && git checkout BirdNET-system-for-raspi4`
 1. Run `~/BirdNET-system/scripts/install_birdnet.sh`
 1. Follow the installation prompts to configure the BirdNET-system to your needs.
-- Note: The installation should be run as a regular user, but will require super user privileges, i.e., will ask you for your super user password.
+- Note: The installation should be run as a regular user. If run on an OS other than RaspiOS, be sure the regular user is in the sudoers file or the sudo group.
 
 ## Access your BirdNET-system
 If you configured BirdNET-system with the Caddy webserver, you can access the extractions locally at
@@ -75,7 +75,7 @@ These are examples of my personal instance of the BirdNET-system on a Raspberry 
  - https://birdstats.pmcgui.xyz  -- My 'birdstats' BirdNET-system Report
 
 ## How to reconfigure the system
-At any time, you can completely reconfigure the system to select or remove features. To reconfigure the system, simply run the included "reconfigure_birdnet.sh" script and follow the prompts to create a new birdnet.conf file and install new services: `/home/pi/BirdNET-system/scripts/reconfigure_birdnet.sh`
+At any time, you can completely reconfigure the system to select or remove features. To reconfigure the system, simply run the included "reconfigure_birdnet.sh" script (as the regular user) and follow the prompts to create a new birdnet.conf file and install new services: `~/BirdNET-system/scripts/reconfigure_birdnet.sh`
 
 ## How to uninstall BirdNET-system
 To remove BirdNET-system, run the included '*uninstall.sh*' script as the ${BIRDNET_USER}.
@@ -83,4 +83,3 @@ To remove BirdNET-system, run the included '*uninstall.sh*' script as the ${BIRD
 
 ### TODO & Notes:
 1. I ought to add the steps to setup a Pushed.co application for the mobile notifications feature. Here is a link for now https://pushed.co/quick-start-guide
-1. Needs a section on how to reconfigure (this processed changed when updating the installation process)
