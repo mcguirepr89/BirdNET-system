@@ -288,7 +288,7 @@ PUSHED_APP_SECRET=${PUSHED_APP_SECRET}
 ## devices from the output of running 'aplay -L'
 
 REC_CARD="\$(sudo -u pi aplay -L \
-  | awk -F, '/dsn/ {print $1}' \
+  | awk -F, '/dsn/ {print \$1}' \
   | grep -ve 'vc4' -e 'Head' -e 'PCH' \
   | uniq)"
 
