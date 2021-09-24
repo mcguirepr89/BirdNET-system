@@ -88,6 +88,7 @@ stage_1() {
   else
     echo "Stage 1 complete"
     stage_2
+    exit
   fi
 }
 
