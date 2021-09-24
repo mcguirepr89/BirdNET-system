@@ -341,7 +341,7 @@ install_livestream_service() {
 Description=BirdNET-system Live Stream
 
 [Service]
-Environment=XDG_RUNTIME_DIR=/run/usr/1000
+Environment=XDG_RUNTIME_DIR=/run/user/1000
 Restart=always
 Type=simple
 RestartSec=3
