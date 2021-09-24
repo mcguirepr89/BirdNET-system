@@ -110,7 +110,9 @@ stage_2() {
   fi
 
   if [ -f ${my_dir}/Birders_Guide_Installer_Configuration.txt ];then
-echo "Follow the instructions to fill out the LATITUDE and LONGITUDE variables
+    echo
+    echo
+    echo "Follow the instructions to fill out the LATITUDE and LONGITUDE variables
 and set the passwords for the live audio stream. Save the file after editing
 and then close the Mouse Pad editing window to continue."
     mousepad ${my_dir}/Birders_Guide_Installer_Configuration.txt &> /dev/null
