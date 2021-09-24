@@ -12,6 +12,7 @@ information"
 fi
 
 install_zram_swap() {
+  echo
   echo "Configuring zram.service"
   sudo touch /etc/modules-load.d/zram.conf
   echo 'zram' | sudo tee /etc/modules-load.d/zram.conf
@@ -38,6 +39,7 @@ ExecStop=/sbin/swapoff /dev/zram0
 WantedBy=multi-user.target
 EOF
   sudo systemctl enable zram
+  echo
   echo "Installing stage 2 installation script now."
   cd ~
   curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/rpitesting/Birders_Guide_Installer.sh"
@@ -57,18 +59,23 @@ ExecStart=lxterminal -e /home/pi/Birders_Guide_Installer.sh
 WantedBy=default.target
 EOF
   systemctl --user enable birdnet-system-installer.service
+  echo
   echo "Stage 1 complete"
   touch ${HOME}/stage_1_complete
+  echo
   echo "Rebooting the system in 5 seconds"
   sleep 5
   sudo reboot
 }
 
 stage_1() {
+  echo
   echo "Beginning Stage 1"
+  echo
   echo "Ensuring the system is up-to-date."
   sudo apt -qq update
   sudo apt -qqy full-upgrade
+  sudo apt -y autoremove --purge
   echo "System Updated!"
   if ! which git &> /dev/null; then
     echo "Installing git"
