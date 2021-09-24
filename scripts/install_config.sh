@@ -286,11 +286,12 @@ PUSHED_APP_SECRET=${PUSHED_APP_SECRET}
 ## dsnoop device, you can set this explicitly from a list of the available
 ## devices from the output of running 'aplay -L'
 
-REC_CARD="\$(sudo -u ${USER} aplay -L \
-  | awk -F, '/dsn/ {print $1}' \
-  | grep -ve 'vc4' -e 'Head' -e 'PCH' \
-  | uniq)"
-
+REC_CARD="\$(sudo -u pi aplay -L \
+    | grep dsnoop \
+    | cut -d, -f1  \
+    | grep -ve 'vc4' -e 'Head' -e 'PCH' \
+    | uniq)"
+    
 ## PROCESSED is the directory where the formerly 'Analyzed' files are moved 
 ## after extractions have been made from them. This includes both WAVE and 
 ## BirdNET.selection.txt files.
