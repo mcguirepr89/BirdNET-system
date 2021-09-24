@@ -38,29 +38,10 @@ ExecStop=/sbin/swapoff /dev/zram0
 WantedBy=multi-user.target
 EOF
   sudo systemctl enable zram
-}
-
-stage_1() {
-  echo "Welcome to the Birders Guide Installer script!
-This installer assumes that you have not updated the Raspberry Pi yet.
-
-The installer runs in two stages, with a reboot between stages:
-Stage 1 configures and enables the zRAM kernel module and allocates 4G to its swapping size. 
-Stage 1 also ensures the system is up to date.
-Stage 2 guides you through configuring the essentials and installs the full BirdNET-system."
-  echo
-  echo "Beginning Stage 1"
-  echo "Updating your system. This step will almost definitely take a while."
-  sudo apt -qq update
-  sudo apt -qqy full-upgrade
-  echo "System Updated!"
-  echo "Installing git"
-  sudo apt install -qqy git
-  echo "Stage 1 complete."
   echo "Installing stage 2 installation script now."
-  curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/BirdNET-system-for-raspi4/Birders_Guide_Installer.sh"
+  cd ~
+  curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/rpitesting/Birders_Guide_Installer.sh"
   chmod +x Birders_Guide_Installer.sh
-  touch ${HOME}/stage_1_complete
   cat << EOF | sudo tee /etc/systemd/user/birdnet-system-installer.service &> /dev/null
 [Unit]
 Description=A BirdNET-system Installation Script Service
@@ -76,15 +57,36 @@ ExecStart=lxterminal -e /home/pi/Birders_Guide_Installer.sh
 WantedBy=default.target
 EOF
   systemctl --user enable birdnet-system-installer.service
-  install_zram_swap
+  echo "Stage 1 complete"
+  touch ${HOME}/stage_1_complete
   echo "Rebooting the system in 5 seconds"
   sleep 5
   sudo reboot
 }
 
-stage_2() {
+stage_1() {
+  echo "Beginning Stage 1"
+  echo "Ensuring the system is up-to-date."
+  sudo apt -qq update
+  sudo apt -qqy full-upgrade
+  echo "System Updated!"
+  if ! which git &> /dev/null; then
+    echo "Installing git"
+    sudo apt install -qqy git
+  fi
+  ZRAM="$(swapon --show=SIZE,NAME | awk -FG '!/SIZE/ && /zram/ {print $1}')"
+  [ ! -z ${ZRAM} ] || ZRAM=0
+  if [ ${ZRAM} -lt 4 ];then
+    install_zram_swap
+  else
+    echo "Stage 1 complete"
+    stage_2
+  fi
+}
 
-  echo "Welcome back! Waiting for an internet connection to continue"
+stage_2() {
+  echo "Beginning stage 2"
+  echo "Checking for an internet connection to continue . . ."
   until ping -c 1 google.com &> /dev/null; do
     sleep 1
   done
@@ -93,8 +95,8 @@ stage_2() {
     cd ~ || exit 1
     echo "Cloning the BirdNET-system repository in your home directory"
     git clone https://github.com/mcguirepr89/BirdNET-system.git
-    echo "Switching to the BirdNET-system-for-raspi4 branch"
-    cd BirdNET-system && git checkout BirdNET-system-for-raspi4 > /dev/null
+    echo "Switching to the rpitesting branch"
+    cd BirdNET-system && git checkout rpitesting > /dev/null
   fi
 
   if [ -f ${my_dir}/Birders_Guide_Installer_Configuration.txt ];then
@@ -130,7 +132,7 @@ Good luck!"
   echo "Installing the BirdNET-system configuration file."
   install_birdnet_config || exit 1
   echo "Installing the BirdNET-system"
-  if ${my_dir}/scripts/install_birdnet.sh << EOF; then
+  if ${my_dir}/scripts/install_birdnet.sh << EOF ; then
 
 n
 EOF
@@ -353,12 +355,23 @@ EOF
   [ -d /etc/birdnet ] || sudo mkdir /etc/birdnet
   sudo ln -sf ${my_dir}/birdnet.conf /etc/birdnet/birdnet.conf
 }
+echo "
+Welcome to the Birders Guide Installer script!
+
+The installer runs in two stages:
+Stage 1 configures and enables the zRAM kernel module and allocates 4G
+        to its swapping size if needed. This will trigger a reboot.
+Stage 1 also ensures the system is up to date.
+Stage 2 guides you through configuring the essentials and installs the full BirdNET-system."
+
 
 if [ ! -f ${HOME}/stage_1_complete ] ;then
   stage_1
 else
   stage_2
+  if [ -f ${HOME}/Birders_Guide_Installer.sh ];then
   rm ${HOME}/Birders_Guide_Installer.sh
+  fi
   rm ${HOME}/stage_1_complete
   systemctl --user disable --now birdnet-system-installer.service
   sudo rm -f /etc/systemd/user/birdnet-system-installer.service
