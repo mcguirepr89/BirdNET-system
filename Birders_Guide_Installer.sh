@@ -92,12 +92,15 @@ stage_1() {
 }
 
 stage_2() {
+  echo
   echo "Beginning stage 2"
+  echo
   echo "Checking for an internet connection to continue . . ."
   until ping -c 1 google.com &> /dev/null; do
     sleep 1
   done
   echo "Connected!"
+  echo
   if [ ! -d ${my_dir} ];then
     cd ~ || exit 1
     echo "Cloning the BirdNET-system repository in your home directory"
