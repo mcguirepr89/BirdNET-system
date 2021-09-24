@@ -126,8 +126,11 @@ and then close the Mouse Pad editing window to continue."
   fi
 
   if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE} ] || [ -z ${CADDY_PWD} ] || [ -z ${ICE_PWD} ];then
+    echo
+    echo
     echo "It looks like you haven't filled out the Birders_Guide_Installer_Configuration.txt file
 completely.
+
 Open that file to edit it. (Go to the folder icon in the top left and look for the \"BirdNET-system\"
 folder and double-click the file called \"Birders_Guide_Installer_Configuration.txt\"
 Enter the latitude and longitude of where the BirdNET-system will be. 
