@@ -303,7 +303,7 @@ PUSHED_APP_SECRET=${PUSHED_APP_SECRET}
 ## in this repository for more information.
 ## Set this to Y or y to install NoMachine alongside the BirdNET-system
 
-INSTALL_NOMACHINE=
+INSTALL_NOMACHINE=y
 
 ################################################################################
 #--------------------------------  Defaults  ----------------------------------#
