@@ -152,6 +152,7 @@ configure() {
   get_REMOTE
   get_EXTRACTIONS_URL
   get_PUSHED
+  get_INSTALL_NOMACHINE
 }
 
 install_birdnet_conf() {
