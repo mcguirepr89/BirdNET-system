@@ -131,6 +131,18 @@ get_PUSHED() {
   done
 }
 
+get_INSTALL_NOMACHINE() {
+  while true; do
+    read -n1 -p "Would you like to also install NoMachine for remote desktop access?" INSTALL_NOMACHINE
+    echo
+    case $INSTALL_NOMACHINE in
+      [Yy] ) break;;
+      [Nn] ) break;;
+      * ) echo "You must answer with Yes or No (y or n)";;
+    esac
+  done
+}
+
 configure() {
   get_RECS_DIR
   get_LATITUDE
@@ -284,7 +296,7 @@ PUSHED_APP_SECRET=${PUSHED_APP_SECRET}
 ## in this repository for more information.
 ## Set this to Y or y to install NoMachine alongside the BirdNET-system
 
-INSTALL_NOMACHINE=
+INSTALL_NOMACHINE=${INSTALL_NOMACHINE}
 
 ################################################################################
 #--------------------------------  Defaults  ----------------------------------#
