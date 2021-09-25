@@ -8,6 +8,7 @@ BirdNET-system can be configured with the following optional services:
 - An extraction service that extracts the audio selections identified by BirdNET by date and species
 - A Caddy instance that serves the extracted files and live audio stream (icecast2) (requires dsnoop capable mic)
 - A species list updating and notification script supporting mobile notifications via Pushed.co (sorry, Android users, Pushed.co doesn't seem to work for you)
+- NoMachine remote desktop software (for personal use only)
 
 An installation one-liner is available [HERE](https://birdnetwiki.pmcgui.xyz/wiki/Birder%27s_Guide_to_BirdNET-system#Install_BirdNET-system). 
 - Prerequisites:
@@ -74,6 +75,9 @@ You can also view the log output for the <code>birdnet_analysis.service</code> a
 
 and the BirdNET-system Statistics Report at
 - http://birdstats.local
+
+If you opt to also install NoMachine alongside the BirdNET-system, you can also access BirdNET-system
+remotely following the address information that can be found on the NoMachine's server information page.
 
 ## Examples
 These are examples of my personal instance of the BirdNET-system on a Raspberry Pi 4B.
