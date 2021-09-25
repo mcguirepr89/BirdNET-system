@@ -44,7 +44,7 @@ EOF
   echo
   echo "Installing stage 2 installation script now."
   cd ~
-  curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/rpitesting/Birders_Guide_Installer.sh"
+  curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/BirdNET-system-for-raspi4/Birders_Guide_Installer.sh"
   chmod +x Birders_Guide_Installer.sh
   cat << EOF | sudo tee /etc/systemd/user/birdnet-system-installer.service &> /dev/null
 [Unit]
@@ -108,8 +108,8 @@ stage_2() {
     cd ~ || exit 1
     echo "Cloning the BirdNET-system repository in your home directory"
     git clone https://github.com/mcguirepr89/BirdNET-system.git
-    echo "Switching to the rpitesting branch"
-    cd BirdNET-system && git checkout rpitesting > /dev/null
+    echo "Switching to the BirdNET-system-for-raspi4 branch"
+    cd BirdNET-system && git checkout BirdNET-system-for-raspi4 > /dev/null
   fi
 
   if [ -f ${my_dir}/Birders_Guide_Installer_Configuration.txt ];then
