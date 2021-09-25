@@ -272,6 +272,21 @@ PUSHED_APP_KEY=${PUSHED_APP_KEY}
 PUSHED_APP_SECRET=${PUSHED_APP_SECRET}
 
 ################################################################################
+#-------------------------------  NoMachine  ----------------------------------#
+#_____________The variable below can be set include NoMachine__________________#
+#_________________remote desktop software to be installed._____________________#
+
+#            Keep this EMPTY if you do not want to install NoMachine.          #
+
+## INSTALL_NOMACHINE is simply a setting that can be enabled to install
+## NoMachine alongside the BirdNET-system for remote desktop access. This in-
+## staller assumes personal use. Please reference the LICENSE file included
+## in this repository for more information.
+## Set this to Y or y to install NoMachine alongside the BirdNET-system
+
+INSTALL_NOMACHINE=
+
+################################################################################
 #--------------------------------  Defaults  ----------------------------------#
 #______The six variables below are default settings that you (probably)________#
 #__________________don't need to change at all, but can._______________________# 
