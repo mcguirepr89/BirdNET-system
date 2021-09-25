@@ -5,6 +5,7 @@ trap 'rm -f ${TMPFILE}' EXIT
 trap 'exit 1' SIGINT SIGHUP
 my_dir=$(realpath $(dirname $0))
 TMPFILE=$(mktemp)
+nomachine_url="https://download.nomachine.com/download/7.6/Arm/nomachine_7.6.2_3_arm64.deb"
 gotty_url="https://github.com/yudai/gotty/releases/download/v1.0.1/gotty_linux_arm.tar.gz"
 CONFIG_FILE="$(dirname ${my_dir})/birdnet.conf"
 
@@ -354,6 +355,12 @@ EOF
   systemctl enable --now livestream.service
 }
 
+install_nomachine() {
+  echo "Installing NoMachine"
+  curl -s -O "${nomachine_url} -o /tmp/nomachine_7.6.2_3_arm64.deb
+  apt install -y /tmp/nomachine_7.6.2_3_arm64.deb
+}
+
 install_systemd_overrides() {
   for i in caddy birdnet_analysis extraction birdnet_recording;do
     if [ -f /etc/systemd/system/${i}.service ];then
@@ -409,6 +416,10 @@ install_selected_services() {
   if [ ! -z "${ICE_PWD}" ];then
     install_icecast
     install_livestream_service
+  fi
+
+  if [ ! -z "${INSTALL_NOMACHINE}" ];then
+    install_nomachine
   fi
 
   if [[ "${REMOTE}" =~ [Yy] ]];then
