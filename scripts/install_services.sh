@@ -360,6 +360,7 @@ install_nomachine() {
   cd ~
   curl -s -O "${nomachine_url}"
   apt install -y ${HOME}/nomachine_7.6.2_3_arm64.deb
+  rm -f ${HOME}/nomachine_7.6.2_3_arm64.deb
 }
 
 install_systemd_overrides() {
