@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 my_dir=${HOME}/BirdNET-system
+trap '${my_dir}/scripts/dump_logs.sh && exit' EXIT SIGHUP SIGINT
+
 
 if [ "$(uname -m)" != "aarch64" ];then
   echo "BirdNET-system requires a 64-bit OS.
@@ -12,6 +14,7 @@ information"
 fi
 
 install_zram_swap() {
+  echo
   echo "Configuring zram.service"
   sudo touch /etc/modules-load.d/zram.conf
   echo 'zram' | sudo tee /etc/modules-load.d/zram.conf
@@ -38,29 +41,11 @@ ExecStop=/sbin/swapoff /dev/zram0
 WantedBy=multi-user.target
 EOF
   sudo systemctl enable zram
-}
-
-stage_1() {
-  echo "Welcome to the Birders Guide Installer script!
-This installer assumes that you have not updated the Raspberry Pi yet.
-
-The installer runs in two stages, with a reboot between stages:
-Stage 1 configures and enables the zRAM kernel module and allocates 4G to its swapping size. 
-Stage 1 also ensures the system is up to date.
-Stage 2 guides you through configuring the essentials and installs the full BirdNET-system."
   echo
-  echo "Beginning Stage 1"
-  echo "Updating your system. This step will almost definitely take a while."
-  sudo apt -qq update
-  sudo apt -qqy full-upgrade
-  echo "System Updated!"
-  echo "Installing git"
-  sudo apt install -qqy git
-  echo "Stage 1 complete."
   echo "Installing stage 2 installation script now."
+  cd ~
   curl -s -O "https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/BirdNET-system-for-raspi4/Birders_Guide_Installer.sh"
   chmod +x Birders_Guide_Installer.sh
-  touch ${HOME}/stage_1_complete
   cat << EOF | sudo tee /etc/systemd/user/birdnet-system-installer.service &> /dev/null
 [Unit]
 Description=A BirdNET-system Installation Script Service
@@ -76,19 +61,49 @@ ExecStart=lxterminal -e /home/pi/Birders_Guide_Installer.sh
 WantedBy=default.target
 EOF
   systemctl --user enable birdnet-system-installer.service
-  install_zram_swap
+  echo
+  echo "Stage 1 complete"
+  touch ${HOME}/stage_1_complete
+  echo
   echo "Rebooting the system in 5 seconds"
   sleep 5
   sudo reboot
 }
 
-stage_2() {
+stage_1() {
+  echo
+  echo "Beginning Stage 1"
+  echo
+  echo "Ensuring the system is up-to-date."
+  sudo apt -qq update
+  sudo apt -qqy full-upgrade
+  sudo apt -y autoremove --purge
+  echo "System Updated!"
+  if ! which git &> /dev/null; then
+    echo "Installing git"
+    sudo apt install -qqy git
+  fi
+  ZRAM="$(swapon --show=SIZE,NAME | awk -FG '!/SIZE/ && /zram/ {print $1}')"
+  [ ! -z ${ZRAM} ] || ZRAM=0
+  if [ ${ZRAM} -lt 4 ];then
+    install_zram_swap
+  else
+    echo "Stage 1 complete"
+    stage_2
+    exit
+  fi
+}
 
-  echo "Welcome back! Waiting for an internet connection to continue"
+stage_2() {
+  echo
+  echo "Beginning stage 2"
+  echo
+  echo "Checking for an internet connection to continue . . ."
   until ping -c 1 google.com &> /dev/null; do
     sleep 1
   done
   echo "Connected!"
+  echo
   if [ ! -d ${my_dir} ];then
     cd ~ || exit 1
     echo "Cloning the BirdNET-system repository in your home directory"
@@ -98,7 +113,9 @@ stage_2() {
   fi
 
   if [ -f ${my_dir}/Birders_Guide_Installer_Configuration.txt ];then
-echo "Follow the instructions to fill out the LATITUDE and LONGITUDE variables
+    echo
+    echo
+    echo "Follow the instructions to fill out the LATITUDE and LONGITUDE variables
 and set the passwords for the live audio stream. Save the file after editing
 and then close the Mouse Pad editing window to continue."
     mousepad ${my_dir}/Birders_Guide_Installer_Configuration.txt &> /dev/null
@@ -112,8 +129,11 @@ and then close the Mouse Pad editing window to continue."
   fi
 
   if [ -z ${LATITUDE} ] || [ -z ${LONGITUDE} ] || [ -z ${CADDY_PWD} ] || [ -z ${ICE_PWD} ];then
+    echo
+    echo
     echo "It looks like you haven't filled out the Birders_Guide_Installer_Configuration.txt file
 completely.
+
 Open that file to edit it. (Go to the folder icon in the top left and look for the \"BirdNET-system\"
 folder and double-click the file called \"Birders_Guide_Installer_Configuration.txt\"
 Enter the latitude and longitude of where the BirdNET-system will be. 
@@ -130,7 +150,7 @@ Good luck!"
   echo "Installing the BirdNET-system configuration file."
   install_birdnet_config || exit 1
   echo "Installing the BirdNET-system"
-  if ${my_dir}/scripts/install_birdnet.sh << EOF; then
+  if ${my_dir}/scripts/install_birdnet.sh << EOF ; then
 
 n
 EOF
@@ -273,6 +293,21 @@ PUSHED_APP_KEY=${PUSHED_APP_KEY}
 PUSHED_APP_SECRET=${PUSHED_APP_SECRET}
 
 ################################################################################
+#-------------------------------  NoMachine  ----------------------------------#
+#_____________The variable below can be set include NoMachine__________________#
+#_________________remote desktop software to be installed._____________________#
+
+#            Keep this EMPTY if you do not want to install NoMachine.          #
+
+## INSTALL_NOMACHINE is simply a setting that can be enabled to install
+## NoMachine alongside the BirdNET-system for remote desktop access. This in-
+## staller assumes personal use. Please reference the LICENSE file included
+## in this repository for more information.
+## Set this to Y or y to install NoMachine alongside the BirdNET-system
+
+INSTALL_NOMACHINE=y
+
+################################################################################
 #--------------------------------  Defaults  ----------------------------------#
 #______The six variables below are default settings that you (probably)________#
 #__________________don't need to change at all, but can._______________________# 
@@ -353,12 +388,23 @@ EOF
   [ -d /etc/birdnet ] || sudo mkdir /etc/birdnet
   sudo ln -sf ${my_dir}/birdnet.conf /etc/birdnet/birdnet.conf
 }
+echo "
+Welcome to the Birders Guide Installer script!
+
+The installer runs in two stages:
+Stage 1 configures and enables the zRAM kernel module and allocates 4G
+        to its swapping size if needed. This will trigger a reboot.
+Stage 1 also ensures the system is up to date.
+Stage 2 guides you through configuring the essentials and installs the full BirdNET-system."
+
 
 if [ ! -f ${HOME}/stage_1_complete ] ;then
   stage_1
 else
   stage_2
+  if [ -f ${HOME}/Birders_Guide_Installer.sh ];then
   rm ${HOME}/Birders_Guide_Installer.sh
+  fi
   rm ${HOME}/stage_1_complete
   systemctl --user disable --now birdnet-system-installer.service
   sudo rm -f /etc/systemd/user/birdnet-system-installer.service

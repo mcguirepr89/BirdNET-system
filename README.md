@@ -8,10 +8,11 @@ BirdNET-system can be configured with the following optional services:
 - An extraction service that extracts the audio selections identified by BirdNET by date and species
 - A Caddy instance that serves the extracted files and live audio stream (icecast2) (requires dsnoop capable mic)
 - A species list updating and notification script supporting mobile notifications via Pushed.co (sorry, Android users, Pushed.co doesn't seem to work for you)
+- NoMachine remote desktop software (for personal use only)
 
-An installation one-liner is available [HERE](https://birdnetwiki.pmcgui.xyz/wiki/Birder%27s_Guide_to_BirdNET-system#Install_BirdNET-system). 
+An installation one-liner is available [HERE](https://birdnetwiki.pmcgui.xyz/wiki/Birder%27s_Guide_to_BirdNET-system#Install_BirdNET-system) for RaspiOS-ARM64 meeting the prequisites below. It installs all services listed above.
 - Prerequisites:
-  - An updated RaspiOS for AArch64 that has locale, WiFi, time-zone, and pi user password set. A guide is available [here](https://birdnetwiki.pmcgui.xyz/wiki/Birder%27s_Guide_to_BirdNET-system#Install_the_base_operating_system_.28OS.29)
+  - An updated RaspiOS for AArch64 that has locale, WiFi, time-zone, and pi user password set. A guide is available [here](https://birdnetwiki.pmcgui.xyz/wiki/Birder%27s_Guide_to_BirdNET-system#Install_the_base_operating_system_.28OS.29). 64GB SD card for best performance.
   - A USB microphone (dsnoop capable to enable live audio stream).
 
 
@@ -35,30 +36,39 @@ An installation one-liner is available [HERE](https://birdnetwiki.pmcgui.xyz/wik
 1. Builds BirdNET in miniforge's *'birdnet'* virtual environment
 1. Enables (but does not start) the services
 
-## What you should know before beginning the installation
-1. The latitude and longitude where the bird recordings take place. Google maps is an easy way to find these (right-clicking the location).
-1. The directory where the recordings should be found on your local computer. BirdNET-system supports setting up a systemd.mount for automounting remote directories. So for instance, if the actual recordings live on RemoteHost's `/home/user/recordings` directory, but you would like them to be found on your device at `/home/me/BirdNET-recordings`, then `/home/me/BirdNET-recordings` will be your answer to that question.
-1. If mounting the recordings directory from a remote host, you need to know the *remote* username to connect to via SSH, as well as the absolute path of the recordings on the remote host.
-1. In order for the live audio stream to work at the same time as the birdnet_recording.service, the microphone needs to be dsnoop capable. If you are wondering whether your mic supports creating the dsnoop device, you can use `aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head' -e 'PCH' | uniq` to check. (No output means your microphone does not support creating a dsnoop device and therefore cannot also provide an audio stream while recording. The birdnet_recording.service, however, should not be affected by this.)
-1. If you are using a special microphone or have multiple sound cards and would like to specify which to use for recording, you can edit the `/etc/birdnet/birdnet.conf` file when the installation is complete and set ${REC_CARD} to the sound card of your choice. Copy your desired sound card line from the output of ` aplay -L | awk -F, '/^hw:/ { print $1 }'`. 
+## What you should know before any installation
+1. The licensing information for the software that is used (see [LICENSE](https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/BirdNET-system-for-raspi4/LICENSE)).
+1. The **latitude** and **longitude** where the bird recordings take place. Google maps is an easy way to find these (right-clicking the location).
+1. In order for the live audio stream to work at the same time as the birdnet_recording.service, the microphone needs to be dsnoop capable. If you are wondering whether your mic supports creating the dsnoop device, you can use `aplay -L | awk -F, '/dsn/ {print $1}' | grep -ve 'vc4' -e 'Head' -e 'PCH' | uniq` to check. (No output means your microphone does not support creating a dsnoop device and therefore cannot also provide an audio stream while recording. The birdnet_recording.service, however, should not be affected by this and the installation one-liner can still be used. The live stream link simply will not work.)
+
+## What you should know for a manual installation
+1. The **local directory** where the recordings should be found on your local computer. BirdNET-system supports setting up a systemd.mount for automounting remote directories. So for instance, if the actual recordings live on RemoteHost's `/home/user/recordings` directory, but you would like them to be found on your device at `/home/me/BirdNET-recordings`, then `/home/me/BirdNET-recordings` will be your answer to that question.
+1. If mounting the recordings directory from a remote host, you need to know the **remote hostname, username, and password** to connect to it via SSH, as well as the **absolute path of the recordings on the remote host**.
+1. If you are using a special microphone or have multiple sound cards and would like to specify which to use for recording, you can edit the `~/BirdNET-system/birdnet.conf` file before the installation and set the **REC_CARD** variable to the sound card of your choice. Copy your desired sound card line from the output of `aplay -L | awk -F, '/^dsn:/ { print $1 }'`(prefered), or `aplay -L | awk -F, '/^hw:/ { print $1 }'`(if prefered is not available). 
 1. If you would like to take advantage of Caddy's automatic handling of SSL certificates to be able to host a public website where your friends can hear your bird sounds, forward ports 80 and 443 to the host you want to serve the files. You may also want to purchase a domain name.
-   - *Note: If you're just keeping this on your local network, be sure to set your extraction URL to something 'http://', [on RaspiOS, I recommend http://raspberrypi.local] to disable Caddy's automatic HTTPS. Alternatively, you may edit the `/etc/caddy/Caddyfile` after installation and add the `tls internal` directive to the site block to have Caddy issue a self-signed certificate for an HTTPS connection.*
-1. If you would like to take advantage of BirdNET-system's ability to send New Species mobile notifications, you can easily setup a Pushed.co notification app (see the #TODOs at the bottom for more info). After setting up your application, make note of your App Key and App Secret -- you will need these to enable mobile notifications for new species. 
-   - Note for Android users: it seems that the Pushed.co Mobile App does not work for Android devices, which is a huge bummer. If anyone knows of an Android alternative, or if anyone might be able to come up with a home-spun notification system, please let me know.
+   - *Note: If you're just keeping this on your local network, **be sure to set your extraction URL to something 'http://'** (on RaspiOS, I recommend 'http://raspberrypi.local') to disable Caddy's automatic HTTPS. Alternatively, you may edit the `/etc/caddy/Caddyfile` after installation and add the `tls internal` directive to the site block to have Caddy issue a self-signed certificate for an HTTPS connection.*
+1. If you would like to take advantage of BirdNET-system's ability to send New Species mobile notifications, you can easily setup a Pushed.co notification app (see the #TODOs at the bottom for more info). After setting up your application, make note of your **App Key** and **App Secret** -- you will need these to enable mobile notifications for new species. 
+   - *Note for Android users: it seems that the Pushed.co Mobile App does not work for Android devices, which is a huge bummer. If anyone knows of an Android alternative, or if anyone might be able to come up with a home-spun notification system, please let me know.*
 
 ## How to install
-#### Option 1 -- Pre-fill birdnet.conf
+#### Option 1 (Recommended) -- Install All Services
+1. In the terminal run `curl -s https://raw.githubusercontent.com/mcguirepr89/BirdNET-system/BirdNET-system-for-raspi4/Birders_Guide_Installer.sh | bash`
+
+##### Options 2 & 3 require you setup 4GB of swapping. That step is included in the directions below.
+#### Option 2 -- Pre-fill birdnet.conf
 1. In the terminal run `cd ~ && git clone https://github.com/mcguirepr89/BirdNET-system.git`
 1. **Switch to this branch, BirdNET-system-for-raspi4** `cd ~/BirdNET-system && git checkout BirdNET-system-for-raspi4`
 1. You can copy the included *'birdnet.conf-defaults'* template to create and configure the BirdNET-system
-   to your needs before running the installer. Issue `cp ${HOME}/BirdNET-system/birdnet.conf-defaults ${HOME}/BirdNET-system/birdnet.conf`.
+   to your needs before running the installer. Issue `cp ~/BirdNET-system/birdnet.conf-defaults ~/BirdNET-system/birdnet.conf`.
    Edit the new *'birdnet.conf'* file to suit your needs and save it.
    If you choose this method, the installation will be (nearly) non-interactive.
-1. Run `~/BirdNET-system/scripts/install_birdnet.sh`
-#### Option 2 -- Interactive Installation
+1. Setup zRAM swapping. Run `~/BirdNET-system/scripts/install_zram_service.sh && sudo reboot`   
+1. After the reboot, run `~/BirdNET-system/scripts/install_birdnet.sh`
+#### Option 3 -- Interactive Installation
 1. In the terminal run `cd ~ && git clone https://github.com/mcguirepr89/BirdNET-system.git`
 1. **Switch to this branch, BirdNET-system-for-raspi4** `cd ~/BirdNET-system && git checkout BirdNET-system-for-raspi4`
-1. Run `~/BirdNET-system/scripts/install_birdnet.sh`
+1. Setup zRAM swapping. Run `~/BirdNET-system/scripts/install_zram_service.sh && sudo reboot`   
+1. After the reboot, run `~/BirdNET-system/scripts/install_birdnet.sh`
 1. Follow the installation prompts to configure the BirdNET-system to your needs.
 - Note: The installation should be run as a regular user. If run on an OS other than RaspiOS, be sure the regular user is in the sudoers file or the sudo group.
 
@@ -74,6 +84,9 @@ You can also view the log output for the <code>birdnet_analysis.service</code> a
 
 and the BirdNET-system Statistics Report at
 - http://birdstats.local
+
+If you opt to also install NoMachine alongside the BirdNET-system, you can also access BirdNET-system
+remotely following the address information that can be found on the NoMachine's server information page.
 
 ## Examples
 These are examples of my personal instance of the BirdNET-system on a Raspberry Pi 4B.

@@ -8,10 +8,12 @@ SCRIPTS=(/usr/local/bin/birdnet_analysis.sh
 /usr/local/bin/birdnet_stats.sh
 /usr/local/bin/cleanup.sh
 /usr/local/bin/disk_usage.sh
+/usr/local/bin/dump_logs.sh
 /usr/local/bin/extract_new_birdsounds.sh
 /usr/local/bin/install_birdnet.sh
+/usr/local/bin/install_config.sh
 /usr/local/bin/install_services.sh
-/usr/local/bin/install_tmux_service.sh
+/usr/local/bin/install_tmux_services.sh
 /usr/local/bin/install_zram_service.sh
 /usr/local/bin/pretty_date.sh
 /usr/local/bin/reconfigure_birdnet.sh

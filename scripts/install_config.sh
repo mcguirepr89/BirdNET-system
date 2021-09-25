@@ -131,6 +131,18 @@ get_PUSHED() {
   done
 }
 
+get_INSTALL_NOMACHINE() {
+  while true; do
+    read -n1 -p "Would you like to also install NoMachine for remote desktop access?" INSTALL_NOMACHINE
+    echo
+    case $INSTALL_NOMACHINE in
+      [Yy] ) break;;
+      [Nn] ) break;;
+      * ) echo "You must answer with Yes or No (y or n)";;
+    esac
+  done
+}
+
 configure() {
   get_RECS_DIR
   get_LATITUDE
@@ -140,6 +152,7 @@ configure() {
   get_REMOTE
   get_EXTRACTIONS_URL
   get_PUSHED
+  get_INSTALL_NOMACHINE
 }
 
 install_birdnet_conf() {
@@ -270,6 +283,21 @@ ICE_PWD=${ICE_PWD}
 
 PUSHED_APP_KEY=${PUSHED_APP_KEY}
 PUSHED_APP_SECRET=${PUSHED_APP_SECRET}
+
+################################################################################
+#-------------------------------  NoMachine  ----------------------------------#
+#_____________The variable below can be set include NoMachine__________________#
+#_________________remote desktop software to be installed._____________________#
+
+#            Keep this EMPTY if you do not want to install NoMachine.          #
+
+## INSTALL_NOMACHINE is simply a setting that can be enabled to install
+## NoMachine alongside the BirdNET-system for remote desktop access. This in-
+## staller assumes personal use. Please reference the LICENSE file included
+## in this repository for more information.
+## Set this to Y or y to install NoMachine alongside the BirdNET-system
+
+INSTALL_NOMACHINE=${INSTALL_NOMACHINE}
 
 ################################################################################
 #--------------------------------  Defaults  ----------------------------------#
