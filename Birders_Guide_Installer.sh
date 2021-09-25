@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 my_dir=${HOME}/BirdNET-system
+trap '${my_dir}/scripts/dump_logs.sh && exit' EXIT SIGHUP SIGINT
+
 
 if [ "$(uname -m)" != "aarch64" ];then
   echo "BirdNET-system requires a 64-bit OS.
