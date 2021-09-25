@@ -3,11 +3,7 @@
 # set -x # Uncomment to debug
 source /etc/birdnet/birdnet.conf &> /dev/null
 LOG_DIR="${HOME}/BirdNET-system/logs"
-SERVICES=(avahi-alias@birdlog.local.service
-avahi-alias@birdnetsystem.local.service
-avahi-alias@birdstats.local.service
-avahi-alias@extractionlog.local.service
-avahi-alias@birdterminal.local.service
+SERVICES=(avahi-alias@.service
 birdnet_analysis.service
 birdnet_log.service
 birdnet_recording.service
@@ -26,8 +22,10 @@ ${SYSTEMD_MOUNT})
 
 # Create services logs
 for i in "${SERVICES[@]}";do
-  journalctl -u ${i} -n 100 --no-pager > ${LOG_DIR}/${i}.log
-  cp /etc/systemd/system/${i} ${LOG_DIR}/${i}
+  if [ -L /etc/systemd/system/multi-user.target.wants/${i} ];then
+    journalctl -u ${i} -n 100 --no-pager > ${LOG_DIR}/${i}.log
+    cp -L /etc/systemd/system/multi-user.target.wants/${i} ${LOG_DIR}/${i}
+  fi
 done
 
 # Create password-removed birdnet.conf
@@ -44,14 +42,20 @@ SOUND_CARD="$(aplay -L \
   | grep -ve 'vc4' -e 'Head' -e 'PCH' \
   | uniq)"
 echo "SOUND_CARD=${SOUND_CARD}" > ${LOG_DIR}/soundcard
-script -c "arecord -D ${SOUND_CARD} --dump-hw-params" -a ${LOG_DIR}/soundcard
+script -c "arecord -D ${SOUND_CARD} --dump-hw-params" -a ${LOG_DIR}/soundcard &> /dev/null
 
 # Get system info
 CALLS=("df -h" "free -h" "ifconfig" "find ${RECS_DIR}")
 
-for i in ${CALLS[@]};do
+for i in "${CALLS[@]}";do
   ${i} >> ${LOG_DIR}/sysinfo
+  echo "
+===============================================================================
+===============================================================================
+
+" >> ${LOG_DIR}/sysinfo
 done
 
 # TAR the logs into a ball
-tar --remove-files -cvpzf ${HOME}/BirdNET-system/logs.tar.gz ${LOG_DIR}
+tar --remove-files -cvpzf ${HOME}/BirdNET-system/logs.tar.gz ${LOG_DIR} &> /dev/null
+echo "Your compressed logs are located at ${HOME}/BirdNET-system/logs.tar.gz"
