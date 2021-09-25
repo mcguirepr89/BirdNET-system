@@ -357,8 +357,9 @@ EOF
 
 install_nomachine() {
   echo "Installing NoMachine"
-  curl -s -O "${nomachine_url}" -o /tmp/nomachine_7.6.2_3_arm64.deb
-  apt install -y /tmp/nomachine_7.6.2_3_arm64.deb
+  cd ~
+  curl -s -O "${nomachine_url}"
+  apt install -y ${HOME}/nomachine_7.6.2_3_arm64.deb
 }
 
 install_systemd_overrides() {
