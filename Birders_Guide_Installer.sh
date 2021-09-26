@@ -164,6 +164,7 @@ The installation has finished. Press Enter to close this window."
 }
 
 install_birdnet_config() {
+  [ -f ${my_dir}/soundcard_params.txt ] || touch ${my_dir}/soundcard_params.txt
   cat << EOF > ${my_dir}/birdnet.conf
 ################################################################################
 #                 Configuration settings for BirdNET as a service              #
