@@ -362,11 +362,23 @@ CONFIDENCE="0.7"
 
 ################################################################################
 #------------------------------  Auto-Generated  ------------------------------#
-#_______________The three variables below are auto-generated___________________#
+#_____________________The variables below are auto-generated___________________#
 #______________________________during installation_____________________________#
 
-# Don't touch these
+## CHANNELS holds the variabel that corresponds to the number of channels the
+## sound card supports.
+SOUND_PARAMS="${HOME}/BirdNET-system/soundcard_params.txt"
+SOUND_CARD="$(sudo -u pi aplay -L \
+   | grep -e '^hw' \
+   | cut -d, -f1  \
+   | grep -ve 'vc4' -e 'Head' -e 'PCH' \
+   | uniq)"
+script -c "arecord -D ${SOUND_CARD} --dump-hw-params" \
+  -a "${SOUND_PARAMS}" &> /dev/null
 
+CHANNELS=$(awk '/CHANN/ { print $2 }' "${SOUND_PARAMS}" | sed 's/\r$//')
+
+# Don't the three below
 ## ANALYZED is where the extraction.service looks for audio and 
 ## BirdNET.selection.txt files after they have been processed by the 
 ## birdnet_analysis.service. This is NOT where the analyzed files are moved -- 
