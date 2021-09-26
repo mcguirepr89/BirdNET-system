@@ -1,17 +1,6 @@
 #!/usr/bin/env bash
 set -x
 source /etc/birdnet/birdnet.conf
-trap 'rm -f ${SOUND_PARAMS}' EXIT SIGHUP SIGINT
-SOUND_PARAMS=$(mktemp)
-SOUND_CARD="$(aplay -L \
-  | awk -F, '/^hw:/ {print $1}' \
-  | grep -ve 'vc4' -e 'Head' -e 'PCH' \
-  | uniq)"
-script -c "arecord -D ${SOUND_CARD} --dump-hw-params" -a "${SOUND_PARAMS}" &> /dev/null
-
-CHANNELS=$(awk '/CHANN/ { print $2 }' "${SOUND_PARAMS}"| sed 's/\r$//')
-
-echo ${CHANNELS}
 
 if pgrep arecord &> /dev/null ;then
   echo "Recording"
@@ -20,7 +9,7 @@ else
     arecord -f S16_LE -c${CHANNELS} -r48000 -t wav --max-file-time 60 \
       --use-strftime ${RECS_DIR}/%B-%Y/%d-%A/%F-birdnet-%I:%M%P.wav
   else
-    arecord -f S16_LE -c"${CHANNELS}" -r48000 -t wav --max-file-time 60 \
+    arecord -f S16_LE -c${CHANNELS} -r48000 -t wav --max-file-time 60 \
      -D "${REC_CARD}" --use-strftime \
      ${RECS_DIR}/%B-%Y/%d-%A/%F-birdnet-%I:%M%P.wav
   fi

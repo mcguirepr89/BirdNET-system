@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Creates and installs the /etc/birdnet/birdnet.conf file
-#set -x # Uncomment to enable debugging
+set -x # Uncomment to enable debugging
 set -e
 trap 'exit 1' SIGINT SIGHUP
 
@@ -143,6 +143,20 @@ get_INSTALL_NOMACHINE() {
   done
 }
 
+get_CHANNELS() {
+  [ -f $(dirname ${my_dir})/soundcard_params.txt ] || touch $(dirname ${my_dir})/soundcard_params.txt
+  SOUND_PARAMS=$(dirname ${my_dir})/soundcard_params.txt
+  SOUND_CARD="$(sudo -u ${USER} aplay -L \
+    | awk -F, '/^hw:/ {print $1}' \
+    | grep -ve 'vc4' -e 'Head' -e 'PCH' \
+    | uniq)"
+  script -c "arecord -D ${SOUND_CARD} --dump-hw-params" -a "${SOUND_PARAMS}" &> /dev/null
+  
+  CHANNELS=$(awk '/CHANN/ { print $2 }' "${SOUND_PARAMS}" | sed 's/\r$//')
+  echo "Number of channels available: ${CHANNELS}"
+}
+
+
 configure() {
   get_RECS_DIR
   get_LATITUDE
@@ -153,6 +167,7 @@ configure() {
   get_EXTRACTIONS_URL
   get_PUSHED
   get_INSTALL_NOMACHINE
+  get_CHANNELS
 }
 
 install_birdnet_conf() {
@@ -301,7 +316,7 @@ INSTALL_NOMACHINE=${INSTALL_NOMACHINE}
 
 ################################################################################
 #--------------------------------  Defaults  ----------------------------------#
-#______The six variables below are default settings that you (probably)________#
+#______The seven variables below are default settings that you (probably)______#
 #__________________don't need to change at all, but can._______________________# 
 
 ## REC_CARD is the sound card you would want the birdnet_recording.service to 
@@ -319,6 +334,19 @@ REC_CARD="\$(sudo -u pi aplay -L \
     | cut -d, -f1  \
     | grep -ve 'vc4' -e 'Head' -e 'PCH' \
     | uniq)"
+
+## CHANNELS holds the variabel that corresponds to the number of channels the
+## sound card above supports. You can see this for yourself by running these
+## commands:
+##   SOUND_PARAMS=\$(mktemp)
+##   SOUND_CARD="\$(sudo -u pi aplay -L \
+##       | grep -e '^hw' \
+##       | cut -d, -f1  \
+##       | grep -ve 'vc4' -e 'Head' -e 'PCH' \
+##       | uniq)"
+##  arecord -D ${SOUND_CARD} --dump-hw-params
+
+CHANNELS=${CHANNELS}
     
 ## PROCESSED is the directory where the formerly 'Analyzed' files are moved 
 ## after extractions have been made from them. This includes both WAVE and 
