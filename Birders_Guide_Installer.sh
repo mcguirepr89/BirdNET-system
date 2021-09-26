@@ -406,6 +406,7 @@ else
   rm ${HOME}/Birders_Guide_Installer.sh
   fi
   rm ${HOME}/stage_1_complete
+  ${HOME}/scripts/dump_logs.sh
   systemctl --user disable --now birdnet-system-installer.service
   sudo rm -f /etc/systemd/user/birdnet-system-installer.service
 fi  
