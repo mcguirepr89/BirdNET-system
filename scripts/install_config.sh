@@ -316,7 +316,7 @@ INSTALL_NOMACHINE=${INSTALL_NOMACHINE}
 
 ################################################################################
 #--------------------------------  Defaults  ----------------------------------#
-#______The seven variables below are default settings that you (probably)______#
+#________The six variables below are default settings that you (probably)______#
 #__________________don't need to change at all, but can._______________________# 
 
 ## REC_CARD is the sound card you would want the birdnet_recording.service to 
@@ -334,19 +334,6 @@ REC_CARD="\$(sudo -u pi aplay -L \
     | cut -d, -f1  \
     | grep -ve 'vc4' -e 'Head' -e 'PCH' \
     | uniq)"
-
-## CHANNELS holds the variabel that corresponds to the number of channels the
-## sound card above supports. You can see this for yourself by running these
-## commands:
-##   SOUND_PARAMS=\$(mktemp)
-##   SOUND_CARD="\$(sudo -u pi aplay -L \
-##       | grep -e '^hw' \
-##       | cut -d, -f1  \
-##       | grep -ve 'vc4' -e 'Head' -e 'PCH' \
-##       | uniq)"
-##  arecord -D ${SOUND_CARD} --dump-hw-params
-
-CHANNELS=${CHANNELS}
     
 ## PROCESSED is the directory where the formerly 'Analyzed' files are moved 
 ## after extractions have been made from them. This includes both WAVE and 
@@ -382,10 +369,15 @@ CONFIDENCE="0.7"
 
 ################################################################################
 #------------------------------  Auto-Generated  ------------------------------#
-#_______________The three variables below are auto-generated___________________#
+#_____________________The variables below are auto-generated___________________#
 #______________________________during installation_____________________________#
 
-# Don't touch these
+## CHANNELS holds the variabel that corresponds to the number of channels the
+## sound card supports.
+
+CHANNELS=${CHANNELS}
+
+# Don't touch the three below
 
 ## ANALYZED is where the extraction.service looks for audio and 
 ## BirdNET.selection.txt files after they have been processed by the 

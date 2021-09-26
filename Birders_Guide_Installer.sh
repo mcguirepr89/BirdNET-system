@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -ex
 my_dir=${HOME}/BirdNET-system
 trap '${my_dir}/scripts/dump_logs.sh && exit' EXIT SIGHUP SIGINT
 
@@ -148,6 +148,14 @@ Good luck!"
     exit 1
   fi
   echo "Installing the BirdNET-system configuration file."
+  [ -f ${my_dir}/soundcard_params.txt ] || touch ${my_dir}/soundcard_params.txt
+  SOUND_PARAMS="${HOME}/BirdNET-system/soundcard_params.txt"
+  SOUND_CARD="$(sudo -u pi aplay -L \
+   | grep -e '^hw' \
+   | cut -d, -f1  \
+   | grep -ve 'vc4' -e 'Head' -e 'PCH' \
+   | uniq)"
+  script -c "arecord -D ${SOUND_CARD} --dump-hw-params" -a ${SOUND_PARAMS} &> /dev/null
   install_birdnet_config || exit 1
   echo "Installing the BirdNET-system"
   if ${my_dir}/scripts/install_birdnet.sh << EOF ; then
@@ -164,7 +172,6 @@ The installation has finished. Press Enter to close this window."
 }
 
 install_birdnet_config() {
-  [ -f ${my_dir}/soundcard_params.txt ] || touch ${my_dir}/soundcard_params.txt
   cat << EOF > ${my_dir}/birdnet.conf
 ################################################################################
 #                 Configuration settings for BirdNET as a service              #
@@ -368,16 +375,8 @@ CONFIDENCE="0.7"
 
 ## CHANNELS holds the variabel that corresponds to the number of channels the
 ## sound card supports.
-SOUND_PARAMS="${HOME}/BirdNET-system/soundcard_params.txt"
-SOUND_CARD="$(sudo -u pi aplay -L \
-   | grep -e '^hw' \
-   | cut -d, -f1  \
-   | grep -ve 'vc4' -e 'Head' -e 'PCH' \
-   | uniq)"
-script -c "arecord -D ${SOUND_CARD} --dump-hw-params" \
-  -a "${SOUND_PARAMS}" &> /dev/null
 
-CHANNELS=$(awk '/CHANN/ { print $2 }' "${SOUND_PARAMS}" | sed 's/\r$//')
+CHANNELS=$(awk '/CHANN/ { print $2 }' ${SOUND_PARAMS} | sed 's/\r$//')
 
 # Don't the three below
 ## ANALYZED is where the extraction.service looks for audio and 
