@@ -7,7 +7,7 @@
 # Raspberry Pi and using another Linux machine or an SSH 
 # client software, or you can alternately add the 'tls internal'
 # directive to the Caddyfile to add a self-signed certificate for TLS/SSL
-# encryption. For remote desktop access, I can recommend AnyDesk.
+# encryption. For remote desktop access, NoMachine can be installed.
 source /etc/birdnet/birdnet.conf
 my_dir=$(realpath $(dirname $0))
 
