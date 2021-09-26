@@ -143,6 +143,20 @@ get_INSTALL_NOMACHINE() {
   done
 }
 
+get_CHANNELS() {
+  [ -f $(dirname ${my_dir})/soundcard_params.txt ] || touch $(dirname ${my_dir})/soundcard_params.txt
+  SOUND_PARAMS=$(dirname ${my_dir})/soundcard_params.txt
+  SOUND_CARD="$(sudo -u ${USER} aplay -L \
+    | awk -F, '/^hw:/ {print $1}' \
+    | grep -ve 'vc4' -e 'Head' -e 'PCH' \
+    | uniq)"
+  script -c "arecord -D ${SOUND_CARD} --dump-hw-params" -a "${SOUND_PARAMS}" &> /dev/null
+  
+  CHANNELS=$(awk '/CHANN/ { print $2 }' "${SOUND_PARAMS}" | sed 's/\r$//')
+  echo "Number of channels available: ${CHANNELS}"
+}
+
+
 configure() {
   get_RECS_DIR
   get_LATITUDE
@@ -153,6 +167,7 @@ configure() {
   get_EXTRACTIONS_URL
   get_PUSHED
   get_INSTALL_NOMACHINE
+  get_CHANNELS
 }
 
 install_birdnet_conf() {
@@ -301,7 +316,7 @@ INSTALL_NOMACHINE=${INSTALL_NOMACHINE}
 
 ################################################################################
 #--------------------------------  Defaults  ----------------------------------#
-#______The six variables below are default settings that you (probably)________#
+#________The six variables below are default settings that you (probably)______#
 #__________________don't need to change at all, but can._______________________# 
 
 ## REC_CARD is the sound card you would want the birdnet_recording.service to 
@@ -354,10 +369,15 @@ CONFIDENCE="0.7"
 
 ################################################################################
 #------------------------------  Auto-Generated  ------------------------------#
-#_______________The three variables below are auto-generated___________________#
+#_____________________The variables below are auto-generated___________________#
 #______________________________during installation_____________________________#
 
-# Don't touch these
+## CHANNELS holds the variabel that corresponds to the number of channels the
+## sound card supports.
+
+CHANNELS=${CHANNELS}
+
+# Don't touch the three below
 
 ## ANALYZED is where the extraction.service looks for audio and 
 ## BirdNET.selection.txt files after they have been processed by the 

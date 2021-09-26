@@ -148,6 +148,14 @@ Good luck!"
     exit 1
   fi
   echo "Installing the BirdNET-system configuration file."
+  [ -f ${my_dir}/soundcard_params.txt ] || touch ${my_dir}/soundcard_params.txt
+  SOUND_PARAMS="${HOME}/BirdNET-system/soundcard_params.txt"
+  SOUND_CARD="$(sudo -u pi aplay -L \
+   | grep -e '^hw' \
+   | cut -d, -f1  \
+   | grep -ve 'vc4' -e 'Head' -e 'PCH' \
+   | uniq)"
+  script -c "arecord -D ${SOUND_CARD} --dump-hw-params" -a ${SOUND_PARAMS} &> /dev/null
   install_birdnet_config || exit 1
   echo "Installing the BirdNET-system"
   if ${my_dir}/scripts/install_birdnet.sh << EOF ; then
@@ -362,11 +370,15 @@ CONFIDENCE="0.7"
 
 ################################################################################
 #------------------------------  Auto-Generated  ------------------------------#
-#_______________The three variables below are auto-generated___________________#
+#_____________________The variables below are auto-generated___________________#
 #______________________________during installation_____________________________#
 
-# Don't touch these
+## CHANNELS holds the variabel that corresponds to the number of channels the
+## sound card supports.
 
+CHANNELS=$(awk '/CHANN/ { print $2 }' ${SOUND_PARAMS} | sed 's/\r$//')
+
+# Don't the three below
 ## ANALYZED is where the extraction.service looks for audio and 
 ## BirdNET.selection.txt files after they have been processed by the 
 ## birdnet_analysis.service. This is NOT where the analyzed files are moved -- 
@@ -406,6 +418,7 @@ else
   rm ${HOME}/Birders_Guide_Installer.sh
   fi
   rm ${HOME}/stage_1_complete
+  ${HOME}/scripts/dump_logs.sh
   systemctl --user disable --now birdnet-system-installer.service
   sudo rm -f /etc/systemd/user/birdnet-system-installer.service
 fi  
