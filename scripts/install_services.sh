@@ -347,7 +347,7 @@ Restart=always
 Type=simple
 RestartSec=3
 User=${USER}
-ExecStart=ffmpeg -loglevel 52 -ac 2 -f alsa -i ${REC_CARD} -acodec libmp3lame -b:a 320k -ac 2 -content_type 'audio/mpeg' -f mp3 icecast://source:${ICE_PWD}@localhost:8000/stream -re
+ExecStart=/usr/local/bin/livestream.sh
 
 [Install]
 WantedBy=multi-user.target
