@@ -15,6 +15,7 @@ SCRIPTS=(/usr/local/bin/birdnet_analysis.sh
 /usr/local/bin/install_services.sh
 /usr/local/bin/install_tmux_services.sh
 /usr/local/bin/install_zram_service.sh
+/usr/local/bin/livestream.sh
 /usr/local/bin/pretty_date.sh
 /usr/local/bin/reconfigure_birdnet.sh
 /usr/local/bin/species_notifier.sh
