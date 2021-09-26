@@ -58,4 +58,5 @@ done
 
 # TAR the logs into a ball
 tar --remove-files -cvpzf ${HOME}/BirdNET-system/logs.tar.gz ${LOG_DIR} &> /dev/null
+# Finished
 echo "Your compressed logs are located at ${HOME}/BirdNET-system/logs.tar.gz"
