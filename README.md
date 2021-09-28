@@ -56,7 +56,7 @@ An installation one-liner is available [HERE](https://birdnetwiki.pmcgui.xyz/wik
 
 ##### Options 2 & 3 require you setup 4GB of swapping. That step is included in the directions below.
 #### Option 2 -- Pre-fill birdnet.conf
-1. In the terminal run `git clone -b BirdNET-system-for-raspi4 https://github.com/mcguirepr89/BirdNET-system.git ~/BirdNET-system`
+1. In the terminal run `git clone https://github.com/mcguirepr89/BirdNET-system.git ~/BirdNET-system`
 1. You can copy the included *'birdnet.conf-defaults'* template to create and configure the BirdNET-system
    to your needs before running the installer. Issue `cp ~/BirdNET-system/birdnet.conf-defaults ~/BirdNET-system/birdnet.conf`.
    Edit the new *'birdnet.conf'* file to suit your needs and save it.
@@ -64,7 +64,7 @@ An installation one-liner is available [HERE](https://birdnetwiki.pmcgui.xyz/wik
 1. Setup zRAM swapping. Run `~/BirdNET-system/scripts/install_zram_service.sh && sudo reboot`   
 1. After the reboot, run `~/BirdNET-system/scripts/install_birdnet.sh`
 #### Option 3 -- Interactive Installation
-1. In the terminal run `git clone -b BirdNET-system-for-raspi4 https://github.com/mcguirepr89/BirdNET-system.git ~/BirdNET-system`
+1. In the terminal run `git clone https://github.com/mcguirepr89/BirdNET-system.git ~/BirdNET-system`
 1. Setup zRAM swapping. Run `~/BirdNET-system/scripts/install_zram_service.sh && sudo reboot`   
 1. After the reboot, run `~/BirdNET-system/scripts/install_birdnet.sh`
 1. Follow the installation prompts to configure the BirdNET-system to your needs.
