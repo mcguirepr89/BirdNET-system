@@ -100,5 +100,12 @@ At any time, you can completely reconfigure the system to select or remove featu
 To remove BirdNET-system, run the included '*uninstall.sh*' script as the regular user.
 1. Issue `/usr/local/bin/uninstall.sh && cd ~ && rm -drf BirdNET-system`
 
+## Troubleshooting
+**General** -- At anytime, you can run the included `~/BirdNET-system/dump_logs.sh` script to create a compressed tar ball of system logs that may provide a helpful overview of the system services. In addition, you can upload it in a new issue along with a description of what you are experiencing. dump_logs.sh scrubs password information, but does retain LATITUDE and LONGITUDE information. If at all concerned with privacy, you're welcome to send them to me via email at mailto:mcguirepr89@gmail.com.
+
+**Audio** -- If you have problems with the _bridnet_recording.service_ or _livestream.service_, try setting the REC_CARD setting in the _birdnet.conf_ file to `REC_CARD=default` and the CHANNELS variable to `CHANNELS=2`. This works for two very different microphones I have, so it may work for you. If it does, please let me know, as I may change the code as a result. Also, during installation, a file is created called `~/BirdNET-system/soundcard_params.txt` that may provide helpful information for customized settings.
+
+**Installation** -- The installer _should_ always create a compressed set of system logs whether it succeeds or fails. Its location is `~/BirdNET-system/logs.tar.gz`. Take a look through there or feel free to create a new issue and upload it along with a description of what you are experiencing.
+
 ### TODO & Notes:
 1. I ought to add the steps to setup a Pushed.co application for the mobile notifications feature. Here is a link for now https://pushed.co/quick-start-guide
