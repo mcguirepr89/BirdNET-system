@@ -2,8 +2,8 @@
 # Install BirdNET script
 #set -x # debugging
 set -e # exit installation if anything fails
-trap 'echo -e "\n\nExiting the installation. Goodbye!" && exit 1' SIGINT
 my_dir=$(realpath $(dirname $0))
+trap '${my_dir}/dump_logs.sh && echo -e "\n\nExiting the installation. Goodbye!" && exit 1' SIGINT
 cd $my_dir || exit 1
 
 if [ "$(uname -m)" != "aarch64" ];then
