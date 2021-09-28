@@ -14,6 +14,7 @@ An installation one-liner is available [HERE](https://birdnetwiki.pmcgui.xyz/wik
 - Prerequisites:
   - An updated RaspiOS for AArch64 that has locale, WiFi, time-zone, and pi user password set. A guide is available [here](https://birdnetwiki.pmcgui.xyz/wiki/Birder%27s_Guide_to_BirdNET-system#Install_the_base_operating_system_.28OS.29). 64GB SD card for best performance.
   - A USB microphone (dsnoop capable to enable live audio stream).
+  - Running the installer from within the Raspberry Pi's desktop environment (i.e., not over SSH -- for SSH installations, see installation options 2 & 3)
 
 
 ## What the installation does
