@@ -79,7 +79,7 @@ create_necessary_dirs() {
 }
  
 install_alsa() {
-  echo "Checking for alsa-utils"
+  echo "Checking for alsa-utils and pulseaudio"
   if which arecord &> /dev/null ;then
     echo "alsa-utils installed"
   else
@@ -87,6 +87,14 @@ install_alsa() {
     apt -qqq update 
     apt install -qqy alsa-utils
     echo "alsa-utils installed"
+  fi
+  if which pulseaudio &> /dev/null;then
+    echo "PulseAudio installed"
+  else
+    echo "Installing pulseaudio"
+    apt -qqq update
+    apt install -qqy pulseaudio
+    echo "PulseAudio installed"
   fi
 }
 
