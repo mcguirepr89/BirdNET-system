@@ -90,7 +90,8 @@ If you opt to also install NoMachine alongside the BirdNET-system, you can also 
 remotely following the address information that can be found on the NoMachine's server information page.
 
 ## Examples
-These are examples of my personal instance of the BirdNET-system on a Raspberry Pi 4B.
+### These are no longer active -- instead, [see the new project for current examples](https://github.com/mcguirepr89/BirdNET-Pi)
+~~These are examples of my personal instance of the BirdNET-system on a Raspberry Pi 4B.~~
  - https://birdsounds.pmcgui.xyz  -- My BirdNET-system Extractions page
  - https://birdlog.pmcgui.xyz  --  My 'birdlog' birdnet_analysis.service log
  - https://extraction.pmcgui.xyz  --  My 'extractionlog' extraction.service log
