@@ -91,10 +91,10 @@ remotely following the address information that can be found on the NoMachine's 
 
 ## Examples
 ### These are no longer active -- instead, [see the new project for current examples](https://github.com/mcguirepr89/BirdNET-Pi)
-~~These are examples of my personal instance of the BirdNET-system on a Raspberry Pi 4B.~~
-~~- https://birdsounds.pmcgui.xyz  -- My BirdNET-system Extractions page~~
-~~- https://birdlog.pmcgui.xyz  --  My 'birdlog' birdnet_analysis.service log~~
-~~- https://extraction.pmcgui.xyz  --  My 'extractionlog' extraction.service log~~
+~~These are examples of my personal instance of the BirdNET-system on a Raspberry Pi 4B.~~<br>
+~~- https://birdsounds.pmcgui.xyz  -- My BirdNET-system Extractions page~~<br>
+~~- https://birdlog.pmcgui.xyz  --  My 'birdlog' birdnet_analysis.service log~~<br>
+~~- https://extraction.pmcgui.xyz  --  My 'extractionlog' extraction.service log~~<br>
 ~~- https://birdstats.pmcgui.xyz  -- My 'birdstats' BirdNET-system Report~~
 
 ## How to reconfigure the system
